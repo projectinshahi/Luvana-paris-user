@@ -1,0 +1,99 @@
+{
+  "search": "Search for you",
+  "buy": "Buy",
+  "off": "OFF",
+  "bestSellers": "Best Sellers",
+  "exploreBrands": "Explore Brands",
+  "shop": "Shop",
+  "about": "About",
+  "contact": "Contact",
+  "cart": "Cart",
+  "wishlist": "Wishlist",
+  "account": "Account",
+  "home": "Home",
+  "footerText": "© 2024 Luvana. All rights reserved.",
+  
+  "navbar": {
+    "topOffer": "Buy for ₹999 and enjoy a cool 25% OFF!",
+    "logo": "LOGO"
+  },
+  
+  "hero": {
+    "chooseGlow": "CHOOSE YOUR OWN GLOW",
+    "shineHere": "JUST OUT HERE TO SHINE",
+    "shineConfidence": "SHINE WITH CONFIDENCE",
+    "feelGlamour": "FEEL THE GLAMOUR",
+    "luxuryLifestyle": "Luxury made for her lifestyle",
+    "luxuryDefines": "Because luxury defines you",
+    "styleBeauty": "Style that speaks beauty"
+  },
+  
+  "categories": {
+    "new": "New",
+    "brands": "Brands",
+    "makeup": "Makeup",
+    "skincare": "Skin care",
+    "haircare": "Hair care",
+    "fragrance": "Fragrance",
+    "bodycare": "Body care",
+    "toolsBrushes": "Tools & Brushes"
+  },
+  
+  "products": {
+    "addToCart": "Add to cart",
+    "niacinamideSerum": "The Ordinary Niacinamide Serum + Salicylic Acid Combo",
+    "wildCherry": "Wild Cherry - Luxe Matte Lipstick, Cherry Pink",
+    "cherryBomb": "Cherry Bomb - Luxe Matte Lipstick, Red",
+    "confidence": "Confidence by Lush - EDT Perfume for Women"
+  },
+  
+  "brands": {
+    "premiumBrands": "Premium Brands",
+    "shopTrusted": "Shop from the world's most trusted beauty brands",
+    "luxuryFavorites": "luxury favorites",
+    "shopNow": "Shop now"
+  },
+  
+  "exploreMore": {
+    "title": "Explore for more",
+    "subtitle": "Keep exploring for more surprises!",
+    "makeupDesc": "From everyday essentials to luxe indulgence find your perfect match",
+    "skincareDesc": "From simple skincare to spa-level luxury explore brands you trust",
+    "fragranceDesc": "Quality fragrances at every price point",
+    "haircareDesc": "Explore hair care from brands you love Discover the best in hair care"
+  },
+  
+  "influencers": {
+    "title": "Influencers",
+    "subtitle": "Scrolls",
+    "skincare": "From simple skincare to spa-level luxury explore brands you trust",
+    "haircare": "explore hair care from brands you love Discover the best in hair care",
+    "fragrance": "Quality fragrances at every price point"
+  },
+  
+  "footer": {
+    "companyName": "LUVANA",
+    "description": "Your trusted destination for premium beauty products from around the world.",
+    "email": "support@luvana.com",
+    "phone": "+91 1800 123 456",
+    "address": "New Delhi, India",
+    "quickLinks": "Quick Links",
+    "aboutUs": "About Us",
+    "blog": "Blog",
+    "customerCare": "Customer Care",
+    "shippingInfo": "Shipping Info",
+    "returns": "Returns",
+    "faq": "FAQ",
+    "trackOrder": "Track Order",
+    "support": "Support",
+    "followUs": "Follow Us",
+    "weAccept": "We Accept",
+    "visa": "Visa",
+    "mastercard": "Mastercard",
+    "upi": "UPI",
+    "allRightsReserved": "© 2024 LUVANA. All rights reserved.",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "cookieSettings": "Cookie Settings"
+  }
+}

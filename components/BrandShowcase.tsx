@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "react-i18next";
+
 const brands = [
   {
     id: 1,
@@ -34,16 +36,19 @@ const brands = [
 ];
 
 export default function BrandShowcase() {
+  const { t, i18n } = useTranslation('common');
+  const isRTL = i18n.language === 'ar';
+
   return (
     <div className="w-full py-16 bg-[#0a0a0a]">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className={`text-center mb-12 ${isRTL ? 'font-arabic' : ''}`}>
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Premium Brands
+            {t('brands.premiumBrands')}
           </h2>
           <p className="text-gray-400 text-lg">
-            Shop from the world's most trusted beauty brands
+            {t('brands.shopTrusted')}
           </p>
         </div>
 
