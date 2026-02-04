@@ -1,62 +1,70 @@
 "use client";
 
 import { Facebook, Instagram, Twitter, Linkedin, Mail, Phone, MapPin } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function Footer() {
+  const { t, i18n } = useTranslation('common');
+  const isRTL = i18n.language === 'ar';
+
   return (
     <footer className="w-full bg-[#0a0a0a] text-white">
       {/* Main Footer */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <div className={`grid grid-cols-1 md:grid-cols-4 gap-8 mb-12 ${isRTL ? 'text-right' : 'text-left'}`}>
           {/* Company Info */}
           <div>
-            <h3 className="text-2xl font-bold text-[#C9A24D] mb-4">LUVANA</h3>
-            <p className="text-gray-400 mb-6">
-              Your trusted destination for premium beauty products from around the world.
+            <h3 className={`text-2xl font-bold text-[#C9A24D] mb-4 ${isRTL ? 'font-arabic' : ''}`}>
+              {t('footer.companyName')}
+            </h3>
+            <p className={`text-gray-400 mb-6 ${isRTL ? 'font-arabic' : ''}`}>
+              {t('footer.description')}
             </p>
             <div className="space-y-3">
-              <div className="flex items-center gap-3 text-gray-400 hover:text-[#C9A24D] transition">
+              <div className={`flex items-center gap-3 text-gray-400 hover:text-[#C9A24D] transition ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <Mail size={18} />
-                <span>support@luvana.com</span>
+                <span>{t('footer.email')}</span>
               </div>
-              <div className="flex items-center gap-3 text-gray-400 hover:text-[#C9A24D] transition">
+              <div className={`flex items-center gap-3 text-gray-400 hover:text-[#C9A24D] transition ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <Phone size={18} />
-                <span>+91 1800 123 456</span>
+                <span>{t('footer.phone')}</span>
               </div>
-              <div className="flex items-center gap-3 text-gray-400 hover:text-[#C9A24D] transition">
+              <div className={`flex items-center gap-3 text-gray-400 hover:text-[#C9A24D] transition ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <MapPin size={18} />
-                <span>New Delhi, India</span>
+                <span>{t('footer.address')}</span>
               </div>
             </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-lg font-bold text-white mb-4">Quick Links</h4>
+            <h4 className={`text-lg font-bold text-white mb-4 ${isRTL ? 'font-arabic' : ''}`}>
+              {t('footer.quickLinks')}
+            </h4>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-gray-400 hover:text-[#C9A24D] transition">
-                  About Us
+                <a href="#" className={`text-gray-400 hover:text-[#C9A24D] transition ${isRTL ? 'font-arabic' : ''}`}>
+                  {t('footer.aboutUs')}
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-[#C9A24D] transition">
-                  Shop
+                <a href="#" className={`text-gray-400 hover:text-[#C9A24D] transition ${isRTL ? 'font-arabic' : ''}`}>
+                  {t('shop')}
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-[#C9A24D] transition">
-                  Brands
+                <a href="#" className={`text-gray-400 hover:text-[#C9A24D] transition ${isRTL ? 'font-arabic' : ''}`}>
+                  {t('categories.brands')}
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-[#C9A24D] transition">
-                  Blog
+                <a href="#" className={`text-gray-400 hover:text-[#C9A24D] transition ${isRTL ? 'font-arabic' : ''}`}>
+                  {t('footer.blog')}
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-[#C9A24D] transition">
-                  Contact
+                <a href="#" className={`text-gray-400 hover:text-[#C9A24D] transition ${isRTL ? 'font-arabic' : ''}`}>
+                  {t('contact')}
                 </a>
               </li>
             </ul>
@@ -64,31 +72,33 @@ export default function Footer() {
 
           {/* Customer Care */}
           <div>
-            <h4 className="text-lg font-bold text-white mb-4">Customer Care</h4>
+            <h4 className={`text-lg font-bold text-white mb-4 ${isRTL ? 'font-arabic' : ''}`}>
+              {t('footer.customerCare')}
+            </h4>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-gray-400 hover:text-[#C9A24D] transition">
-                  Shipping Info
+                <a href="#" className={`text-gray-400 hover:text-[#C9A24D] transition ${isRTL ? 'font-arabic' : ''}`}>
+                  {t('footer.shippingInfo')}
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-[#C9A24D] transition">
-                  Returns
+                <a href="#" className={`text-gray-400 hover:text-[#C9A24D] transition ${isRTL ? 'font-arabic' : ''}`}>
+                  {t('footer.returns')}
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-[#C9A24D] transition">
-                  FAQ
+                <a href="#" className={`text-gray-400 hover:text-[#C9A24D] transition ${isRTL ? 'font-arabic' : ''}`}>
+                  {t('footer.faq')}
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-[#C9A24D] transition">
-                  Track Order
+                <a href="#" className={`text-gray-400 hover:text-[#C9A24D] transition ${isRTL ? 'font-arabic' : ''}`}>
+                  {t('footer.trackOrder')}
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-400 hover:text-[#C9A24D] transition">
-                  Support
+                <a href="#" className={`text-gray-400 hover:text-[#C9A24D] transition ${isRTL ? 'font-arabic' : ''}`}>
+                  {t('footer.support')}
                 </a>
               </li>
             </ul>
@@ -96,8 +106,10 @@ export default function Footer() {
 
           {/* Social Media */}
           <div>
-            <h4 className="text-lg font-bold text-white mb-4">Follow Us</h4>
-            <div className="flex gap-4 mb-6">
+            <h4 className={`text-lg font-bold text-white mb-4 ${isRTL ? 'font-arabic' : ''}`}>
+              {t('footer.followUs')}
+            </h4>
+            <div className={`flex gap-4 mb-6 ${isRTL ? 'flex-row-reverse justify-end' : ''}`}>
               <a
                 href="#"
                 className="bg-[#1a1a1a] p-3 rounded-full hover:bg-[#C9A24D] transition"
@@ -126,11 +138,19 @@ export default function Footer() {
 
             {/* Payment Methods */}
             <div>
-              <p className="text-sm font-semibold text-gray-400 mb-3">We Accept</p>
-              <div className="flex flex-wrap gap-2">
-                <span className="bg-[#1a1a1a] px-3 py-1 rounded text-xs text-gray-400">Visa</span>
-                <span className="bg-[#1a1a1a] px-3 py-1 rounded text-xs text-gray-400">Mastercard</span>
-                <span className="bg-[#1a1a1a] px-3 py-1 rounded text-xs text-gray-400">UPI</span>
+              <p className={`text-sm font-semibold text-gray-400 mb-3 ${isRTL ? 'font-arabic' : ''}`}>
+                {t('footer.weAccept')}
+              </p>
+              <div className={`flex flex-wrap gap-2 ${isRTL ? 'flex-row-reverse justify-end' : ''}`}>
+                <span className="bg-[#1a1a1a] px-3 py-1 rounded text-xs text-gray-400">
+                  {t('footer.visa')}
+                </span>
+                <span className="bg-[#1a1a1a] px-3 py-1 rounded text-xs text-gray-400">
+                  {t('footer.mastercard')}
+                </span>
+                <span className="bg-[#1a1a1a] px-3 py-1 rounded text-xs text-gray-400">
+                  {t('footer.upi')}
+                </span>
               </div>
             </div>
           </div>
@@ -138,19 +158,19 @@ export default function Footer() {
 
         {/* Divider */}
         <div className="border-t border-gray-800 py-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-center md:text-left">
-            <p className="text-gray-400 text-sm">
-              &copy; 2024 LUVANA. All rights reserved.
+          <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 text-center md:text-left ${isRTL ? 'md:text-right' : ''}`}>
+            <p className={`text-gray-400 text-sm ${isRTL ? 'font-arabic' : ''}`}>
+              {t('footer.allRightsReserved')}
             </p>
-            <div className="flex flex-col md:flex-row gap-4 justify-center md:justify-end">
-              <a href="#" className="text-gray-400 hover:text-[#C9A24D] text-sm transition">
-                Privacy Policy
+            <div className={`flex flex-col md:flex-row gap-4 justify-center ${isRTL ? 'md:justify-start' : 'md:justify-end'}`}>
+              <a href="#" className={`text-gray-400 hover:text-[#C9A24D] text-sm transition ${isRTL ? 'font-arabic' : ''}`}>
+                {t('footer.privacyPolicy')}
               </a>
-              <a href="#" className="text-gray-400 hover:text-[#C9A24D] text-sm transition">
-                Terms of Service
+              <a href="#" className={`text-gray-400 hover:text-[#C9A24D] text-sm transition ${isRTL ? 'font-arabic' : ''}`}>
+                {t('footer.termsOfService')}
               </a>
-              <a href="#" className="text-gray-400 hover:text-[#C9A24D] text-sm transition">
-                Cookie Settings
+              <a href="#" className={`text-gray-400 hover:text-[#C9A24D] text-sm transition ${isRTL ? 'font-arabic' : ''}`}>
+                {t('footer.cookieSettings')}
               </a>
             </div>
           </div>

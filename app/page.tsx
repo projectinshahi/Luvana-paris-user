@@ -14,7 +14,7 @@ export default function Home() {
   return (
     <div>
       <Navbar />
-      <div className="pt-20">
+      <div className="pt-32.5 sm:pt-40 md:pt-20 pb-20 sm:pb-0">
         <ImageSection/>
         <CategoryBar />
         <BestSellers/>

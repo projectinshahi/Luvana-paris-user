@@ -86,8 +86,11 @@
 //   );
 // }
 
+"use client";
+
 import Image from "next/image";
 import { Charm } from "next/font/google";
+import { useTranslation } from "react-i18next";
 
 const charm = Charm({
   subsets: ["latin"],
@@ -95,6 +98,9 @@ const charm = Charm({
 });
 
 export default function ExploreBrandsSection() {
+  const { t, i18n } = useTranslation('common');
+  const isRTL = i18n.language === 'ar';
+
   return (
     <section className="relative w-full overflow-hidden bg-black" style={{ height: '682px' }}>
       {/* BACKGROUND IMAGE */}
@@ -109,23 +115,23 @@ export default function ExploreBrandsSection() {
       {/* DARK OVERLAY */}
       <div className="absolute inset-0 bg-black/30" />
 
-      {/* TOP RIGHT TEXT */}
-      <div className="absolute top-10 right-10 text-right" style={{ maxWidth: '475px' }}>
-        <h2 className="font-normal text-[#C5A059] text-[50px] leading-none tracking-[0] mb-2 font-['Cactus_Classical_Serif',serif]">
-          EXPLORE BRANDS
+      {/* TOP TEXT */}
+      <div className={`absolute top-10 ${isRTL ? 'left-10 text-left' : 'right-10 text-right'}`} style={{ maxWidth: '475px' }}>
+        <h2 className={`font-normal text-[#C5A059] text-[50px] leading-none tracking-[0] mb-2 font-['Cactus_Classical_Serif',serif] ${isRTL ? 'font-arabic' : ''}`}>
+          {t('exploreBrands')}
         </h2>
 
         <p
-          className={`${charm.className} font-normal text-[#C5A059] text-[32px] leading-none tracking-[0]`}
+          className={`${charm.className} font-normal text-[#C5A059] text-[32px] leading-none tracking-[0] ${isRTL ? 'font-arabic' : ''}`}
         >
-          luxury favorites
+          {t('brands.luxuryFavorites')}
         </p>
       </div>
 
-      {/* BOTTOM RIGHT BUTTON */}
-      <div className="absolute bottom-10 right-10">
-        <button className="rounded-[25px] bg-linear-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] text-black font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300 active:scale-95" style={{ width: '185px', height: '69px' }}>
-          Shop now
+      {/* BOTTOM BUTTON */}
+      <div className={`absolute bottom-10 ${isRTL ? 'left-10' : 'right-10'}`}>
+        <button className={`rounded-[25px] bg-linear-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] text-black font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300 active:scale-95 ${isRTL ? 'font-arabic' : ''}`} style={{ width: '185px', height: '69px' }}>
+          {t('brands.shopNow')}
         </button>
       </div>
 

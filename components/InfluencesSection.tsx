@@ -143,37 +143,47 @@
 //   );
 // }
 
-import Image from "next/image";
+"use client";
 
-const influencers = [
-  {
-    img: "/images/v1.jpg",
-    text: "From simple skincare to spa-level luxury explore brands you trust",
-  },
-  {
-    img: "/images/v2.jpg",
-    text: "explore hair care from brands you love Discover the best in hair care",
-  },
-  {
-    img: "/images/v3.png",
-    text: "Quality fragrances at every price point",
-  },
-];
+import Image from "next/image";
+import { useTranslation } from "react-i18next";
 
 export default function InfluencersSection() {
+  const { t, i18n } = useTranslation('common');
+  const isRTL = i18n.language === 'ar';
+
+  const influencers = [
+    {
+      img: "/images/v1.jpg",
+      textKey: "influencers.skincare",
+    },
+    {
+      img: "/images/v2.jpg",
+      textKey: "influencers.haircare",
+    },
+    {
+      img: "/images/v3.png",
+      textKey: "influencers.fragrance",
+    },
+    {
+      img: "/images/inf4.jpg",
+      textKey: "influencers.fragrance",
+    },
+  ];
+
   return (
     <section className="relative w-full py-16 md:py-24 bg-black">
       <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-10">
 
         {/* HEADER */}
-        <div className="flex justify-center mb-12 md:mb-16">
-          <div className="flex items-center gap-6 md:gap-10">
-            <div className="text-center [font-family:var(--font-cactus-serif)]">
+        <div className={`flex justify-center mb-12 md:mb-16 ${isRTL ? 'flex-row-reverse' : ''}`}>
+          <div className={`flex items-center gap-6 md:gap-10 ${isRTL ? 'flex-row-reverse' : ''}`}>
+            <div className={`text-center [font-family:var(--font-cactus-serif)] ${isRTL ? 'font-arabic' : ''}`}>
               <h2 className="text-[#C5A059] text-2xl md:text-3xl leading-tight">
-                Influencers
+                {t('influencers.title')}
               </h2>
               <p className="text-[#C5A059]/80 text-xs md:text-sm mt-1">
-                Scrolls
+                {t('influencers.subtitle')}
               </p>
             </div>
 
@@ -182,7 +192,7 @@ export default function InfluencersSection() {
         </div>
 
         {/* IMAGES ROW */}
-        <div className="flex flex-col md:flex-row justify-center items-stretch gap-6 md:gap-8 lg:gap-12">
+        <div className={`flex flex-col md:flex-row justify-center items-stretch gap-6 md:gap-8 lg:gap-12 ${isRTL ? 'md:flex-row-reverse' : ''}`}>
           {influencers.map((item, i) => (
             <div key={i} className="text-center flex flex-col items-center">
               {/* RESPONSIVE IMAGE */}
@@ -196,8 +206,8 @@ export default function InfluencersSection() {
               </div>
 
               {/* TEXT */}
-              <p className="mt-4 md:mt-6 text-[#C5A059] text-xs md:text-sm leading-relaxed max-w-xs md:max-w-sm">
-                {item.text}
+              <p className={`mt-4 md:mt-6 text-[#C5A059] text-xs md:text-sm leading-relaxed max-w-xs md:max-w-sm ${isRTL ? 'text-right font-arabic' : 'text-left'}`}>
+                {t(item.textKey)}
               </p>
             </div>
           ))}

@@ -1,0 +1,99 @@
+{
+  "search": "Rechercher",
+  "buy": "Acheter",
+  "off": "REMISE",
+  "bestSellers": "Meilleures Ventes",
+  "exploreBrands": "Explorer les Marques",
+  "shop": "Boutique",
+  "about": "À Propos",
+  "contact": "Contact",
+  "cart": "Panier",
+  "wishlist": "Liste de Souhaits",
+  "account": "Compte",
+  "home": "Accueil",
+  "footerText": "© 2024 Luvana. Tous droits réservés.",
+  
+  "navbar": {
+    "topOffer": "Achetez pour ₹999 et profitez de 25% de REMISE!",
+    "logo": "LOGO"
+  },
+  
+  "hero": {
+    "chooseGlow": "CHOISISSEZ VOTRE ÉCLAT",
+    "shineHere": "ICI POUR BRILLER",
+    "shineConfidence": "BRILLEZ AVEC CONFIANCE",
+    "feelGlamour": "RESSENTEZ LE GLAMOUR",
+    "luxuryLifestyle": "Le luxe fait pour son style de vie",
+    "luxuryDefines": "Parce que le luxe vous définit",
+    "styleBeauty": "Style qui parle beauté"
+  },
+  
+  "categories": {
+    "new": "Nouveau",
+    "brands": "Marques",
+    "makeup": "Maquillage",
+    "skincare": "Soins de la peau",
+    "haircare": "Soins capillaires",
+    "fragrance": "Parfum",
+    "bodycare": "Soins du corps",
+    "toolsBrushes": "Outils et Pinceaux"
+  },
+  
+  "products": {
+    "addToCart": "Ajouter au panier",
+    "niacinamideSerum": "Sérum Niacinamide The Ordinary + Combo Acide Salicylique",
+    "wildCherry": "Cerise Sauvage - Rouge à Lèvres Mat Luxe, Rose Cerise",
+    "cherryBomb": "Bombe Cerise - Rouge à Lèvres Mat Luxe, Rouge",
+    "confidence": "Confidence by Lush - Parfum EDT pour Femmes"
+  },
+  
+  "brands": {
+    "premiumBrands": "Marques Premium",
+    "shopTrusted": "Achetez auprès des marques de beauté les plus fiables au monde",
+    "luxuryFavorites": "favoris de luxe",
+    "shopNow": "Acheter maintenant"
+  },
+  
+  "exploreMore": {
+    "title": "Explorer plus",
+    "subtitle": "Continuez à explorer pour plus de surprises!",
+    "makeupDesc": "Des essentiels quotidiens à l'indulgence luxueuse, trouvez votre match parfait",
+    "skincareDesc": "Des soins simples au luxe niveau spa, explorez les marques en qui vous avez confiance",
+    "fragranceDesc": "Parfums de qualité à tous les prix",
+    "haircareDesc": "Explorez les soins capillaires des marques que vous aimez. Découvrez le meilleur des soins capillaires"
+  },
+  
+  "influencers": {
+    "title": "Influenceurs",
+    "subtitle": "Défilements",
+    "skincare": "Des soins simples au luxe niveau spa, explorez les marques en qui vous avez confiance",
+    "haircare": "explorez les soins capillaires des marques que vous aimez. Découvrez le meilleur des soins capillaires",
+    "fragrance": "Parfums de qualité à tous les prix"
+  },
+  
+  "footer": {
+    "companyName": "LUVANA",
+    "description": "Votre destination de confiance pour les produits de beauté premium du monde entier.",
+    "email": "support@luvana.com",
+    "phone": "+91 1800 123 456",
+    "address": "New Delhi, Inde",
+    "quickLinks": "Liens Rapides",
+    "aboutUs": "À Propos",
+    "blog": "Blog",
+    "customerCare": "Service Client",
+    "shippingInfo": "Info Livraison",
+    "returns": "Retours",
+    "faq": "FAQ",
+    "trackOrder": "Suivre Commande",
+    "support": "Support",
+    "followUs": "Suivez-nous",
+    "weAccept": "Nous Acceptons",
+    "visa": "Visa",
+    "mastercard": "Mastercard",
+    "upi": "UPI",
+    "allRightsReserved": "© 2024 LUVANA. Tous droits réservés.",
+    "privacyPolicy": "Politique de Confidentialité",
+    "termsOfService": "Conditions de Service",
+    "cookieSettings": "Paramètres des Cookies"
+  }
+}
