@@ -228,7 +228,7 @@ export default function ImageSection() {
   const currentSlide = slides[current];
 
   return (
-    <section className="relative w-full h-[100vh] sm:h-[80vh] md:h-[85vh] lg:h-[90vh] overflow-hidden">
+    <section className="relative w-full h-screen sm:h-[80vh] md:h-[85vh] lg:h-[90vh] overflow-hidden">
       {/* IMAGE */}
       <Image
         src={currentSlide.image}
@@ -248,7 +248,7 @@ export default function ImageSection() {
             isRTL ? "justify-end text-right" : "justify-start text-left"}
         `}
       >
-        <div className="w-full max-w-[95%] sm:max-w-[85%] md:max-w-[700px]">
+        <div className="w-full max-w-[95%] sm:max-w-[85%] md:max-w-175">
           <h1
             className={`
               ${libreBodoni.className}

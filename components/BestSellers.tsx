@@ -67,10 +67,10 @@ export default function BestSellers() {
               className="w-full bg-[#111] rounded-lg overflow-hidden hover:scale-[1.02] transition-transform duration-300"
             >
        
-              <div className="group relative w-full aspect-[3/4] bg-gradient-to-b from-[#E3C6A8] to-[#5F4D2B] p-0.5 sm:p-1">
+              <div className="group relative w-full aspect-3/4 bg-linear-to-b from-[#E3C6A8] to-[#5F4D2B] p-0.5 sm:p-1">
 
                 <div className="relative w-full h-full bg-[#D9D9D9] overflow-hidden rounded-sm">
-                  <button className={`absolute top-2 sm:top-3 ${isRTL ? 'left-2 sm:left-3' : 'right-2 sm:right-3'} z-10 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] border border-[#8C6B1F] flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-all duration-300 ease-out scale-90 group-hover:scale-100`}>
+                  <button className={`absolute top-2 sm:top-3 ${isRTL ? 'left-2 sm:left-3' : 'right-2 sm:right-3'} z-10 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-linear-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] border border-[#8C6B1F] flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-all duration-300 ease-out scale-90 group-hover:scale-100`}>
                     <Heart className="w-3 h-3 sm:w-4 sm:h-4 text-black" />
                   </button>
 
@@ -83,7 +83,7 @@ export default function BestSellers() {
                   />
 
                   {/* Add to cart button - Mobile optimized */}
-                  <button className={`absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 w-[90%] sm:w-full max-w-60 h-8 sm:h-10 md:h-12 rounded-[8px] sm:rounded-[12px] bg-gradient-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] text-black text-[10px] sm:text-xs md:text-sm font-medium border border-[#8C6B1F] opacity-0 group-hover:opacity-100 transition-all duration-300 ease-out translate-y-2 group-hover:translate-y-0 shadow-[inset_0_1px_0_#ffffff80] ${isRTL ? 'font-arabic' : ''}`}>
+                  <button className={`absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 w-[90%] sm:w-full max-w-60 h-8 sm:h-10 md:h-12 rounded-lg sm:rounded-xl bg-linear-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] text-black text-[10px] sm:text-xs md:text-sm font-medium border border-[#8C6B1F] opacity-0 group-hover:opacity-100 transition-all duration-300 ease-out translate-y-2 group-hover:translate-y-0 shadow-[inset_0_1px_0_#ffffff80] ${isRTL ? 'font-arabic' : ''}`}>
                     {t('products.addToCart')}
                   </button>
 
