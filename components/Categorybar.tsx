@@ -1,50 +1,9 @@
-// "use client";
-
-// import { useState } from "react";
-
-// const categories = [
-//   "New",
-//   "Brands",
-//   "Makeup",
-//   "Skin care",
-//   "Hair care",
-//   "Fragrance",
-//   "Body care",
-//   "Tools & Brushes",
-// ];
-
-// export default function CategoryBar() {
-//   const [active, setActive] = useState<string>("New");
-
-//   return (
-//     <div className="w-full bg-black py-2">
-//       <div className="max-w-[1728px] mx-auto px-6">
-//         <div className="flex items-center gap-8 border border-[#1E90FF] px-6 py-2">
-//           {categories.map((item) => (
-//             <button
-//               key={item}
-//               onClick={() => setActive(item)}
-//               className={`text-sm md:text-base font-medium transition
-//                 ${
-//                   active === item
-//                     ? "text-[#C9A24D] border border-[#C9A24D] px-4 py-1 rounded"
-//                     : "text-white hover:text-[#C9A24D]"
-//                 }
-//               `}
-//             >
-//               {item}
-//             </button>
-//           ))}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
 "use client";
 
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useRouter } from "next/navigation";
+
 
 type Brand = {
   name: string;
@@ -62,6 +21,7 @@ export default function CategoryBar() {
   const [openSub, setOpenSub] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<string>("New");
   const isRTL = i18n.language === 'ar';
+  const router = useRouter();
 
   const menu: MenuItem[] = [
     {
@@ -81,9 +41,11 @@ export default function CategoryBar() {
   ];
 
   return (
-    <div className="w-full bg-black py-2 sm:py-4 relative z-10">
-      {/* DESKTOP MENU */}
-      <div className={`hidden md:flex justify-center gap-4 lg:gap-8 text-white px-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
+    // <div className="w-full bg-black py-2 sm:py-4 relative z-10">
+    <div className="hidden md:block w-full bg-black py-4 relative z-10">
+
+      {/* DESKTOP MENU - ONLY visible on desktop screens (hidden on mobile) */}
+      <div className={`hidden sm:flex justify-center gap-4 lg:gap-8 text-white px-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
         {menu.map((item) => (
           <div
             key={item.name}
@@ -96,7 +58,18 @@ export default function CategoryBar() {
           >
             {/* TOP ITEM */}
             <button
-              onClick={() => setSelectedItem(item.name)}
+              // onClick={() => setSelectedItem(item.name);
+                
+              // }
+              onClick={() => {
+  setSelectedItem(item.name);
+
+  if (item.name === t("categories.brands")) {
+    router.push("/brands");
+  }
+}}
+
+              
               className={`px-3 lg:px-6 py-2 rounded-full text-xs lg:text-sm font-medium transition duration-300 ${isRTL ? 'font-arabic' : ''}
                 ${
                   selectedItem === item.name
@@ -110,7 +83,12 @@ export default function CategoryBar() {
 
             {/* FIRST DROPDOWN */}
             {item.brands && openMenu === item.name && (
-              <div className={`absolute top-full mt-2 ${isRTL ? 'right-1/2 translate-x-1/2' : 'left-1/2 -translate-x-1/2'} bg-[#1a1a1a] border border-[#C9A24D] text-white rounded-lg shadow-xl min-w-[200px] lg:min-w-[240px] z-20`}>
+              <div className={`absolute top-full mt-2 ${
+  isRTL
+    ? "right-1/2 translate-x-1/2"
+    : "left-1/2 -translate-x-1/2"
+} bg-[#1a1a1a] border border-[#C9A24D] text-white rounded-lg shadow-xl min-w-50 lg:min-w-60 z-20`}
+>
                 {item.brands.map((brand) => (
                   <div
                     key={brand.name}
@@ -122,7 +100,7 @@ export default function CategoryBar() {
 
                     {/* SUB DROPDOWN */}
                     {brand.sub && openSub === brand.name && (
-                      <div className={`absolute top-0 ${isRTL ? 'right-full mr-2' : 'left-full ml-2'} bg-[#1a1a1a] border border-[#C9A24D] rounded-lg shadow-xl min-w-[180px] lg:min-w-[220px] z-30`}>
+                      <div className={`absolute top-0 ${isRTL ? 'right-full mr-2' : 'left-full ml-2'} bg-[#1a1a1a] border border-[#C9A24D] rounded-lg shadow-xl min-w-45 lg:min-w-55 z-30`}>
                         {brand.sub.map((sub) => (
                           <div
                             key={sub}
@@ -141,26 +119,8 @@ export default function CategoryBar() {
         ))}
       </div>
 
-      {/* MOBILE MENU */}
-      <div className="md:hidden px-4">
-        <div className="flex overflow-x-auto gap-3 pb-2 scrollbar-hide">
-          {menu.map((item) => (
-            <button
-              key={item.name}
-              onClick={() => setSelectedItem(item.name)}
-              className={`flex-shrink-0 px-4 py-2 rounded-full text-xs font-medium transition duration-300 whitespace-nowrap ${isRTL ? 'font-arabic' : ''}
-                ${
-                  selectedItem === item.name
-                    ? "text-[#C9A24D] border border-[#C9A24D] bg-[#1a1a1a]"
-                    : "text-white hover:text-[#C9A24D] border border-transparent"
-                }
-              `}
-            >
-              {item.name}
-            </button>
-          ))}
-        </div>
-      </div>
+      {/* MOBILE MENU - Completely hidden on mobile */}
+      {/* Categories are accessed through the mobile hamburger menu instead */}
     </div>
   );
 }

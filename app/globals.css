@@ -700,7 +700,7 @@ html, body {
   input[type="text"], 
   input[type="search"] {
     font-size: 16px !important; /* Prevents zoom on iOS */
-    -webkit-appearance: none;
+  
     -webkit-border-radius: 0;
     border-radius: 0;
   }
@@ -825,6 +825,23 @@ html, body {
   .mobile-search-input input::placeholder {
     color: rgba(229, 231, 235, 0.8) !important;
     opacity: 1;
+  }
+}
+
+/* Force hide mobile elements on desktop */
+@media (min-width: 640px) {
+  .mobile-only,
+  .mobile-header,
+  .mobile-menu-wrapper,
+  .mobile-hamburger {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+  
+  /* Ensure sm:hidden works properly */
+  .sm\:hidden {
+    display: none !important;
   }
 }
 

@@ -41,7 +41,7 @@ export default function SettingsOverlay({ isOpen, onClose }: SettingsOverlayProp
       />
       
       {/* Settings Panel */}
-      <div className={`fixed top-20 ${isRTL ? 'left-4' : 'right-4'} w-80 bg-white/95 backdrop-blur-sm rounded-lg shadow-xl z-50 overflow-hidden`}>
+      <div className="fixed top-16 right-4 w-80 bg-white/95 backdrop-blur-sm rounded-lg shadow-xl z-50 overflow-hidden" dir={isRTL ? 'rtl' : 'ltr'}>
         
         {/* Country Section */}
         <div className="border-b border-gray-200">
@@ -49,10 +49,10 @@ export default function SettingsOverlay({ isOpen, onClose }: SettingsOverlayProp
             onClick={() => setShowCountryList(!showCountryList)}
             className={`w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors ${isRTL ? 'flex-row-reverse' : ''}`}
           >
-            <span className={`text-gray-700 font-medium ${isRTL ? 'font-arabic' : ''}`}>Country</span>
+            <span className={`text-gray-700 font-medium ${isRTL ? 'text-right' : 'text-left'}`}>Country</span>
             <ChevronRight 
               size={16} 
-              className={`text-gray-400 transition-transform ${showCountryList ? 'rotate-90' : ''} ${isRTL ? 'rotate-180' : ''}`} 
+              className={`text-gray-400 transition-transform shrink-0 ${showCountryList ? 'rotate-90' : ''} ${isRTL ? '-scale-x-100' : ''}`} 
             />
           </button>
           
@@ -62,9 +62,9 @@ export default function SettingsOverlay({ isOpen, onClose }: SettingsOverlayProp
                 <button
                   key={country.code}
                   onClick={() => handleCountrySelect(country)}
-                  className={`w-full p-3 text-left hover:bg-white transition-colors border-b border-gray-100 last:border-b-0 ${
+                  className={`w-full p-3 hover:bg-white transition-colors border-b border-gray-100 last:border-b-0 ${
                     selectedCountry.code === country.code ? 'bg-blue-50 text-blue-600' : 'text-gray-700'
-                  } ${isRTL ? 'text-right font-arabic' : ''}`}
+                  } ${isRTL ? 'text-right' : 'text-left'}`}
                 >
                   {country.name}
                 </button>
@@ -79,10 +79,10 @@ export default function SettingsOverlay({ isOpen, onClose }: SettingsOverlayProp
             onClick={() => setShowLanguageList(!showLanguageList)}
             className={`w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors ${isRTL ? 'flex-row-reverse' : ''}`}
           >
-            <span className={`text-gray-700 font-medium ${isRTL ? 'font-arabic' : ''}`}>Language</span>
+            <span className={`text-gray-700 font-medium ${isRTL ? 'text-right' : 'text-left'}`}>Language</span>
             <ChevronRight 
               size={16} 
-              className={`text-gray-400 transition-transform ${showLanguageList ? 'rotate-90' : ''} ${isRTL ? 'rotate-180' : ''}`} 
+              className={`text-gray-400 transition-transform shrink-0 ${showLanguageList ? 'rotate-90' : ''} ${isRTL ? '-scale-x-100' : ''}`} 
             />
           </button>
           
@@ -92,9 +92,9 @@ export default function SettingsOverlay({ isOpen, onClose }: SettingsOverlayProp
                 <button
                   key={lang.code}
                   onClick={() => handleLanguageSelect(lang.code)}
-                  className={`w-full p-3 text-left hover:bg-white transition-colors border-b border-gray-100 last:border-b-0 flex items-center gap-3 ${
+                  className={`w-full p-3 hover:bg-white transition-colors border-b border-gray-100 last:border-b-0 flex items-center gap-3 ${
                     currentLang.code === lang.code ? 'bg-blue-50 text-blue-600' : 'text-gray-700'
-                  } ${isRTL ? 'text-right flex-row-reverse font-arabic' : ''}`}
+                  } ${isRTL ? 'text-right flex-row-reverse' : 'text-left'}`}
                 >
                   <img
                     src={lang.flag}
