@@ -95,5 +95,73 @@
     "privacyPolicy": "Privacy Policy",
     "termsOfService": "Terms of Service",
     "cookieSettings": "Cookie Settings"
+  },
+  
+  "brandsPage": {
+    "allCollection": "All Collection",
+    "filterByPrice": "Filter by Price",
+    "resetFilters": "Reset Filters",
+    "categories": "Categories",
+    "filterByAge": "Filter by Age",
+    "searchProducts": "Search products",
+    "default": "Default",
+    "priceLowToHigh": "Price: Low to High",
+    "priceHighToLow": "Price: High to Low",
+    "nameAtoZ": "Name: A to Z",
+    "showing": "Showing",
+    "of": "of",
+    "results": "results",
+    "customize": "Customize",
+    "addToCart": "Add to Cart",
+    "noProducts": "No products found matching your filters.",
+    "customizedProducts": "Customized Products",
+    "fetchToys": "Fetch Toys",
+    "storyBooks": "Story Books",
+    "age0to6": "0 - 6 years",
+    "age7to11": "7 - 11 years",
+    "age12to18": "12 - 18 years"
+  },
+  
+  "productDetail": {
+    "reviews": "Reviews",
+    "off": "OFF",
+    "colors": "Colors",
+    "addToCart": "Add to Cart",
+    "productDetails": "Product Details",
+    "ingredients": "Ingredients",
+    "howToUse": "How To Use",
+    "youMayAlsoLike": "You may also like",
+    "quantity": "Quantity",
+    "product": {
+      "name": "Luxe Matte Lipstick",
+      "subtitle": "Blackberry - Luxe Matte Lipstick, Berry Pink",
+      "brand": "LUVANA",
+      "description": "Highly pigmented and incredibly long-lasting matte finish that stays put for hours without drying out your lips. Enriched with nourishing ingredients.",
+      "detail1": "Comfortable formula that doesn't dry out lips",
+      "detail2": "Highly pigmented for full coverage in just one swipe",
+      "detail3": "Long-lasting wear that stays put for hours",
+      "detail4": "Enriched with Vitamin E and natural oils",
+      "detail5": "Cruelty-free and vegan formula",
+      "ingredients": "Dimethicone, Bis-Diglyceryl Polyacyladipate-2, Diisostearyl Malate...",
+      "howToUse": "Apply directly to clean, dry lips. Start from the center and work outward for even coverage.",
+      "related1": "Luxe Matte Lipstick - Nude Collection",
+      "related2": "Matte Finish Foundation",
+      "related3": "Velvet Touch Lipstick",
+      "related4": "Lip Gloss - Shine Collection"
+    }
+  },
+  
+  "cart": {
+    "yourCart": "Your Cart",
+    "shopOrder": "Shop order",
+    "items": "items",
+    "off": "OFF",
+    "remove": "Remove",
+    "payment": "Payment",
+    "total": "Total",
+    "discount": "Discount",
+    "shipping": "Shipping",
+    "free": "Free",
+    "buyNow": "Buy now"
   }
 }

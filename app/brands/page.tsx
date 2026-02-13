@@ -885,6 +885,8 @@
 
 import { useState, useMemo } from "react";
 import { ShoppingCart, Home, X, Heart } from "lucide-react";
+import { useRouter } from "next/navigation";
+
 
 interface Product {
   id: number;
@@ -903,6 +905,8 @@ export default function BrandsPage() {
   const [sortBy, setSortBy] = useState("default");
   const [searchQuery, setSearchQuery] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const router = useRouter();
+
 
   /* ================= PRODUCTS ================= */
   const products: Product[] = [
@@ -1119,6 +1123,7 @@ export default function BrandsPage() {
             {filteredProducts.map((product) => (
               <div
                 key={product.id}
+                 onClick={() => router.push(`/brands/${product.id}`)}
                 className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-lg overflow-hidden flex flex-col"
               >
                 {/* Image */}

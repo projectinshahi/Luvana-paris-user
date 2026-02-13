@@ -95,5 +95,73 @@
     "privacyPolicy": "Politique de Confidentialité",
     "termsOfService": "Conditions de Service",
     "cookieSettings": "Paramètres des Cookies"
+  },
+  
+  "brandsPage": {
+    "allCollection": "Toute la Collection",
+    "filterByPrice": "Filtrer par Prix",
+    "resetFilters": "Réinitialiser les Filtres",
+    "categories": "Catégories",
+    "filterByAge": "Filtrer par Âge",
+    "searchProducts": "Rechercher des produits",
+    "default": "Par défaut",
+    "priceLowToHigh": "Prix: Croissant",
+    "priceHighToLow": "Prix: Décroissant",
+    "nameAtoZ": "Nom: A à Z",
+    "showing": "Affichage",
+    "of": "sur",
+    "results": "résultats",
+    "customize": "Personnaliser",
+    "addToCart": "Ajouter au Panier",
+    "noProducts": "Aucun produit trouvé correspondant à vos filtres.",
+    "customizedProducts": "Produits Personnalisés",
+    "fetchToys": "Jouets à Rapporter",
+    "storyBooks": "Livres d'Histoires",
+    "age0to6": "0 - 6 ans",
+    "age7to11": "7 - 11 ans",
+    "age12to18": "12 - 18 ans"
+  },
+  
+  "productDetail": {
+    "reviews": "Avis",
+    "off": "RÉDUCTION",
+    "colors": "Couleurs",
+    "addToCart": "Ajouter au Panier",
+    "productDetails": "Détails du Produit",
+    "ingredients": "Ingrédients",
+    "howToUse": "Mode d'Emploi",
+    "youMayAlsoLike": "Vous aimerez aussi",
+    "quantity": "Quantité",
+    "product": {
+      "name": "Rouge à Lèvres Mat Luxe",
+      "subtitle": "Mûre - Rouge à Lèvres Mat Luxe, Rose Baie",
+      "brand": "LUVANA",
+      "description": "Finition mate hautement pigmentée et incroyablement longue durée qui reste en place pendant des heures sans dessécher vos lèvres. Enrichi d'ingrédients nourrissants.",
+      "detail1": "Formule confortable qui ne dessèche pas les lèvres",
+      "detail2": "Hautement pigmenté pour une couverture complète en un seul passage",
+      "detail3": "Tenue longue durée qui reste en place pendant des heures",
+      "detail4": "Enrichi en vitamine E et huiles naturelles",
+      "detail5": "Formule sans cruauté et végétalienne",
+      "ingredients": "Diméthicone, Bis-Diglycéryl Polyacyladipate-2, Diisostéaryl Malate...",
+      "howToUse": "Appliquer directement sur les lèvres propres et sèches. Commencez par le centre et travaillez vers l'extérieur pour une couverture uniforme.",
+      "related1": "Rouge à Lèvres Mat Luxe - Collection Nude",
+      "related2": "Fond de Teint Finition Mate",
+      "related3": "Rouge à Lèvres Toucher Velouté",
+      "related4": "Gloss à Lèvres - Collection Brillance"
+    }
+  },
+  
+  "cart": {
+    "yourCart": "Votre Panier",
+    "shopOrder": "Commande boutique",
+    "items": "articles",
+    "off": "RÉDUCTION",
+    "remove": "Retirer",
+    "payment": "Paiement",
+    "total": "Total",
+    "discount": "Remise",
+    "shipping": "Livraison",
+    "free": "Gratuit",
+    "buyNow": "Acheter maintenant"
   }
 }
