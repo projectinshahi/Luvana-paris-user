@@ -39,6 +39,16 @@ export default function CategoryBar() {
     { name: t('categories.bodycare') },
     { name: t('categories.toolsBrushes') },
   ];
+  const routeMap: Record<string, string> = {
+  [t("categories.brands")]: "/brands",
+  [t("categories.makeup")]: "/makeup",
+  [t("categories.skincare")]: "/skincare",
+  [t("categories.haircare")]: "/haircare",
+  [t("categories.fragrance")]: "/fragrance",
+  [t("categories.bodycare")]: "/bodycare",
+  [t("categories.toolsBrushes")]: "/tools-brushes",
+};
+
 
   return (
     // <div className="w-full bg-black py-2 sm:py-4 relative z-10">
@@ -61,11 +71,19 @@ export default function CategoryBar() {
               // onClick={() => setSelectedItem(item.name);
                 
               // }
-              onClick={() => {
+//               onClick={() => {
+//   setSelectedItem(item.name);
+
+//   if (item.name === t("categories.brands")) {
+//     router.push("/brands");
+//   }
+// }}
+onClick={() => {
   setSelectedItem(item.name);
 
-  if (item.name === t("categories.brands")) {
-    router.push("/brands");
+  const route = routeMap[item.name];
+  if (route) {
+    router.push(route);
   }
 }}
 

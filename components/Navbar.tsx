@@ -11,12 +11,16 @@ import LoginModal from "@/components/LoginModal";
 
 import SettingsOverlay from "@/components/SettingsOverlay";
 import { useLanguage } from "@/lib/useLanguage";
+import CartSidebar from "./CartSidebar";
+import WishlistSidebar from "./WishlistSidebar";
 
 export default function   Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
+  const [showCart, setShowCart] = useState(false);
+  const [showWishlist, setShowWishlist] = useState(false);
 
   const { t, ready } = useTranslation("common");
   const { isRTL } = useLanguage();
@@ -72,13 +76,13 @@ export default function   Navbar() {
 
           {/* Right Section - Icons */}
           <div className="flex items-center gap-0.5 sm:gap-1.5 md:gap-2 flex-no-reverse shrink-0" style={{ order: 3 }}>
-            <button className="p-1 sm:p-1.5 hover:bg-gray-700 rounded transition-colors">
+            <button className="p-1 sm:p-1.5 hover:bg-gray-700 rounded transition-colors" onClick={() => setShowWishlist(true)}>
               <Heart size={14} className="sm:size-4" />
             </button>
             <button className="p-1 sm:p-1.5 hover:bg-gray-700 rounded transition-colors">
               <User  size={14}  className="sm:size-4" onClick={() => setShowLogin(true)} />
             </button>
-            <button className="p-1 sm:p-1.5 hover:bg-gray-700 rounded transition-colors">
+            <button className="p-1 sm:p-1.5 hover:bg-gray-700 rounded transition-colors" onClick={() => setShowCart(true)}>
               <ShoppingCart size={14} className="sm:size-4" />
             </button>
             <button className="p-1 sm:p-1.5 hover:bg-gray-700 rounded transition-colors ml-0.5">
@@ -93,10 +97,10 @@ export default function   Navbar() {
           <button className="p-3 rounded-lg hover:bg-gray-800 transition-colors text-yellow-400 bg-gray-800">
             <Home size={20} />
           </button>
-          <button className="p-3 rounded-lg hover:bg-gray-800 transition-colors hover:text-red-500">
+          <button className="p-3 rounded-lg hover:bg-gray-800 transition-colors hover:text-red-500" onClick={() => setShowWishlist(true)}>
             <Heart size={20} />
           </button>
-          <button className="p-3 rounded-lg hover:bg-gray-800 transition-colors">
+          <button className="p-3 rounded-lg hover:bg-gray-800 transition-colors" onClick={() => setShowCart(true)}>
             <ShoppingCart size={20} />
           </button>
           <button className="p-3 rounded-lg hover:bg-gray-800 transition-colors">
@@ -165,7 +169,7 @@ export default function   Navbar() {
 
           {/* Right Section - Icons */}
           <div className="flex items-center gap-0.5 sm:gap-1.5 md:gap-2 flex-no-reverse shrink-0" style={{ order: 3 }}>
-            <button className="p-1 sm:p-1.5 hover:bg-gray-700 rounded transition-colors">
+            <button className="p-1 sm:p-1.5 hover:bg-gray-700 rounded transition-colors" onClick={() => setShowWishlist(true)}>
               <Heart
                 className="cursor-pointer hover:text-red-500 transition-colors"
                 size={14}
@@ -174,7 +178,7 @@ export default function   Navbar() {
             <button className="p-1 sm:p-1.5 hover:bg-gray-700 rounded transition-colors">
               <User className="cursor-pointer hover:text-gray-300 transition-colors" size={14} onClick={() => setShowLogin(true)} />
             </button>
-            <button className="p-1 sm:p-1.5 hover:bg-gray-700 rounded transition-colors">
+            <button className="p-1 sm:p-1.5 hover:bg-gray-700 rounded transition-colors" onClick={() => setShowCart(true)}>
               <ShoppingCart className="cursor-pointer hover:text-gray-300 transition-colors" size={14} />
             </button>
             
@@ -193,12 +197,32 @@ export default function   Navbar() {
         <button className="p-3 rounded-lg hover:bg-gray-800 transition-colors text-yellow-400 bg-gray-800">
           <Home size={20} />
         </button>
-        <button className="p-3 rounded-lg hover:bg-gray-800 transition-colors hover:text-red-500">
+        <button className="p-3 rounded-lg hover:bg-gray-800 transition-colors hover:text-red-500" onClick={() => setShowWishlist(true)}>
           <Heart size={20} />
         </button>
-        <button className="p-3 rounded-lg hover:bg-gray-800 transition-colors">
-          <ShoppingCart size={20} />
-        </button>
+        {/* <button className="p-3 rounded-lg hover:bg-gray-800 transition-colors">
+          <ShoppingCart size={20} onClick={() => setShowCart(true)}/>
+        </button> */}
+        {/* <button
+  className="p-1 sm:p-1.5 hover:bg-gray-700 rounded transition-colors"
+  onClick={() => setShowCart(true)}
+>
+  <ShoppingCart
+    className="cursor-pointer hover:text-gray-300 transition-colors"
+    size={14}
+  />
+</button> */}
+<button
+  className="p-1 sm:p-1.5 hover:bg-gray-700 rounded transition-colors"
+  onClick={() => setShowCart(true)}
+>
+  <ShoppingCart
+    size={14}
+    className="cursor-pointer hover:text-gray-300"
+  />
+</button>
+
+
         <button className="p-3 rounded-lg hover:bg-gray-800 transition-colors">
           <Search size={20} />
         </button>
@@ -216,7 +240,14 @@ export default function   Navbar() {
   isOpen={showLogin} 
   onClose={() => setShowLogin(false)} 
 />
-
+<CartSidebar
+      isOpen={showCart}
+      onClose={() => setShowCart(false)}
+    />
+<WishlistSidebar
+      isOpen={showWishlist}
+      onClose={() => setShowWishlist(false)}
+    />
       {/* Mobile Menu */}
       <MobileMenu 
         isOpen={mobileMenuOpen} 
