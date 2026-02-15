@@ -21,9 +21,37 @@ export default function   Navbar() {
   const [showLogin, setShowLogin] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const [showWishlist, setShowWishlist] = useState(false);
+const [animate, setAnimate] = useState(true);
 
   const { t, ready } = useTranslation("common");
   const { isRTL } = useLanguage();
+  const offers = t("navbar.offers", {
+  returnObjects: true,
+}) as string[];
+
+const [offerIndex, setOfferIndex] = useState(0);
+// useEffect(() => {
+//   const interval = setInterval(() => {
+//     setOfferIndex((prev) => (prev + 1) % offers.length);
+//   }, 5000);
+
+//   return () => clearInterval(interval);
+// }, [offers.length]);
+useEffect(() => {
+  if (!offers || offers.length === 0) return;
+
+  const interval = setInterval(() => {
+    setAnimate(false);
+
+    setTimeout(() => {
+      setOfferIndex((prev) => (prev + 1) % offers.length);
+      setAnimate(true);
+    }, 300); // animation sync
+  }, 5000);
+
+  return () => clearInterval(interval);
+}, [offers]);
+
 
   // Prevent hydration mismatch by only rendering after mount
   useEffect(() => {
@@ -36,7 +64,15 @@ export default function   Navbar() {
       <>
         {/* Top Offer Bar */}
         <div className="fixed top-0 left-0 right-0 bg-[#0A0A0A] text-white text-center text-xs sm:text-sm py-1.5 sm:py-2 z-90">
-          <span className="block text-[10px] sm:text-xs">Buy for ₹999 and enjoy a cool 25% OFF!</span>
+          {/* <span className="block text-[10px] sm:text-xs">  {offers[offerIndex]}</span> */}
+          <span
+  className={`block text-[10px] sm:text-xs transition-all duration-300 ease-in-out
+    ${animate ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}
+  `}
+>
+  {offers[offerIndex]}
+</span>
+
         </div>
 
         {/* Mobile Top Navbar - Menu | Logo | Settings */}
@@ -118,7 +154,14 @@ export default function   Navbar() {
     <>
       {/* Top Offer Bar */}
       <div className="fixed top-0 left-0 right-0 bg-[#0A0A0A] text-white text-center text-xs sm:text-sm py-1.5 sm:py-2 z-50" suppressHydrationWarning>
-        <span className="block text-[10px] sm:text-xs">{t("navbar.topOffer")}</span>
+        {/* <span className="block text-[10px] sm:text-xs"> {offers[offerIndex]}</span> */}
+        <span
+  key={offerIndex}
+  className="block text-[10px] sm:text-xs animate-fade"
+>
+  {offers[offerIndex]}
+</span>
+
       </div>
 
       {/* Mobile Top Navbar - Menu | Logo | Settings */}

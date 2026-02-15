@@ -14,7 +14,11 @@
   "footerText": "© 2024 Luvana. Tous droits réservés.",
   
   "navbar": {
-    "topOffer": "Achetez pour ₹999 et profitez de 25% de REMISE!",
+    "offers": [
+      "Achetez pour ₹999 et profitez de 25 % de réduction !",
+      "Achetez pour ₹499 et profitez de 30 % de réduction !",
+      "Achetez pour ₹1999 et profitez de 50 % de réduction !"
+    ],
     "logo": "LOGO"
   },
   

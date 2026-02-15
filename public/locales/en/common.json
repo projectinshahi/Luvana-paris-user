@@ -14,7 +14,11 @@
   "footerText": "© 2024 Luvana. All rights reserved.",
   
   "navbar": {
-    "topOffer": "Buy for ₹999 and enjoy a cool 25% OFF!",
+    "offers": [
+      "Buy for ₹999 and enjoy a cool 25% OFF!",
+      "Buy for ₹499 and enjoy a cool 30% OFF!",
+      "Buy for ₹1999 and enjoy a cool 50% OFF!"
+    ],
     "logo": "LOGO"
   },
   

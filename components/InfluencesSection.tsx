@@ -143,77 +143,193 @@
 //   );
 // }
 
+// "use client";
+
+// import Image from "next/image";
+// import { useTranslation } from "react-i18next";
+
+// export default function InfluencersSection() {
+//   const { t, i18n } = useTranslation('common');
+//   const isRTL = i18n.language === 'ar';
+
+//   const influencers = [
+//     {
+//       img: "/images/v1.jpg",
+//       textKey: "influencers.skincare",
+//     },
+//     {
+//       img: "/images/v2.jpg",
+//       textKey: "influencers.haircare",
+//     },
+//     {
+//       img: "/images/v3.png",
+//       textKey: "influencers.fragrance",
+//     },
+//     {
+//       img: "/images/inf4.jpg",
+//       textKey: "influencers.fragrance",
+//     },
+//   ];
+
+//   return (
+//     <section className="relative w-full py-16 md:py-24 bg-black">
+//       <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-10">
+
+//         {/* HEADER */}
+//         <div className={`flex justify-center mb-12 md:mb-16 ${isRTL ? 'flex-row-reverse' : ''}`}>
+//           <div className={`flex items-center gap-6 md:gap-10 ${isRTL ? 'flex-row-reverse' : ''}`}>
+//             <div className={`text-center [font-family:var(--font-cactus-serif)] ${isRTL ? 'font-arabic' : ''}`}>
+//               <h2 className="text-[#C5A059] text-2xl md:text-3xl leading-tight">
+//                 {t('influencers.title')}
+//               </h2>
+//               <p className="text-[#C5A059]/80 text-xs md:text-sm mt-1">
+//                 {t('influencers.subtitle')}
+//               </p>
+//             </div>
+
+//             <div className="h-px w-20 md:w-64 bg-linear-to-r from-[#C5A059]/60 to-transparent" />
+//           </div>
+//         </div>
+
+//         {/* IMAGES ROW */}
+//         <div className={`flex flex-col md:flex-row justify-center items-stretch gap-6 md:gap-8 lg:gap-12 ${isRTL ? 'md:flex-row-reverse' : ''}`}>
+//           {influencers.map((item, i) => (
+//             <div key={i} className="text-center flex flex-col items-center">
+//               {/* RESPONSIVE IMAGE */}
+//               <div className="relative w-full md:w-64 lg:w-80 aspect-[3/4.8] overflow-hidden rounded-sm border border-[#C5A059]/40 hover:border-[#C5A059] transition-colors duration-300">
+//                 <Image
+//                   src={item.img}
+//                   alt={`Influencer ${i + 1}`}
+//                   fill
+//                   className="object-cover hover:scale-105 transition-transform duration-500"
+//                 />
+//               </div>
+
+//               {/* TEXT */}
+//               <p className={`mt-4 md:mt-6 text-[#C5A059] text-xs md:text-sm leading-relaxed max-w-xs md:max-w-sm ${isRTL ? 'text-right font-arabic' : 'text-left'}`}>
+//                 {t(item.textKey)}
+//               </p>
+//             </div>
+//           ))}
+//         </div>
+
+//       </div>
+//     </section>
+//   );
+// }
+
 "use client";
 
 import Image from "next/image";
 import { useTranslation } from "react-i18next";
 
 export default function InfluencersSection() {
-  const { t, i18n } = useTranslation('common');
-  const isRTL = i18n.language === 'ar';
+  const { t, i18n } = useTranslation("common");
+  const isRTL = i18n.language === "ar";
 
   const influencers = [
-    {
-      img: "/images/v1.jpg",
-      textKey: "influencers.skincare",
-    },
-    {
-      img: "/images/v2.jpg",
-      textKey: "influencers.haircare",
-    },
-    {
-      img: "/images/v3.png",
-      textKey: "influencers.fragrance",
-    },
-    {
-      img: "/images/inf4.jpg",
-      textKey: "influencers.fragrance",
-    },
+    { img: "/images/v1.jpg", textKey: "influencers.skincare" },
+    { img: "/images/v2.jpg", textKey: "influencers.haircare" },
+    { img: "/images/v3.png", textKey: "influencers.fragrance" },
+    { img: "/images/inf4.jpg", textKey: "influencers.fragrance" },
   ];
 
   return (
-    <section className="relative w-full py-16 md:py-24 bg-black">
-      <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-10">
+    <>
+      {/* ✅ INLINE CSS – GUARANTEED ANIMATION */}
+      <style>{`
+        @keyframes influencer-scroll {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
 
-        {/* HEADER */}
-        <div className={`flex justify-center mb-12 md:mb-16 ${isRTL ? 'flex-row-reverse' : ''}`}>
-          <div className={`flex items-center gap-6 md:gap-10 ${isRTL ? 'flex-row-reverse' : ''}`}>
-            <div className={`text-center [font-family:var(--font-cactus-serif)] ${isRTL ? 'font-arabic' : ''}`}>
-              <h2 className="text-[#C5A059] text-2xl md:text-3xl leading-tight">
-                {t('influencers.title')}
-              </h2>
-              <p className="text-[#C5A059]/80 text-xs md:text-sm mt-1">
-                {t('influencers.subtitle')}
-              </p>
-            </div>
+        @keyframes influencer-scroll-reverse {
+          0% { transform: translateX(-50%); }
+          100% { transform: translateX(0); }
+        }
 
-            <div className="h-px w-20 md:w-64 bg-linear-to-r from-[#C5A059]/60 to-transparent" />
-          </div>
-        </div>
+        .influencer-scroll {
+          animation: influencer-scroll 30s linear infinite;
+        }
 
-        {/* IMAGES ROW */}
-        <div className={`flex flex-col md:flex-row justify-center items-stretch gap-6 md:gap-8 lg:gap-12 ${isRTL ? 'md:flex-row-reverse' : ''}`}>
-          {influencers.map((item, i) => (
-            <div key={i} className="text-center flex flex-col items-center">
-              {/* RESPONSIVE IMAGE */}
-              <div className="relative w-full md:w-64 lg:w-80 aspect-[3/4.8] overflow-hidden rounded-sm border border-[#C5A059]/40 hover:border-[#C5A059] transition-colors duration-300">
-                <Image
-                  src={item.img}
-                  alt={`Influencer ${i + 1}`}
-                  fill
-                  className="object-cover hover:scale-105 transition-transform duration-500"
-                />
+        .influencer-scroll-reverse {
+          animation: influencer-scroll-reverse 30s linear infinite;
+        }
+
+        .pause-on-hover:hover .influencer-scroll,
+        .pause-on-hover:hover .influencer-scroll-reverse {
+          animation-play-state: paused;
+        }
+      `}</style>
+
+      <section className="relative w-full py-16 md:py-24 bg-black overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-10">
+
+          {/* HEADER */}
+          <div
+            className={`flex justify-center mb-12 md:mb-16 ${
+              isRTL ? "flex-row-reverse" : ""
+            }`}
+          >
+            <div
+              className={`flex items-center gap-6 md:gap-10 ${
+                isRTL ? "flex-row-reverse" : ""
+              }`}
+            >
+              <div
+                className={`text-center [font-family:var(--font-cactus-serif)] ${
+                  isRTL ? "font-arabic" : ""
+                }`}
+              >
+                <h2 className="text-[#C5A059] text-2xl md:text-3xl leading-tight">
+                  {t("influencers.title")}
+                </h2>
+                <p className="text-[#C5A059]/80 text-xs md:text-sm mt-1">
+                  {t("influencers.subtitle")}
+                </p>
               </div>
 
-              {/* TEXT */}
-              <p className={`mt-4 md:mt-6 text-[#C5A059] text-xs md:text-sm leading-relaxed max-w-xs md:max-w-sm ${isRTL ? 'text-right font-arabic' : 'text-left'}`}>
-                {t(item.textKey)}
-              </p>
+              <div className="h-px w-20 md:w-64 bg-linear-to-r from-[#C5A059]/60 to-transparent" />
             </div>
-          ))}
-        </div>
+          </div>
 
-      </div>
-    </section>
+          {/* ✅ AUTO MOVING CAROUSEL */}
+          <div className="relative w-full overflow-hidden pause-on-hover">
+            <div
+              className={`flex w-max gap-6 md:gap-8 lg:gap-12 ${
+                isRTL ? "influencer-scroll-reverse" : "influencer-scroll"
+              }`}
+            >
+              {[...influencers, ...influencers].map((item, i) => (
+                <div
+                  key={i}
+                  className="shrink-0 text-center flex flex-col items-center w-55 md:w-65 lg:w-[320px]"
+                >
+                  {/* IMAGE */}
+                  <div className="relative w-full aspect-[3/4.8] overflow-hidden rounded-sm border border-[#C5A059]/40 hover:border-[#C5A059] transition-colors duration-300">
+                    <Image
+                      src={item.img}
+                      alt={`Influencer ${i + 1}`}
+                      fill
+                      className="object-cover hover:scale-105 transition-transform duration-500"
+                    />
+                  </div>
+
+                  {/* TEXT */}
+                  <p
+                    className={`mt-4 md:mt-6 text-[#C5A059] text-xs md:text-sm leading-relaxed max-w-xs ${
+                      isRTL ? "text-right font-arabic" : "text-left"
+                    }`}
+                  >
+                    {t(item.textKey)}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </>
   );
 }
