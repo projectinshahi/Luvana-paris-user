@@ -114,7 +114,7 @@ export default function WishlistSidebar({
           <div className="flex items-center gap-2">
             <Heart size={20} className="text-[#C9A24D] fill-[#C9A24D]" />
             <h2 className="text-xl font-semibold text-gray-300">
-              {t("wishlist.myWishlist")}
+              {t("wishlist")}
             </h2>
           </div>
           <button
@@ -128,15 +128,15 @@ export default function WishlistSidebar({
         {/* Sub-header */}
         <div className="px-4 py-3 border-b border-[#2A2A2A] flex items-center justify-between">
           <p className="text-sm text-gray-400">
-            {t("wishlist.savedItems")} ({wishlistItems.length}{" "}
-            {t("wishlist.items")})
+            {t(" Total wishlist")} ({wishlistItems.length}{" "}
+            {/* {t("wishlist")}) */}
           </p>
           {inStockCount > 0 && (
             <button
               onClick={handleMoveAllToCart}
               className="text-xs text-[#C9A24D] hover:text-[#B8934C] font-medium transition"
             >
-              {t("wishlist.moveAllToCart")}
+              {/* {t("wishlist.moveAllToCart")} */}
             </button>
           )}
         </div>
@@ -150,7 +150,7 @@ export default function WishlistSidebar({
                 <Heart size={28} className="text-gray-600" />
               </div>
               <p className="text-gray-400 text-sm text-center">
-                {t("wishlist.empty")}
+                {t("empty wishlist")}
               </p>
             </div>
           ) : (
@@ -171,7 +171,7 @@ export default function WishlistSidebar({
                   {!item.inStock && (
                     <div className="absolute inset-0 flex items-center justify-center">
                       <span className="text-[10px] font-semibold text-white bg-black/70 px-2 py-0.5 rounded-full">
-                        {t("wishlist.outOfStock")}
+                        {t("outOfStock")}
                       </span>
                     </div>
                   )}
@@ -209,7 +209,7 @@ export default function WishlistSidebar({
                       }`}
                     >
                       <ShoppingCart size={12} />
-                      {t("wishlist.addToCart")}
+                      {t("addToCart")}
                     </button>
 
                     <button
@@ -231,15 +231,15 @@ export default function WishlistSidebar({
           <div className="border-t border-[#2A2A2A] bg-[#0D0D0D]">
             <div className="px-4 py-3 space-y-2">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-400">{t("wishlist.summary")}</span>
+                {/* <span className="text-gray-400">{t("wishlist.summary")}</span> */}
                 <span className="text-gray-400">
-                  {t("wishlist.items")} ({wishlistItems.length})
+                  {t("Total product")} ({wishlistItems.length})
                 </span>
               </div>
 
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-400">
-                  {t("wishlist.potentialSavings")}
+                  {t("Total price")}
                 </span>
                 <span className="text-green-500 font-medium">
                   KWD {totalSavings.toFixed(2)}
@@ -248,7 +248,7 @@ export default function WishlistSidebar({
 
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-400">
-                  {t("wishlist.inStock")}
+                  {t("Total in Stock")}
                 </span>
                 <span className="text-white font-medium">
                   {inStockCount} / {wishlistItems.length}
@@ -261,7 +261,7 @@ export default function WishlistSidebar({
                   onClick={() => removeItem(wishlistItems[0]?.id)}
                   className="text-xs text-red-500 hover:text-red-400 transition"
                 >
-                  {t("wishlist.clearAll")}
+                  {t("ClearAll")}
                 </button>
                 <button
                   onClick={handleMoveAllToCart}
@@ -272,7 +272,7 @@ export default function WishlistSidebar({
                       : "bg-[#2A2A2A] text-gray-500 cursor-not-allowed"
                   }`}
                 >
-                  {t("wishlist.moveAllToCart")}
+                  {t("Move All To Cart")}
                 </button>
               </div>
             </div>
