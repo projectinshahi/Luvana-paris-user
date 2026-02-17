@@ -16,6 +16,18 @@ const nextConfig: NextConfig = {
         protocol: "https", 
         hostname: "www.shutterstock.com" 
       },
+       {
+        protocol: "https",
+        hostname: "www.jovees.com",
+      },
+       {
+        protocol: "https",
+        hostname: "healthstores.in",
+      },
+      { protocol: "https", hostname: "assets.myntassets.com" },
+       { protocol: "https", hostname: "cdn.thewirecutter.com" },
+       { protocol: "https", hostname: "m.media-amazon.com" },
+      { protocol: "https", hostname: "svashudhi.com" },
     ],
   },
   

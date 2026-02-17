@@ -13,6 +13,7 @@ import SettingsOverlay from "@/components/SettingsOverlay";
 import { useLanguage } from "@/lib/useLanguage";
 import CartSidebar from "./CartSidebar";
 import WishlistSidebar from "./WishlistSidebar";
+import SearchSidebar from "./SearchSidebar";
 
 export default function   Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -20,6 +21,7 @@ export default function   Navbar() {
   const [mounted, setMounted] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [showCart, setShowCart] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
   const [showWishlist, setShowWishlist] = useState(false);
 const [animate, setAnimate] = useState(true);
 
@@ -112,6 +114,9 @@ useEffect(() => {
 
           {/* Right Section - Icons */}
           <div className="flex items-center gap-0.5 sm:gap-1.5 md:gap-2 flex-no-reverse shrink-0" style={{ order: 3 }}>
+              <button className="p-1 sm:p-1.5 hover:bg-gray-700 rounded transition-colors" onClick={() => setShowSearch(true)}>
+              <Search size={14} className="sm:size-4" />
+            </button>
             <button className="p-1 sm:p-1.5 hover:bg-gray-700 rounded transition-colors" onClick={() => setShowWishlist(true)}>
               <Heart size={14} className="sm:size-4" />
             </button>
@@ -132,6 +137,9 @@ useEffect(() => {
         <nav className="sm:hidden fixed bottom-0 left-0 right-0 bg-[#0D0D0D] text-white px-0 py-2 z-40 border-t border-gray-800 flex items-center justify-around">
           <button className="p-3 rounded-lg hover:bg-gray-800 transition-colors text-yellow-400 bg-gray-800">
             <Home size={20} />
+          </button>
+           <button className="p-3 rounded-lg hover:bg-gray-800 transition-colors hover:text-red-500" onClick={() => setShowSearch(true)}>
+            <Search size={20} />
           </button>
           <button className="p-3 rounded-lg hover:bg-gray-800 transition-colors hover:text-red-500" onClick={() => setShowWishlist(true)}>
             <Heart size={20} />
@@ -195,7 +203,7 @@ useEffect(() => {
           </div>
 
           {/* Center Section - Search */}
-          <div className="hidden sm:flex flex-1 mx-8 md:mx-10 justify-center" style={{ order: 2 }}>
+          {/* <div className="hidden sm:flex flex-1 mx-8 md:mx-10 justify-center" style={{ order: 2 }}>
             <div className="flex items-center bg-gray-800 rounded-full px-4 py-2 max-w-xl w-full flex-no-reverse">
               <Search size={18} className="text-gray-400" />
               <input
@@ -208,10 +216,16 @@ useEffect(() => {
                 style={{ textAlign: isRTL ? 'right' : 'left' }}
               />
             </div>
-          </div>
+          </div> */}
 
           {/* Right Section - Icons */}
           <div className="flex items-center gap-0.5 sm:gap-1.5 md:gap-2 flex-no-reverse shrink-0" style={{ order: 3 }}>
+              <button className="p-1 sm:p-1.5 hover:bg-gray-700 rounded transition-colors" onClick={() => setShowSearch(true)}>
+              <Search
+                className="cursor-pointer hover:text-red-500 transition-colors"
+                size={14}
+              />
+            </button>
             <button className="p-1 sm:p-1.5 hover:bg-gray-700 rounded transition-colors" onClick={() => setShowWishlist(true)}>
               <Heart
                 className="cursor-pointer hover:text-red-500 transition-colors"
@@ -236,13 +250,13 @@ useEffect(() => {
       </nav>
 
       {/* Mobile Bottom Navigation Bar */}
-      <nav className="sm:hidden fixed bottom-0 left-0 right-0 bg-[#0D0D0D] text-white px-0 py-2 z-40 border-t border-gray-800 flex items-center justify-around" dir="ltr" suppressHydrationWarning>
+      {/* <nav className="sm:hidden fixed bottom-0 left-0 right-0 bg-[#0D0D0D] text-white px-0 py-2 z-40 border-t border-gray-800 flex items-center justify-around" dir="ltr" suppressHydrationWarning>
         <button className="p-3 rounded-lg hover:bg-gray-800 transition-colors text-yellow-400 bg-gray-800">
           <Home size={20} />
         </button>
         <button className="p-3 rounded-lg hover:bg-gray-800 transition-colors hover:text-red-500" onClick={() => setShowWishlist(true)}>
           <Heart size={20} />
-        </button>
+        </button> */}
         {/* <button className="p-3 rounded-lg hover:bg-gray-800 transition-colors">
           <ShoppingCart size={20} onClick={() => setShowCart(true)}/>
         </button> */}
@@ -255,7 +269,7 @@ useEffect(() => {
     size={14}
   />
 </button> */}
-<button
+{/* <button
   className="p-1 sm:p-1.5 hover:bg-gray-700 rounded transition-colors"
   onClick={() => setShowCart(true)}
 >
@@ -266,13 +280,56 @@ useEffect(() => {
 </button>
 
 
-        <button className="p-3 rounded-lg hover:bg-gray-800 transition-colors">
-          <Search size={20} />
+        <button className="p-3 rounded-lg hover:bg-gray-800 transition-colors" >
+          <Search size={20} onClick={() => setShowSearch(true)}/>
         </button>
         <button className="p-3 rounded-lg hover:bg-gray-800 transition-colors">
           <User size={20} onClick={() => setShowLogin(true)} />
         </button>
-      </nav>
+      </nav> */}
+      <nav className="sm:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-40">
+  <div className="flex items-center gap-6 px-6 py-3 rounded-full bg-[#2a2a2a]/90 backdrop-blur-md shadow-lg">
+    
+    {/* HOME (ACTIVE) */}
+    <button className="w-10 h-10 flex items-center justify-center rounded-full bg-[#C9A24D] text-black">
+      <Home size={20} />
+    </button>
+
+    {/* WISHLIST */}
+    <button
+      className="text-gray-300 hover:text-red-500 transition-colors"
+      onClick={() => setShowWishlist(true)}
+    >
+      <Heart size={20} />
+    </button>
+
+    {/* CART */}
+    <button
+      className="text-gray-300 hover:text-white transition-colors"
+      onClick={() => setShowCart(true)}
+    >
+      <ShoppingCart size={20} />
+    </button>
+
+    {/* SEARCH */}
+    <button
+      className="text-gray-300 hover:text-white transition-colors"
+      onClick={() => setShowSearch(true)}
+    >
+      <Search size={20} />
+    </button>
+
+    {/* PROFILE */}
+    <button
+      className="text-gray-300 hover:text-white transition-colors"
+      onClick={() => setShowLogin(true)}
+    >
+      <User size={20} />
+    </button>
+
+  </div>
+</nav>
+
 
       {/* Settings Overlay */}
       <SettingsOverlay 
@@ -286,6 +343,10 @@ useEffect(() => {
 <CartSidebar
       isOpen={showCart}
       onClose={() => setShowCart(false)}
+    />
+<SearchSidebar
+      isOpen={showSearch}
+      onClose={() => setShowSearch(false)}
     />
 <WishlistSidebar
       isOpen={showWishlist}
