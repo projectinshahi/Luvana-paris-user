@@ -17,10 +17,10 @@ export default function MobileSearch() {
 
   if (!mounted) {
     return (
-      <div className="sm:hidden fixed top-[55px] left-0 right-0 z-40 px-0 py-2 bg-black border-b border-gray-800">
+      <div className="sm:hidden fixed top-13.75 left-0 right-0 z-40 px-0 py-2 bg-black border-b border-gray-800">
         <div className="px-3">
           <div className="flex items-center gap-2.5 bg-gray-900 rounded-md px-3 py-2.5 border border-gray-700/50">
-            <Search size={18} className="text-gray-400 flex-shrink-0" />
+            <Search size={18} className="text-gray-400 shrink-0" />
             <input
               type="text"
               placeholder="Search"
@@ -40,10 +40,10 @@ export default function MobileSearch() {
   }
 
   return (
-    <div className="sm:hidden fixed top-[55px] left-0 right-0 z-40 bg-black border-b border-gray-800">
+    <div className="sm:hidden fixed top-13.75 left-0 right-0 z-40 bg-black border-b border-gray-800">
       <div className="px-3 py-2">
         <div className={`flex items-center gap-2.5 bg-gray-900 rounded-md px-3 py-2.5 border border-gray-700/50`}>
-          <Search size={18} className="text-gray-400 flex-shrink-0" />
+          <Search size={18} className="text-gray-400 shrink-0" />
           <input
             type="text"
             placeholder={t("search") || "Search"}

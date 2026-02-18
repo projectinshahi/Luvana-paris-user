@@ -16,10 +16,10 @@ export default function LanguageExample() {
           <strong>{t('search')}:</strong> {t('search')}
         </p>
         <p>
-          <strong>{t('cart')}:</strong> {t('cart')}
+          <strong>{t('cartLabel')}:</strong> {t('cartLabel')}
         </p>
         <p>
-          <strong>{t('wishlist')}:</strong> {t('wishlist')}
+          <strong>{t('wishlistLabel')}:</strong> {t('wishlistLabel')}
         </p>
         <p>
           <strong>{t('account')}:</strong> {t('account')}
