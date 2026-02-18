@@ -114,7 +114,7 @@ export default function WishlistSidebar({
           <div className="flex items-center gap-2">
             <Heart size={20} className="text-[#C9A24D] fill-[#C9A24D]" />
             <h2 className="text-xl font-semibold text-gray-300">
-              {t("wishlist")}
+              {t("wishlistLabel")}
             </h2>
           </div>
           <button
