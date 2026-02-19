@@ -4,6 +4,7 @@ import { X, Minus, Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/lib/useLanguage";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface CartItem {
   id: number;
@@ -24,6 +25,7 @@ interface CartSidebarProps {
 export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
   const { t } = useTranslation("common");
   const { isRTL } = useLanguage();
+  const router = useRouter();
 
   const [cartItems, setCartItems] = useState<CartItem[]>([
     {
@@ -217,7 +219,11 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
               <span className="text-2xl font-bold text-white">
                 {total.toFixed(2)}
               </span>
-              <button className="bg-[#C9A24D] hover:bg-[#B8934C] text-black px-8 py-3 rounded-lg font-semibold transition">
+              <button  className="bg-[#C9A24D] hover:bg-[#B8934C] text-black px-8 py-3 rounded-lg font-semibold transition"
+  onClick={() => {
+    onClose();          // ✅ Close the sidebar
+    router.push('/checkout'); // ✅ Then navigate
+  }}>
                 {t("cart.buyNow")}
               </button>
             </div>
