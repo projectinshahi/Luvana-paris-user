@@ -8,6 +8,7 @@ import CountrySelector from "./CountrySelector";
 import MobileMenu from "./MobileMenu";
 import MobileSearch from "./MobileSearch";
 import LoginModal from "@/components/LoginModal";
+import { useRouter } from "next/navigation";
 
 import SettingsOverlay from "@/components/SettingsOverlay";
 import { useLanguage } from "@/lib/useLanguage";
@@ -24,6 +25,8 @@ export default function   Navbar() {
   const [showSearch, setShowSearch] = useState(false);
   const [showWishlist, setShowWishlist] = useState(false);
 const [animate, setAnimate] = useState(true);
+const router = useRouter();
+const [showUserDropdown, setShowUserDropdown] = useState(false);
 
   const { t, ready } = useTranslation("common");
   const { isRTL } = useLanguage();
@@ -120,9 +123,49 @@ useEffect(() => {
             <button className="p-1 sm:p-1.5 hover:bg-gray-700 rounded transition-colors" onClick={() => setShowWishlist(true)}>
               <Heart size={14} className="sm:size-4" />
             </button>
-            <button className="p-1 sm:p-1.5 hover:bg-gray-700 rounded transition-colors">
+            {/* <button className="p-1 sm:p-1.5 hover:bg-gray-700 rounded transition-colors">
               <User  size={14}  className="sm:size-4" onClick={() => setShowLogin(true)} />
-            </button>
+            </button> */}
+            <div className="relative">
+  <button
+    onClick={() => setShowUserDropdown(!showUserDropdown)}
+    className="p-1 sm:p-1.5 hover:bg-gray-700 rounded transition-colors"
+  >
+    <User
+      className="cursor-pointer hover:text-gray-300 transition-colors"
+      size={14}
+    />
+  </button>
+
+  {showUserDropdown && (
+    <div className="absolute right-0 mt-2 w-40 bg-[#1a1a1a] border border-gray-700 rounded-lg shadow-lg z-50">
+
+      {/* Your Profile */}
+      <button
+        className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition-colors"
+        onClick={() => {
+          setShowUserDropdown(false);
+          router.push("/myprofile");
+        }}
+      >
+        Your Profile
+      </button>
+
+      {/* Sign Up */}
+      <button
+        className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition-colors"
+        onClick={() => {
+          setShowUserDropdown(false);
+          setShowLogin(true);
+        }}
+      >
+        Sign Up
+      </button>
+
+    </div>
+  )}
+</div>
+
             <button className="p-1 sm:p-1.5 hover:bg-gray-700 rounded transition-colors" onClick={() => setShowCart(true)}>
               <ShoppingCart size={14} className="sm:size-4" />
             </button>
@@ -150,9 +193,44 @@ useEffect(() => {
           <button className="p-3 rounded-lg hover:bg-gray-800 transition-colors">
             <Search size={20} />
           </button>
-          <button className="p-3 rounded-lg hover:bg-gray-800 transition-colors">
+          {/* <button className="p-3 rounded-lg hover:bg-gray-800 transition-colors">
             <User size={20} onClick={() => setShowLogin(true)} />
-          </button>
+          </button> */}
+          <div className="relative">
+  <button
+    className="text-gray-300 hover:text-white transition-colors"
+    onClick={() => setShowUserDropdown(!showUserDropdown)}
+  >
+    <User size={20} />
+  </button>
+
+  {showUserDropdown && (
+    <div className="absolute bottom-12 right-0 w-40 bg-[#1a1a1a] border border-gray-700 rounded-lg shadow-lg z-50">
+
+      <button
+        className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition-colors"
+        onClick={() => {
+          setShowUserDropdown(false);
+          router.push("/myprofile");
+        }}
+      >
+        Your Profile
+      </button>
+
+      <button
+        className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition-colors"
+        onClick={() => {
+          setShowUserDropdown(false);
+          setShowLogin(true);
+        }}
+      >
+        Sign Up
+      </button>
+
+    </div>
+  )}
+</div>
+
         </nav>
       </>
     );
@@ -232,9 +310,47 @@ useEffect(() => {
                 size={14}
               />
             </button>
-            <button className="p-1 sm:p-1.5 hover:bg-gray-700 rounded transition-colors">
+            {/* <button className="p-1 sm:p-1.5 hover:bg-gray-700 rounded transition-colors">
               <User className="cursor-pointer hover:text-gray-300 transition-colors" size={14} onClick={() => setShowLogin(true)} />
-            </button>
+            </button> */}
+            <div className="relative">
+  <button
+    onClick={() => setShowUserDropdown(!showUserDropdown)}
+    className="p-1 sm:p-1.5 hover:bg-gray-700 rounded transition-colors"
+  >
+    <User
+      className="cursor-pointer hover:text-gray-300 transition-colors"
+      size={14}
+    />
+  </button>
+
+  {showUserDropdown && (
+    <div className="absolute right-0 mt-2 w-40 bg-[#1a1a1a] border border-gray-700 rounded-lg shadow-lg z-50">
+
+      <button
+        className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition-colors"
+        onClick={() => {
+          setShowUserDropdown(false);
+          router.push("/myprofile");
+        }}
+      >
+        Your Profile
+      </button>
+
+      <button
+        className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition-colors"
+        onClick={() => {
+          setShowUserDropdown(false);
+          setShowLogin(true);
+        }}
+      >
+        Sign Up
+      </button>
+
+    </div>
+  )}
+</div>
+
             <button className="p-1 sm:p-1.5 hover:bg-gray-700 rounded transition-colors" onClick={() => setShowCart(true)}>
               <ShoppingCart className="cursor-pointer hover:text-gray-300 transition-colors" size={14} />
             </button>
