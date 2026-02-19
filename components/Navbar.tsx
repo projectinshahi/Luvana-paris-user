@@ -85,7 +85,7 @@ useEffect(() => {
           <button className="p-1 hover:bg-gray-800 rounded transition-colors">
             <Menu size={24} />
           </button>
-          <div className="text-yellow-400 font-bold text-lg">LOGO</div>
+          <div className="text-yellow-400 font-bold text-lg" >LOGO</div>
           <button className="p-1 hover:bg-gray-800 rounded transition-colors">
             <Settings size={24} />
           </button>
@@ -275,9 +275,16 @@ useEffect(() => {
           {/* Left Section - Logo */}
           <div className="flex items-center gap-1 sm:gap-3 md:gap-4 flex-no-reverse shrink-0" style={{ order: 1 }}>
         
-            <div className="text-yellow-400 font-bold text-xs sm:text-sm md:text-lg whitespace-nowrap">
+            {/* <div className="text-yellow-400 font-bold text-xs sm:text-sm md:text-lg whitespace-nowrap">
               {t("navbar.logo")}
-            </div>
+            </div> */}
+            <div
+  onClick={() => router.push("/")}
+  className="text-yellow-400 font-bold text-xs sm:text-sm md:text-lg whitespace-nowrap cursor-pointer"
+>
+  {t("navbar.logo")}
+</div>
+
           </div>
 
           {/* Center Section - Search */}
