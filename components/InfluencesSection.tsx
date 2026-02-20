@@ -352,7 +352,7 @@ export default function InfluencersSection() {
   return (
     <>
       {/* ✅ Animation Styles */}
-      <style>{`
+      {/* <style>{`
         @keyframes influencer-scroll {
           0% { transform: translateX(0); }
           100% { transform: translateX(-50%); }
@@ -375,7 +375,29 @@ export default function InfluencersSection() {
         .pause-on-hover:hover .influencer-scroll-reverse {
           animation-play-state: paused;
         }
-      `}</style>
+      `}</style> */}
+      <style>{`
+  @keyframes influencerScroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  .influencer-track {
+    display: inline-flex;
+    animation: influencerScroll 30s linear infinite;
+    will-change: transform;
+  }
+
+  .pause-on-hover:hover .influencer-track {
+    animation-play-state: paused;
+  }
+
+  .influencer-wrapper {
+    direction: ltr;
+    overflow: hidden;
+    width: 100%;
+  }
+`}</style>
 
       <section className="relative w-full py-16 md:py-24 bg-black overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-10">
@@ -408,12 +430,14 @@ export default function InfluencersSection() {
           </div>
 
           {/* ✅ AUTO MOVING CAROUSEL */}
-          <div className="relative w-full overflow-hidden pause-on-hover">
+          {/* <div className="relative w-full overflow-hidden pause-on-hover">
             <div
               className={`flex w-max gap-6 md:gap-8 lg:gap-12 ${
                 isRTL ? "influencer-scroll-reverse" : "influencer-scroll"
               }`}
-            >
+            > */}
+            <div className="influencer-wrapper pause-on-hover">
+  <div className="influencer-track gap-6 md:gap-8 lg:gap-12">
               {[...influencers, ...influencers].map((item, i) => (
                 <div
                   key={i}
