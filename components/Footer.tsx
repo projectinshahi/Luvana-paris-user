@@ -8,7 +8,11 @@ export default function Footer() {
   const isRTL = i18n.language === 'ar';
 
   return (
-    <footer className="w-full bg-[#0a0a0a] text-white">
+    // <footer className="w-full bg-[#0a0a0a] text-white">
+    <footer
+  className="w-full bg-[#0a0a0a] text-white"
+  dir={isRTL ? "rtl" : "ltr"}
+>
       {/* Main Footer */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-16">
         <div className={`grid grid-cols-1 md:grid-cols-4 gap-8 mb-12 ${isRTL ? 'text-right' : 'text-left'}`}>
@@ -158,7 +162,8 @@ export default function Footer() {
 
         {/* Divider */}
         <div className="border-t border-gray-800 py-8">
-          <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 text-center md:text-left ${isRTL ? 'md:text-right' : ''}`}>
+          {/* <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 text-center md:text-left ${isRTL ? 'md:text-right' : ''}`}> */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-center md:text-start">
             <p className={`text-gray-400 text-sm ${isRTL ? 'font-arabic' : ''}`}>
               {t('footer.allRightsReserved')}
             </p>
