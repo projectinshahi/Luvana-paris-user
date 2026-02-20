@@ -138,6 +138,26 @@ export default function ExploreMoreSection() {
         .cactus-serif {
           font-family: 'Cactus Classical Serif', serif;
         }
+          @keyframes exploreScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.explore-scroll-track {
+  display: inline-flex;
+  animation: exploreScroll 30s linear infinite;
+  will-change: transform;
+}
+
+.pause-on-hover:hover .explore-scroll-track {
+  animation-play-state: paused;
+}
+
+.explore-slider-wrapper {
+  direction: ltr;
+  overflow: hidden;
+  width: 100%;
+}
       `}</style>
 
       <section className="relative w-full py-24 overflow-hidden bg-black">
@@ -175,12 +195,14 @@ export default function ExploreMoreSection() {
           </div>
 
           {/* AUTO MOVING CAROUSEL */}
-          <div className="relative w-full overflow-hidden pause-on-hover">
+          {/* <div className="relative w-full overflow-hidden pause-on-hover">
             <div
               className={`flex w-max gap-6 lg:gap-8 ${
                 isRTL ? "animate-scroll-reverse" : "animate-scroll"
               }`}
-            >
+            > */}
+            <div className="explore-slider-wrapper pause-on-hover">
+  <div className="explore-scroll-track gap-6 lg:gap-8">
               {[...categories, ...categories].map((item, i) => (
                 <div
                   key={i}
