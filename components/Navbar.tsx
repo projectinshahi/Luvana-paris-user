@@ -486,6 +486,273 @@
 //   );
 // }
 
+// "use client";
+
+// import { useState, useEffect } from "react";
+// import {
+//   Heart,
+//   User,
+//   ShoppingCart,
+//   Menu,
+//   Search,
+//   Settings,
+//   Home,
+// } from "lucide-react";
+// import { useTranslation } from "react-i18next";
+// import { useRouter } from "next/navigation";
+
+// import SettingsOverlay from "@/components/SettingsOverlay";
+// import LoginModal from "@/components/LoginModal";
+// import CartSidebar from "./CartSidebar";
+// import WishlistSidebar from "./WishlistSidebar";
+// import SearchSidebar from "./SearchSidebar";
+// import MobileMenu from "./MobileMenu";
+// import { useLanguage } from "@/lib/useLanguage";
+
+// export default function Navbar() {
+//   const router = useRouter();
+//   const { t, ready } = useTranslation("common");
+//   const { isRTL } = useLanguage();
+
+//   const [mounted, setMounted] = useState(false);
+//   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+//   const [showSettings, setShowSettings] = useState(false);
+//   const [showLogin, setShowLogin] = useState(false);
+//   const [showCart, setShowCart] = useState(false);
+//   const [showSearch, setShowSearch] = useState(false);
+//   const [showWishlist, setShowWishlist] = useState(false);
+//   const [showUserDropdown, setShowUserDropdown] = useState(false);
+//   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+//   const offers = t("navbar.offers", {
+//     returnObjects: true,
+//   }) as string[];
+
+//   const [offerIndex, setOfferIndex] = useState(0);
+//   useEffect(() => {
+//   const token = localStorage.getItem("token");
+//   if (token) {
+//     setIsLoggedIn(true);
+//   }
+// }, []);
+
+//   useEffect(() => {
+//     setMounted(true);
+//   }, []);
+// useEffect(() => {
+//   const fetchPromotions = async () => {
+//     try {
+//       const res = await fetch(
+//         "http://localhost:8000/admin/promotion-strip"
+//       );
+//       const data = await res.json();
+
+//       // Filter active promotions
+//       const activePromotions = data
+//         .filter((item: any) => item.status === "active")
+//         .sort((a: any, b: any) => a.sortOrder - b.sortOrder)
+//         .map((item: any) =>
+//           isRTL ? item.contentArabic : item.contentEnglish
+//         );
+
+//       setOffers(activePromotions);
+//     } catch (error) {
+//       console.error("Failed to fetch promotions:", error);
+//     }
+//   };
+
+//   fetchPromotions();
+// }, [isRTL]);
+
+//   // useEffect(() => {
+//   //   if (!offers || offers.length === 0) return;
+
+//   //   const interval = setInterval(() => {
+//   //     setOfferIndex((prev) => (prev + 1) % offers.length);
+//   //   }, 5000);
+
+//   //   return () => clearInterval(interval);
+//   // }, [offers]);
+//   useEffect(() => {
+//   if (!offers || offers.length === 0) return;
+
+//   const interval = setInterval(() => {
+//     setOfferIndex((prev) => (prev + 1) % offers.length);
+//   }, 5000);
+
+//   return () => clearInterval(interval);
+// }, [offers]);
+
+//   if (!mounted || !ready) return null;
+//   const handleLogout = async () => {
+//   try {
+//     const token = localStorage.getItem("token");
+
+//     await fetch("http://localhost:8000/user/logout", {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${token}`,
+//       },
+//     });
+
+//     // Remove token
+//     localStorage.removeItem("token");
+//     setIsLoggedIn(false);
+//     setShowUserDropdown(false);
+
+//     router.push("/");
+//   } catch (error) {
+//     console.error("Logout failed:", error);
+//   }
+// };
+
+//   return (
+//     <>
+//       {/* 🔥 FIXED HEADER CONTAINER */}
+//       <div className="fixed top-0 left-0 right-0 z-50">
+
+//         {/* ===== OFFER BAR ===== */}
+//         <div className="bg-[#0D0D0D] text-white text-center text-xs sm:text-sm py-2">
+//           <span className="block text-[10px] sm:text-xs">
+//             {/* {offers?.[offerIndex]} */}
+//             {offers.length > 0 ? offers[offerIndex] : "Loading..."}
+//           </span>
+//         </div>
+
+//         {/* ===== DESKTOP NAVBAR ===== */}
+//         <nav
+//           className="hidden sm:flex items-center justify-between bg-[#0D0D0D] text-white px-4 md:px-10 py-3"
+//           dir="ltr"
+//         >
+//           {/* LEFT - LOGO */}
+//           <div
+//             onClick={() => router.push("/")}
+//             className="text-yellow-400 font-bold text-lg cursor-pointer"
+//           >
+//             {t("navbar.logo")}
+//           </div>
+
+//           {/* RIGHT - ICONS */}
+// <div className="flex items-center gap-4 ">
+
+//   <Search
+//     className="cursor-pointer hover:text-red-500 transition"
+//     size={18}
+//     onClick={() => setShowSearch(true)}
+//   />
+
+//   <Heart
+//     className="cursor-pointer hover:text-red-500 transition"
+//     size={18}
+//     onClick={() => setShowWishlist(true)}
+//   />
+
+ 
+//   <div className="relative">
+//   <User
+//     className="cursor-pointer hover:text-gray-300 transition"
+//     size={18}
+//     onClick={() => {
+//       if (!isLoggedIn) {
+//         setShowLogin(true); // open login modal
+//       } else {
+//         setShowUserDropdown(!showUserDropdown);
+//       }
+//     }}
+//   />
+
+//   {isLoggedIn && showUserDropdown && (
+//     <div className="absolute right-0 mt-2 w-40 bg-[#1a1a1a] border border-gray-700 rounded-lg shadow-lg">
+      
+//       {/* Profile */}
+//       <button
+//         className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700"
+//         onClick={() => {
+//           setShowUserDropdown(false);
+//           router.push("/myprofile");
+//         }}
+//       >
+//         Your Profile
+//       </button>
+
+//       {/* Logout */}
+//       <button
+//         className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700 text-red-400"
+//         onClick={handleLogout}
+//       >
+//         Logout
+//       </button>
+//     </div>
+//   )}
+// </div>
+
+//   <ShoppingCart
+//     className="cursor-pointer hover:text-gray-300 transition"
+//     size={18}
+//     onClick={() => setShowCart(true)}
+//   />
+
+//   {/* 🔥 SETTINGS AFTER CART (Desktop only) */}
+//   <Settings
+//     className="cursor-pointer hover:text-gray-300 transition hidden sm:block"
+//     size={18}
+//     onClick={() => setShowSettings(true)}
+//   />
+// </div>
+//         </nav>
+
+//         {/* ===== MOBILE NAVBAR ===== */}
+//         <nav className="sm:hidden flex items-center justify-between bg-[#0D0D0D] text-white px-4 py-3">
+
+//           <Menu
+//             size={22}
+//             onClick={() => setMobileMenuOpen(true)}
+//             className="cursor-pointer"
+//           />
+
+//           <div
+//             onClick={() => router.push("/")}
+//             className="text-yellow-400 font-bold text-lg cursor-pointer"
+//           >
+//             {t("navbar.logo")}
+//           </div>
+
+//           <Settings
+//             size={22}
+//             onClick={() => setShowSettings(true)}
+//             className="cursor-pointer"
+//           />
+//         </nav>
+//       </div>
+
+//       {/* ===== MOBILE FLOAT NAV ===== */}
+//       <nav className="sm:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-40">
+//         <div className="flex items-center gap-6 px-6 py-3 rounded-full bg-[#2a2a2a]/90 backdrop-blur-md shadow-lg">
+
+//           <Home size={20} />
+
+//           <Heart size={20} onClick={() => setShowWishlist(true)} />
+
+//           <ShoppingCart size={20} onClick={() => setShowCart(true)} />
+
+//           <Search size={20} onClick={() => setShowSearch(true)} />
+
+//           <User size={20} onClick={() => setShowLogin(true)} />
+//         </div>
+//       </nav>
+
+//       {/* ===== SIDEBARS & MODALS ===== */}
+//       <SettingsOverlay isOpen={showSettings} onClose={() => setShowSettings(false)} />
+//       <LoginModal isOpen={showLogin} onClose={() => setShowLogin(false)} />
+//       <CartSidebar isOpen={showCart} onClose={() => setShowCart(false)} />
+//       <WishlistSidebar isOpen={showWishlist} onClose={() => setShowWishlist(false)} />
+//       <SearchSidebar isOpen={showSearch} onClose={() => setShowSearch(false)} />
+//       <MobileMenu isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
+//     </>
+//   );
+// }
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -522,11 +789,10 @@ export default function Navbar() {
   const [showSearch, setShowSearch] = useState(false);
   const [showWishlist, setShowWishlist] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const offers = t("navbar.offers", {
-    returnObjects: true,
-  }) as string[];
-
+  // ✅ NEW PROMOTION STATES
+  const [offers, setOffers] = useState<string[]>([]);
   const [offerIndex, setOfferIndex] = useState(0);
 
   useEffect(() => {
@@ -534,7 +800,40 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    if (!offers || offers.length === 0) return;
+    const token = localStorage.getItem("token");
+    if (token) setIsLoggedIn(true);
+  }, []);
+
+  // ✅ FETCH PROMOTION STRIP
+  useEffect(() => {
+    const fetchPromotions = async () => {
+      try {
+        const res = await fetch(
+          "http://localhost:8000/admin/promotion-strip",
+          { cache: "no-store" }
+        );
+
+        const data = await res.json();
+
+        const activePromotions = data
+          .filter((item: any) => item.status === "active")
+          .sort((a: any, b: any) => a.sortOrder - b.sortOrder)
+          .map((item: any) =>
+            isRTL ? item.contentArabic : item.contentEnglish
+          );
+
+        setOffers(activePromotions);
+      } catch (error) {
+        console.error("Promotion fetch error:", error);
+      }
+    };
+
+    fetchPromotions();
+  }, [isRTL]);
+
+  // ✅ AUTO ROTATION
+  useEffect(() => {
+    if (!offers.length) return;
 
     const interval = setInterval(() => {
       setOfferIndex((prev) => (prev + 1) % offers.length);
@@ -545,24 +844,44 @@ export default function Navbar() {
 
   if (!mounted || !ready) return null;
 
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      await fetch("http://localhost:8000/user/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      localStorage.removeItem("token");
+      setIsLoggedIn(false);
+      setShowUserDropdown(false);
+      router.push("/");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   return (
     <>
-      {/* 🔥 FIXED HEADER CONTAINER */}
       <div className="fixed top-0 left-0 right-0 z-50">
-
-        {/* ===== OFFER BAR ===== */}
+        
+        {/* 🔥 PROMOTION BAR */}
         <div className="bg-[#0D0D0D] text-white text-center text-xs sm:text-sm py-2">
           <span className="block text-[10px] sm:text-xs">
-            {offers?.[offerIndex]}
+            {offers.length > 0 ? offers[offerIndex] : "Loading..."}
           </span>
         </div>
 
-        {/* ===== DESKTOP NAVBAR ===== */}
+        {/* DESKTOP NAVBAR */}
+        {/* <nav className="hidden sm:flex items-center justify-between bg-[#0D0D0D] text-white px-4 md:px-10 py-3"> */}
         <nav
-          className="hidden sm:flex items-center justify-between bg-[#0D0D0D] text-white px-4 md:px-10 py-3"
-          dir="ltr"
-        >
-          {/* LEFT - LOGO */}
+  dir="ltr"
+  className="hidden sm:flex items-center justify-between bg-[#0D0D0D] text-white px-4 md:px-10 py-3"
+>
           <div
             onClick={() => router.push("/")}
             className="text-yellow-400 font-bold text-lg cursor-pointer"
@@ -570,29 +889,22 @@ export default function Navbar() {
             {t("navbar.logo")}
           </div>
 
-          {/* RIGHT - ICONS */}
           <div className="flex items-center gap-4">
 
-            <Search
-              className="cursor-pointer hover:text-red-500 transition"
-              size={18}
-              onClick={() => setShowSearch(true)}
-            />
-
-            <Heart
-              className="cursor-pointer hover:text-red-500 transition"
-              size={18}
-              onClick={() => setShowWishlist(true)}
-            />
+            <Search size={18} onClick={() => setShowSearch(true)} className="cursor-pointer" />
+            <Heart size={18} onClick={() => setShowWishlist(true)} className="cursor-pointer" />
 
             <div className="relative">
               <User
-                className="cursor-pointer hover:text-gray-300 transition"
                 size={18}
-                onClick={() => setShowUserDropdown(!showUserDropdown)}
+                className="cursor-pointer"
+                onClick={() => {
+                  if (!isLoggedIn) setShowLogin(true);
+                  else setShowUserDropdown(!showUserDropdown);
+                }}
               />
 
-              {showUserDropdown && (
+              {isLoggedIn && showUserDropdown && (
                 <div className="absolute right-0 mt-2 w-40 bg-[#1a1a1a] border border-gray-700 rounded-lg shadow-lg">
                   <button
                     className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700"
@@ -603,74 +915,55 @@ export default function Navbar() {
                   >
                     Your Profile
                   </button>
+
                   <button
-                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700"
-                    onClick={() => {
-                      setShowUserDropdown(false);
-                      setShowLogin(true);
-                    }}
+                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700 text-red-400"
+                    onClick={handleLogout}
                   >
-                    Sign Up
+                    Logout
                   </button>
                 </div>
               )}
             </div>
 
-            <ShoppingCart
-              className="cursor-pointer hover:text-gray-300 transition"
-              size={18}
-              onClick={() => setShowCart(true)}
-            />
-
-            <Settings
-              className="cursor-pointer hover:text-gray-300 transition"
-              size={18}
-              onClick={() => setShowSettings(true)}
-            />
+            <ShoppingCart size={18} onClick={() => setShowCart(true)} className="cursor-pointer" />
+            <Settings size={18} onClick={() => setShowSettings(true)} className="cursor-pointer hidden sm:block" />
           </div>
         </nav>
 
-        {/* ===== MOBILE NAVBAR ===== */}
-        <nav className="sm:hidden flex items-center justify-between bg-[#0D0D0D] text-white px-4 py-3">
-
-          <Menu
-            size={22}
-            onClick={() => setMobileMenuOpen(true)}
-            className="cursor-pointer"
-          />
-
+        {/* MOBILE NAVBAR */}
+        {/* <nav className="sm:hidden flex items-center justify-between bg-[#0D0D0D] text-white px-4 py-3"> */}
+        <nav
+  dir="ltr"
+  className="sm:hidden flex items-center justify-between bg-[#0D0D0D] text-white px-4 py-3"
+>
+          <Menu size={22} onClick={() => setMobileMenuOpen(true)} className="cursor-pointer" />
           <div
             onClick={() => router.push("/")}
             className="text-yellow-400 font-bold text-lg cursor-pointer"
           >
             {t("navbar.logo")}
           </div>
-
-          <Settings
-            size={22}
-            onClick={() => setShowSettings(true)}
-            className="cursor-pointer"
-          />
+          <Settings size={22} onClick={() => setShowSettings(true)} className="cursor-pointer" />
         </nav>
       </div>
 
-      {/* ===== MOBILE FLOAT NAV ===== */}
-      <nav className="sm:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-40">
+      {/* MOBILE FLOAT NAV */}
+      {/* <nav className="sm:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-40"> */}
+      <nav
+  dir="ltr"
+  className="sm:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-40"
+>
         <div className="flex items-center gap-6 px-6 py-3 rounded-full bg-[#2a2a2a]/90 backdrop-blur-md shadow-lg">
-
           <Home size={20} />
-
           <Heart size={20} onClick={() => setShowWishlist(true)} />
-
           <ShoppingCart size={20} onClick={() => setShowCart(true)} />
-
           <Search size={20} onClick={() => setShowSearch(true)} />
-
           <User size={20} onClick={() => setShowLogin(true)} />
         </div>
       </nav>
 
-      {/* ===== SIDEBARS & MODALS ===== */}
+      {/* SIDEBARS */}
       <SettingsOverlay isOpen={showSettings} onClose={() => setShowSettings(false)} />
       <LoginModal isOpen={showLogin} onClose={() => setShowLogin(false)} />
       <CartSidebar isOpen={showCart} onClose={() => setShowCart(false)} />
