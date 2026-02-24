@@ -11,42 +11,42 @@ export const COUNTRIES: Country[] = [
     code: "AE",
     name: "United Arab Emirates",
     currency: "AED",
-    currencySymbol: "د.إ",
+    currencySymbol: "AED",
     flag: "https://flagcdn.com/w40/ae.png"
   },
   {
     code: "BH",
     name: "Bahrain",
     currency: "BHD",
-    currencySymbol: "د.ب",
+    currencySymbol: "BHD",
     flag: "https://flagcdn.com/w40/bh.png"
   },
   {
     code: "KW",
     name: "Kuwait",
     currency: "KWD",
-    currencySymbol: "د.ك",
+    currencySymbol: "KWD",
     flag: "https://flagcdn.com/w40/kw.png"
   },
   {
     code: "OM",
     name: "Oman",
     currency: "OMR",
-    currencySymbol: "ر.ع.",
+    currencySymbol: "OMR",
     flag: "https://flagcdn.com/w40/om.png"
   },
   {
     code: "QA",
     name: "Qatar",
     currency: "QAR",
-    currencySymbol: "ر.ق",
+    currencySymbol: "QAR",
     flag: "https://flagcdn.com/w40/qa.png"
   },
   {
     code: "SA",
     name: "Saudi Arabia",
     currency: "SAR",
-    currencySymbol: "ر.س",
+    currencySymbol: "SAR",
     flag: "https://flagcdn.com/w40/sa.png"
   },
   {

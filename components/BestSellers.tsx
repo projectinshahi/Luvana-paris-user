@@ -434,35 +434,201 @@
 //   );
 // }
 
+// "use client";
+
+// import Image from "next/image";
+// import { Heart } from "lucide-react";
+// import { useTranslation } from "react-i18next";
+// import { useCurrency } from "@/contexts/CurrencyContext";
+
+// type Product = {
+//   id: number;
+//   nameKey: string;
+//   image: string;
+//   price: number;
+// };
+
+// export default function BestSellers() {
+//   const { t, i18n } = useTranslation("common");
+//   const isRTL = i18n.language === "ar";
+//   const { formatPrice } = useCurrency();
+
+//   const products: Product[] = [
+//     { id: 1, nameKey: "products.niacinamideSerum", image: "/images/1.jpg", price: 13.79 },
+//     { id: 2, nameKey: "products.wildCherry", image: "/images/2.jpg", price: 9.97 },
+//     { id: 3, nameKey: "products.cherryBomb", image: "/images/3.jpg", price: 14.54 },
+//     { id: 4, nameKey: "products.confidence", image: "/images/4.jpg", price: 13.79 },
+//   ];
+
+//   return (
+//     <>
+//       {/* 🔥 Animation + RTL Safe Styling */}
+//       <style>{`
+//         @keyframes infiniteScroll {
+//           from { transform: translateX(0); }
+//           to { transform: translateX(-50%); }
+//         }
+
+//         .scroll-track {
+//           display: inline-flex;
+//           animation: infiniteScroll 25s linear infinite;
+//           will-change: transform;
+//         }
+
+//         .pause-on-hover:hover .scroll-track {
+//           animation-play-state: paused;
+//         }
+
+//         .slider-wrapper {
+//           direction: ltr;
+//           overflow: hidden;
+//           width: 100%;
+//         }
+//       `}</style>
+
+//       <section
+//         key={i18n.language}
+//         className="w-full bg-black text-white py-12 overflow-hidden"
+//       >
+//         <div className="max-w-7xl mx-auto px-6">
+
+//           {/* HEADER */}
+//           <div
+//             className={`flex items-center justify-center gap-6 mb-12 ${
+//               isRTL ? "flex-row-reverse" : ""
+//             }`}
+//           >
+//             <div className="flex-1 h-px bg-white/30" />
+//             <h2
+//               className={`text-[#C5A059] text-2xl lg:text-3xl whitespace-nowrap ${
+//                 isRTL ? "font-arabic" : ""
+//               }`}
+//             >
+//               {t("bestSellers")}
+//             </h2>
+//             <div className="flex-1 h-px bg-white/30" />
+//           </div>
+
+//           {/* CAROUSEL */}
+//           <div className="slider-wrapper pause-on-hover">
+//             <div className="scroll-track gap-6">
+
+//               {[...products, ...products].map((product, index) => (
+//                 <div
+//                   key={`${product.id}-${index}`}
+//                   className="shrink-0 w-65 flex"
+//                 >
+//                   <div className="bg-[#111] rounded-lg overflow-hidden hover:scale-[1.02] transition-transform duration-300 flex flex-col w-full">
+
+//                     {/* IMAGE */}
+//                     <div className="group relative w-full aspect-3/4 bg-linear-to-b from-[#E3C6A8] to-[#5F4D2B] p-1">
+//                       <div className="relative w-full h-full bg-[#D9D9D9] rounded-sm overflow-hidden">
+
+//                         {/* Wishlist */}
+//                         <button
+//                           className={`absolute top-3 ${
+//                             isRTL ? "left-3" : "right-3"
+//                           } z-10 w-8 h-8 rounded-full bg-linear-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] flex items-center justify-center opacity-0 group-hover:opacity-100 transition`}
+//                         >
+//                           <Heart className="w-4 h-4 text-black" />
+//                         </button>
+
+//                         <Image
+//                           src={product.image}
+//                           alt={t(product.nameKey)}
+//                           fill
+//                           className="object-cover"
+//                         />
+
+//                         {/* Add to Cart */}
+//                         <button
+//                           className={`absolute bottom-3 left-1/2 -translate-x-1/2 w-[85%] h-9 rounded-lg bg-linear-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] text-black text-xs opacity-0 group-hover:opacity-100 transition ${
+//                             isRTL ? "font-arabic" : ""
+//                           }`}
+//                         >
+//                           {t("products.addToCart")}
+//                         </button>
+
+//                       </div>
+//                     </div>
+
+//                     {/* TEXT */}
+//                     <div className="p-3 flex flex-col justify-between grow">
+//                       <h3
+//                         className={`text-sm mb-2 ${
+//                           isRTL ? "text-right font-arabic" : "text-left"
+//                         }`}
+//                       >
+//                         {t(product.nameKey)}
+//                       </h3>
+
+//                       <p
+//                         className={`text-[#C9A24D] text-sm ${
+//                           isRTL ? "text-right" : "text-left"
+//                         }`}
+//                       >
+//                         {formatPrice(product.price)}
+//                       </p>
+//                     </div>
+
+//                   </div>
+//                 </div>
+//               ))}
+
+//             </div>
+//           </div>
+
+//         </div>
+//       </section>
+//     </>
+//   );
+// }
 "use client";
 
 import Image from "next/image";
 import { Heart } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import { useEffect, useState } from "react";
 
-type Product = {
-  id: number;
-  nameKey: string;
-  image: string;
-  price: number;
-};
+interface Product {
+  _id: string;
+  nameEnglish: string;
+  nameArabic: string;
+  imageUrlEnglish: { imageUrl: string }[];
+  imageUrlArabic: { imageUrl: string }[];
+  minPrice: number | null;
+}
 
 export default function BestSellers() {
-  const { t, i18n } = useTranslation("common");
+  const { i18n } = useTranslation("common");
   const isRTL = i18n.language === "ar";
   const { formatPrice } = useCurrency();
 
-  const products: Product[] = [
-    { id: 1, nameKey: "products.niacinamideSerum", image: "/images/1.jpg", price: 13.79 },
-    { id: 2, nameKey: "products.wildCherry", image: "/images/2.jpg", price: 9.97 },
-    { id: 3, nameKey: "products.cherryBomb", image: "/images/3.jpg", price: 14.54 },
-    { id: 4, nameKey: "products.confidence", image: "/images/4.jpg", price: 13.79 },
-  ];
+  const [products, setProducts] = useState<Product[]>([]);
+
+  // ✅ Fetch featuredProducts from home API
+  useEffect(() => {
+    const fetchHome = async () => {
+      try {
+        const res = await fetch("http://localhost:8000/user/home");
+        const data = await res.json();
+
+        if (res.ok) {
+          setProducts(data.featuredProducts || []);
+        }
+      } catch (error) {
+        console.error("Failed to fetch featured products:", error);
+      }
+    };
+
+    fetchHome();
+  }, []);
+
+  if (!products.length) return null;
 
   return (
     <>
-      {/* 🔥 Animation + RTL Safe Styling */}
       <style>{`
         @keyframes infiniteScroll {
           from { transform: translateX(0); }
@@ -504,7 +670,7 @@ export default function BestSellers() {
                 isRTL ? "font-arabic" : ""
               }`}
             >
-              {t("bestSellers")}
+              Featured Products
             </h2>
             <div className="flex-1 h-px bg-white/30" />
           </div>
@@ -513,67 +679,81 @@ export default function BestSellers() {
           <div className="slider-wrapper pause-on-hover">
             <div className="scroll-track gap-6">
 
-              {[...products, ...products].map((product, index) => (
-                <div
-                  key={`${product.id}-${index}`}
-                  className="shrink-0 w-65 flex"
-                >
-                  <div className="bg-[#111] rounded-lg overflow-hidden hover:scale-[1.02] transition-transform duration-300 flex flex-col w-full">
+              {[...products, ...products].map((product, index) => {
+                const image =
+                  isRTL
+                    ? product.imageUrlArabic?.[0]?.imageUrl
+                    : product.imageUrlEnglish?.[0]?.imageUrl;
 
-                    {/* IMAGE */}
-                    <div className="group relative w-full aspect-3/4 bg-linear-to-b from-[#E3C6A8] to-[#5F4D2B] p-1">
-                      <div className="relative w-full h-full bg-[#D9D9D9] rounded-sm overflow-hidden">
+                const name =
+                  isRTL ? product.nameArabic : product.nameEnglish;
 
-                        {/* Wishlist */}
-                        <button
-                          className={`absolute top-3 ${
-                            isRTL ? "left-3" : "right-3"
-                          } z-10 w-8 h-8 rounded-full bg-linear-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] flex items-center justify-center opacity-0 group-hover:opacity-100 transition`}
-                        >
-                          <Heart className="w-4 h-4 text-black" />
-                        </button>
+                return (
+                  <div
+                    key={`${product._id}-${index}`}
+                    className="shrink-0 w-65 flex"
+                  >
+                    <div className="bg-[#111] rounded-lg overflow-hidden hover:scale-[1.02] transition-transform duration-300 flex flex-col w-full">
 
-                        <Image
-                          src={product.image}
-                          alt={t(product.nameKey)}
-                          fill
-                          className="object-cover"
-                        />
+                      {/* IMAGE */}
+                      <div className="group relative w-full aspect-3/4 bg-linear-to-b from-[#E3C6A8] to-[#5F4D2B] p-1">
+                        <div className="relative w-full h-full bg-[#D9D9D9] rounded-sm overflow-hidden">
 
-                        {/* Add to Cart */}
-                        <button
-                          className={`absolute bottom-3 left-1/2 -translate-x-1/2 w-[85%] h-9 rounded-lg bg-linear-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] text-black text-xs opacity-0 group-hover:opacity-100 transition ${
-                            isRTL ? "font-arabic" : ""
+                          {/* Wishlist */}
+                          <button
+                            className={`absolute top-3 ${
+                              isRTL ? "left-3" : "right-3"
+                            } z-10 w-8 h-8 rounded-full bg-linear-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] flex items-center justify-center opacity-0 group-hover:opacity-100 transition`}
+                          >
+                            <Heart className="w-4 h-4 text-black" />
+                          </button>
+
+                          {image && (
+                            <Image
+                              src={image}
+                              alt={name}
+                              fill
+                              className="object-cover"
+                            />
+                          )}
+
+                          {/* Add to Cart */}
+                          <button
+                            className={`absolute bottom-3 left-1/2 -translate-x-1/2 w-[85%] h-9 rounded-lg bg-linear-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] text-black text-xs opacity-0 group-hover:opacity-100 transition ${
+                              isRTL ? "font-arabic" : ""
+                            }`}
+                          >
+                            Add to Cart
+                          </button>
+
+                        </div>
+                      </div>
+
+                      {/* TEXT */}
+                      <div className="p-3 flex flex-col justify-between grow">
+                        <h3
+                          className={`text-sm mb-2 ${
+                            isRTL ? "text-right font-arabic" : "text-left"
                           }`}
                         >
-                          {t("products.addToCart")}
-                        </button>
+                          {name}
+                        </h3>
 
+                        <p
+                          className={`text-[#C9A24D] text-sm ${
+                            isRTL ? "text-right" : "text-left"
+                          }`}
+                        >
+                          {product.minPrice
+                            ? formatPrice(product.minPrice)
+                            : "—"}
+                        </p>
                       </div>
+
                     </div>
-
-                    {/* TEXT */}
-                    <div className="p-3 flex flex-col justify-between grow">
-                      <h3
-                        className={`text-sm mb-2 ${
-                          isRTL ? "text-right font-arabic" : "text-left"
-                        }`}
-                      >
-                        {t(product.nameKey)}
-                      </h3>
-
-                      <p
-                        className={`text-[#C9A24D] text-sm ${
-                          isRTL ? "text-right" : "text-left"
-                        }`}
-                      >
-                        {formatPrice(product.price)}
-                      </p>
-                    </div>
-
                   </div>
-                </div>
-              ))}
+                );
+              })}
 
             </div>
           </div>

@@ -5,6 +5,7 @@ import { X, Eye, EyeOff } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/lib/useLanguage";
 import SignupModal from "./SignupModal";
+import Toast from "./Toast";
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -16,14 +17,67 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const [password, setPassword] = useState("");
   const [showSignup, setShowSignup] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" | "info" } | null>(null);
+  
   const { t } = useTranslation("common");
   const { isRTL } = useLanguage();
 
   if (!isOpen && !showSignup) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   console.log("Login:", { email, password });
+  // };
+
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login:", { email, password });
+
+    setError("");
+
+    // Basic validation
+    if (!email || !password) {
+      setToast({ message: "Please enter email and password", type: "error" });
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const response = await fetch("http://localhost:8000/user/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Login failed");
+      }
+
+      // Save token
+      localStorage.setItem("token", data.token);
+
+      setToast({ message: "✨ Login successful! Welcome back!", type: "success" });
+
+      // Close modal after short delay
+      setTimeout(() => {
+        onClose();
+      }, 1500);
+
+    } catch (err: any) {
+      setToast({ message: err.message || "Login failed. Please check your credentials.", type: "error" });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleGoogleSignIn = () => {
@@ -68,9 +122,18 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
 
   return (
     <>
+      {/* Toast Notification */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
+
       {/* Backdrop - starts below complete navbar (offer bar + main navbar) */}
       <div
-        className="fixed top-18 sm:top-22 left-0 right-0 bottom-0 backdrop-blur-sm transition-opacity duration-300"
+        className="fixed top-18 sm:top-20 left-0 right-0 bottom-0 backdrop-blur-sm transition-opacity duration-300"
         style={{ backgroundColor: '#2423380', zIndex: 45 }}
         onClick={onClose}
       />
@@ -106,7 +169,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                 placeholder="Email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className={`w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A24D] transition ${
+                className={`w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none  transition ${
                   isRTL ? 'text-right' : 'text-left'
                 }`}
                 dir={isRTL ? 'rtl' : 'ltr'}
@@ -122,7 +185,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className={`w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A24D] transition ${
+                className={`w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none  transition ${
                   isRTL ? 'text-right pr-12' : 'text-left pr-12'
                 }`}
                 dir={isRTL ? 'rtl' : 'ltr'}
@@ -141,12 +204,19 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
             </div>
 
             {/* Continue Button */}
-            <button
+            {/* <button
               type="submit"
               className="w-full py-3 bg-[#C9A24D] hover:bg-[#B8934C] text-black font-semibold rounded-lg transition duration-300 mt-6"
             >
               Continue
-            </button>
+            </button> */}
+            <button
+  type="submit"
+  disabled={loading}
+  className="w-full py-3 bg-[#C9A24D] hover:bg-[#B8934C] text-black font-semibold rounded-lg transition duration-300 mt-6 disabled:opacity-50"
+>
+  {loading ? "Logging in..." : "Continue"}
+</button>
           </form>
 
           {/* Divider */}

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { X, Eye, EyeOff } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/lib/useLanguage";
+import Toast from "./Toast";
 
 interface SignupModalProps {
   isOpen: boolean;
@@ -18,19 +19,97 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" | "info" } | null>(null);
+
   const { t } = useTranslation("common");
   const { isRTL } = useLanguage();
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // const handleSubmit = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   // Handle signup logic here
+  //   if (password !== confirmPassword) {
+  //     alert("Passwords don't match!");
+  //     return;
+  //   }
+  //   console.log("Signup:", { name, email, password });
+  // };
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle signup logic here
-    if (password !== confirmPassword) {
-      alert("Passwords don't match!");
+
+    setError("");
+    setLoading(true);
+
+    // Validation
+    if (!name || !email || !password || !confirmPassword) {
+      setToast({ message: "All fields are required", type: "error" });
+      setLoading(false);
       return;
     }
-    console.log("Signup:", { name, email, password });
+
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setToast({ message: "Invalid email address", type: "error" });
+      setLoading(false);
+      return;
+    }
+
+    // Password length validation
+    if (password.length < 6) {
+      setToast({ message: "Password must be at least 6 characters", type: "error" });
+      setLoading(false);
+      return;
+    }
+
+    // Confirm password match
+    if (password !== confirmPassword) {
+      setToast({ message: "Passwords do not match", type: "error" });
+      setLoading(false);
+      return;
+    }
+
+    try {
+      // API CALL
+      const response = await fetch("http://localhost:8000/user/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+          confirmPassword,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Registration failed");
+      }
+
+      // Success
+      setToast({ message: "🎉 Registration successful! Welcome aboard!", type: "success" });
+
+      // Reset form
+      setTimeout(() => {
+        setName("");
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
+        onClose();
+      }, 2000);
+
+    } catch (err: any) {
+      setToast({ message: err.message || "Registration failed. Please try again.", type: "error" });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleGoogleSignUp = () => {
@@ -40,15 +119,24 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
 
   return (
     <>
+      {/* Toast Notification */}
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
+
       {/* Backdrop - starts below complete navbar (offer bar + main navbar) */}
       <div 
-        className="fixed top-18 sm:top-22 left-0 right-0 bottom-0 backdrop-blur-sm transition-opacity duration-300"
+        className="fixed top-18 sm:top-20 left-0 right-0 bottom-0 backdrop-blur-sm transition-opacity duration-300"
         style={{ backgroundColor: '#24232380', zIndex: 45 }}
         onClick={onClose}
       />
       
       {/* Modal with slide-in from right animation */}
-      <div className="fixed inset-0 flex items-center justify-center pointer-events-none" style={{ zIndex: 45 }}>
+      <div className="fixed pt-20 inset-0 flex items-center justify-center pointer-events-none" style={{ zIndex: 45 }}>
         <div 
           className="relative bg-[#2423380] rounded-2xl w-full max-w-md mx-4 p-8 shadow-2xl border border-gray-800 pointer-events-auto max-h-[90vh] overflow-y-auto animate-slide-in-right scrollbar-hide"
           onClick={(e) => e.stopPropagation()}
@@ -79,7 +167,7 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
               placeholder="Full Name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className={`w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A24D] transition ${
+              className={`w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none  transition ${
                 isRTL ? 'text-right' : 'text-left'
               }`}
               dir={isRTL ? 'rtl' : 'ltr'}
@@ -95,7 +183,7 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
               placeholder="Email address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className={`w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A24D] transition ${
+              className={`w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none  transition ${
                 isRTL ? 'text-right' : 'text-left'
               }`}
               dir={isRTL ? 'rtl' : 'ltr'}
@@ -111,7 +199,7 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className={`w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A24D] transition ${
+              className={`w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none  transition ${
                 isRTL ? 'text-right pr-12' : 'text-left pr-12'
               }`}
               dir={isRTL ? 'rtl' : 'ltr'}
@@ -136,7 +224,7 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
               placeholder="Confirm Password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className={`w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A24D] transition ${
+              className={`w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none  transition ${
                 isRTL ? 'text-right pr-12' : 'text-left pr-12'
               }`}
               dir={isRTL ? 'rtl' : 'ltr'}
@@ -157,9 +245,10 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
           {/* Continue Button */}
           <button
             type="submit"
-            className="w-full py-3 bg-[#C9A24D] hover:bg-[#B8934C] text-black font-semibold rounded-lg transition duration-300 mt-6"
+            disabled={loading}
+            className="w-full py-3 bg-[#C9A24D] hover:bg-[#B8934C] text-black font-semibold rounded-lg transition duration-300 mt-6 disabled:opacity-60"
           >
-            Continue
+            {loading ? "Creating Account..." : "Continue"}
           </button>
         </form>
 
