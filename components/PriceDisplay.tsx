@@ -10,7 +10,7 @@ interface PriceDisplayProps {
 
 export default function PriceDisplay({ 
   price, 
-  originalCurrency = 'INR', 
+  originalCurrency = 'USD', 
   className = '' 
 }: PriceDisplayProps) {
   const { formatPrice, isLoading } = useCurrency();

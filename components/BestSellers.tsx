@@ -439,23 +439,25 @@
 import Image from "next/image";
 import { Heart } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 type Product = {
   id: number;
   nameKey: string;
   image: string;
-  price: string;
+  price: number;
 };
 
 export default function BestSellers() {
   const { t, i18n } = useTranslation("common");
   const isRTL = i18n.language === "ar";
+  const { formatPrice } = useCurrency();
 
   const products: Product[] = [
-    { id: 1, nameKey: "products.niacinamideSerum", image: "/images/1.jpg", price: "KWD 4.92  €13.79" },
-    { id: 2, nameKey: "products.wildCherry", image: "/images/2.jpg", price: "KWD 3.66  €9.97" },
-    { id: 3, nameKey: "products.cherryBomb", image: "/images/3.jpg", price: "KWD 5.26  €14.54" },
-    { id: 4, nameKey: "products.confidence", image: "/images/4.jpg", price: "KWD 4.92  €13.79" },
+    { id: 1, nameKey: "products.niacinamideSerum", image: "/images/1.jpg", price: 13.79 },
+    { id: 2, nameKey: "products.wildCherry", image: "/images/2.jpg", price: 9.97 },
+    { id: 3, nameKey: "products.cherryBomb", image: "/images/3.jpg", price: 14.54 },
+    { id: 4, nameKey: "products.confidence", image: "/images/4.jpg", price: 13.79 },
   ];
 
   return (
@@ -514,10 +516,8 @@ export default function BestSellers() {
               {[...products, ...products].map((product, index) => (
                 <div
                   key={`${product.id}-${index}`}
-                  // className="shrink-0 w-65"
                   className="shrink-0 w-65 flex"
                 >
-                  {/* <div className="bg-[#111] rounded-lg overflow-hidden hover:scale-[1.02] transition-transform duration-300"> */}
                   <div className="bg-[#111] rounded-lg overflow-hidden hover:scale-[1.02] transition-transform duration-300 flex flex-col w-full">
 
                     {/* IMAGE */}
@@ -553,39 +553,23 @@ export default function BestSellers() {
                     </div>
 
                     {/* TEXT */}
-                    {/* <div className="p-3">
+                    <div className="p-3 flex flex-col justify-between grow">
                       <h3
-                        className={`text-sm mb-1 ${
+                        className={`text-sm mb-2 ${
                           isRTL ? "text-right font-arabic" : "text-left"
                         }`}
                       >
                         {t(product.nameKey)}
                       </h3>
+
                       <p
                         className={`text-[#C9A24D] text-sm ${
                           isRTL ? "text-right" : "text-left"
                         }`}
                       >
-                        {product.price}
+                        {formatPrice(product.price)}
                       </p>
-                    </div> */}
-                    <div className="p-3 flex flex-col justify-between grow">
-  <h3
-    className={`text-sm mb-2 ${
-      isRTL ? "text-right font-arabic" : "text-left"
-    }`}
-  >
-    {t(product.nameKey)}
-  </h3>
-
-  <p
-    className={`text-[#C9A24D] text-sm ${
-      isRTL ? "text-right" : "text-left"
-    }`}
-  >
-    {product.price}
-  </p>
-</div>
+                    </div>
 
                   </div>
                 </div>

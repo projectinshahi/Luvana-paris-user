@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Country, COUNTRIES, convertCurrency } from '@/lib/countries';
+import { Country, COUNTRIES, convertCurrency, formatPrice as formatPriceUtil } from '@/lib/countries';
 
 interface CurrencyContextType {
   selectedCountry: Country;
@@ -51,12 +51,12 @@ export const CurrencyProvider: React.FC<CurrencyProviderProps> = ({ children }) 
     }
   };
 
-  const formatPrice = (price: number, baseCurrency: string = 'INR'): string => {
+  const formatPrice = (price: number, baseCurrency: string = 'USD'): string => {
     const convertedPrice = convertPrice(price, baseCurrency);
-    return `${selectedCountry.currencySymbol}${convertedPrice.toLocaleString()}`;
+    return formatPriceUtil(convertedPrice, selectedCountry.currency, selectedCountry.currencySymbol);
   };
 
-  const convertPrice = (price: number, fromCurrency: string = 'INR'): number => {
+  const convertPrice = (price: number, fromCurrency: string = 'USD'): number => {
     return convertCurrency(price, fromCurrency, selectedCountry.currency);
   };
 

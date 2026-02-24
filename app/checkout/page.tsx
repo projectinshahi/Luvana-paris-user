@@ -5,6 +5,7 @@ import {
   Smartphone, Tag, ChevronDown, ChevronUp, Check, ArrowLeft,
   Sparkles, X
 } from "lucide-react";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 const GOLD = "#C9A24D";
 const GOLD_LIGHT = "#E2C07A";
@@ -37,6 +38,7 @@ interface OrderItemProps {
   qty: number;
   price: number;
   img: string | null;
+  formatPrice: (price: number) => string;
 }
 
 interface SuccessScreenProps {
@@ -145,7 +147,7 @@ function PaymentTab({ id, label, icon, active, onClick }: PaymentTabProps) {
   );
 }
 
-function OrderItem({ name, variant, qty, price, img }: OrderItemProps) {
+function OrderItem({ name, variant, qty, price, img, formatPrice }: OrderItemProps) {
   return (
     <div style={{ display: "flex", gap: 14, alignItems: "center", padding: "14px 0", borderBottom: "1px solid #1A1A1A" }}>
       <div style={{ position: "relative", flexShrink: 0 }}>
@@ -176,7 +178,7 @@ function OrderItem({ name, variant, qty, price, img }: OrderItemProps) {
         <p style={{ margin: 0, fontWeight: 600, color: "#F0F0F0", fontFamily: "'Cormorant Garamond', serif", fontSize: 15 }}>{name}</p>
         <p style={{ margin: "3px 0 0", fontSize: 11, color: "#555", fontFamily: "'DM Sans', sans-serif" }}>{variant}</p>
       </div>
-      <p style={{ margin: 0, fontWeight: 700, color: GOLD, fontSize: 14, fontFamily: "'DM Sans', sans-serif" }}>₹{price.toLocaleString()}</p>
+      <p style={{ margin: 0, fontWeight: 700, color: GOLD, fontSize: 14, fontFamily: "'DM Sans', sans-serif" }}>{formatPrice(price)}</p>
     </div>
   );
 }
@@ -243,6 +245,7 @@ function SuccessScreen({ onBack }: SuccessScreenProps) {
 
 // ── Main Checkout Page ────────────────────────────────────────────────────────
 export default function CheckoutPage() {
+  const { formatPrice } = useCurrency();
   const [step, setStep] = useState(1); // 1=Info, 2=Payment, 3=Review
   const [payMethod, setPayMethod] = useState("card");
   const [coupon, setCoupon] = useState("");
@@ -360,7 +363,7 @@ export default function CheckoutPage() {
             </span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <span style={{ fontWeight: 700, color: GOLD, fontSize: 16 }}>₹{total.toLocaleString()}</span>
+            <span style={{ fontWeight: 700, color: GOLD, fontSize: 16 }}>{formatPrice(total)}</span>
             {summaryOpen ? <ChevronUp size={16} color="#555" /> : <ChevronDown size={16} color="#555" />}
           </div>
         </div>
@@ -428,7 +431,7 @@ export default function CheckoutPage() {
                     display: "flex", alignItems: "center", gap: 10,
                   }}>
                     <ShieldCheck size={16} color={GOLD} />
-                    <span style={{ fontSize: 12, color: "#C0A060" }}>Free standard shipping on all orders above ₹500</span>
+                    <span style={{ fontSize: 12, color: "#C0A060" }}>Free standard shipping on all orders</span>
                   </div>
 
                   <button
@@ -590,7 +593,7 @@ export default function CheckoutPage() {
                     <div style={{ padding: "24px", background: "#0A0A0A", borderRadius: 10, border: "1px solid #1A1A1A", textAlign: "center" }}>
                       <ShieldCheck size={32} color={GOLD} style={{ marginBottom: 12 }} />
                       <p style={{ margin: "0 0 6px", fontSize: 15, color: "#F0F0F0", fontWeight: 600 }}>Cash on Delivery</p>
-                      <p style={{ margin: 0, fontSize: 13, color: "#666" }}>Pay ₹{total.toLocaleString()} when your order arrives. No extra charges.</p>
+                      <p style={{ margin: 0, fontSize: 13, color: "#666" }}>Pay {formatPrice(total)} when your order arrives. No extra charges.</p>
                     </div>
                   )}
 
@@ -680,7 +683,7 @@ export default function CheckoutPage() {
                     }}
                   >
                     <Lock size={15} />
-                    Place Order · ₹{total.toLocaleString()}
+                    Place Order · {formatPrice(total)}
                   </button>
 
                   <p style={{ textAlign: "center", fontSize: 11, color: "#444", marginTop: 14 }}>
@@ -708,7 +711,7 @@ export default function CheckoutPage() {
 
               {/* Items */}
               <div>
-                {items.map((item, i) => <OrderItem key={i} {...item} />)}
+                {items.map((item, i) => <OrderItem key={i} {...item} formatPrice={formatPrice} />)}
               </div>
 
               {/* Coupon */}
@@ -753,7 +756,7 @@ export default function CheckoutPage() {
                 </div>
                 {couponApplied && (
                   <p style={{ margin: "8px 0 0", fontSize: 12, color: "#7DBF7D" }}>
-                    ✓ Coupon applied — you save ₹{discount}!
+                    ✓ Coupon applied — you save {formatPrice(discount)}!
                   </p>
                 )}
               </div>
@@ -763,9 +766,9 @@ export default function CheckoutPage() {
               {/* Price breakdown */}
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 {[
-                  { label: "Subtotal", val: `₹${subtotal.toLocaleString()}` },
-                  { label: "Shipping", val: shipping === 0 ? "Free" : `₹${shipping}`, green: true },
-                  ...(couponApplied ? [{ label: "Discount (GLORA10)", val: `-₹${discount}`, gold: true }] : []),
+                  { label: "Subtotal", val: formatPrice(subtotal) },
+                  { label: "Shipping", val: shipping === 0 ? "Free" : formatPrice(shipping), green: true },
+                  ...(couponApplied ? [{ label: "Discount (GLORA10)", val: `-${formatPrice(discount)}`, gold: true }] : []),
                 ].map(row => (
                   <div key={row.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <span style={{ fontSize: 13, color: "#666" }}>{row.label}</span>
@@ -785,7 +788,7 @@ export default function CheckoutPage() {
                   <p style={{ margin: "2px 0 0", fontSize: 11, color: "#444" }}>Including all taxes</p>
                 </div>
                 <span style={{ fontSize: 24, fontWeight: 700, color: GOLD, fontFamily: "'Cormorant Garamond', serif" }}>
-                  ₹{total.toLocaleString()}
+                  {formatPrice(total)}
                 </span>
               </div>
 
