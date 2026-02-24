@@ -2,6 +2,7 @@
 
   import { useState, useMemo } from "react";
   import { ShoppingCart, Home, X, Heart } from "lucide-react";
+  import { useCurrency } from "@/contexts/CurrencyContext";
 
   interface Product {
     id: number;
@@ -14,6 +15,7 @@
   }
 
   export default function BrandsPage() {
+    const { formatPrice } = useCurrency();
     const [priceRange, setPriceRange] = useState(5000);
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
@@ -131,7 +133,7 @@
             className="w-full accent-[#C9A24D]"
           />
           <p className="text-xs text-gray-400 mt-1">
-            Up to ₹{priceRange}
+            Up to {formatPrice(priceRange)}
           </p>
         </div>
 
@@ -277,7 +279,7 @@
                     </p>
 
                     <p className="text-[#C9A24D] font-bold mt-3">
-                      ₹{product.price}
+                      {formatPrice(product.price)}
                     </p>
 
                     <button className="mt-auto w-full flex items-center justify-center gap-2 border border-[#C9A24D] py-2 rounded-lg text-[#C9A24D] hover:bg-[#C9A24D] hover:text-black">

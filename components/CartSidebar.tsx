@@ -3,6 +3,7 @@
 import { X, Minus, Plus } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/lib/useLanguage";
+import { useCurrency } from "@/contexts/CurrencyContext";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -25,6 +26,7 @@ interface CartSidebarProps {
 export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
   const { t } = useTranslation("common");
   const { isRTL } = useLanguage();
+  const { formatPrice } = useCurrency();
   const router = useRouter();
 
   const [cartItems, setCartItems] = useState<CartItem[]>([
@@ -139,7 +141,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                   </h3>
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-sm font-bold text-white">
-                      KWD {item.price.toFixed(2)}
+                      {formatPrice(item.price)}
                     </span>
                     <span className="text-xs text-green-500 font-semibold">
                       {item.discount}% {t("cart.off")}
@@ -192,37 +194,33 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
             <div className="flex items-center justify-between text-sm">
               <span className="text-gray-400">{t("cart.total")}</span>
               <span className="text-white font-medium">
-                {total.toFixed(2)}
+                {formatPrice(total)}
               </span>
             </div>
 
             <div className="flex items-center justify-between text-sm">
               <span className="text-gray-400">{t("cart.discount")}</span>
               <span className="text-green-500 font-medium">
-                {totalDiscount.toFixed(2)}
+                {formatPrice(totalDiscount)}
               </span>
             </div>
 
             <div className="flex items-center justify-between text-sm">
               <span className="text-gray-400">{t("cart.shipping")}</span>
               <span className="text-white font-medium">
-                {/* {shipping === 0 ? t("cart.free") : shipping.toFixed(2)} */}
-                {shipping === 0
-  ? t("cart.free")
-  : Number(shipping).toFixed(2)}
-
+                {shipping === 0 ? t("cart.free") : formatPrice(shipping)}
               </span>
             </div>
 
             {/* Final Total */}
             <div className="flex items-center justify-between pt-3 border-t border-[#2A2A2A]">
               <span className="text-2xl font-bold text-white">
-                {total.toFixed(2)}
+                {formatPrice(total)}
               </span>
               <button  className="bg-[#C9A24D] hover:bg-[#B8934C] text-black px-8 py-3 rounded-lg font-semibold transition"
   onClick={() => {
-    onClose();          // ✅ Close the sidebar
-    router.push('/checkout'); // ✅ Then navigate
+    onClose();
+    router.push('/checkout');
   }}>
                 {t("cart.buyNow")}
               </button>
