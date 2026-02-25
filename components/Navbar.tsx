@@ -767,6 +767,9 @@ import {
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { logoutUser, selectIsAuthenticated } from "@/app/features/auth";
+import { toast } from "react-toastify";
 
 import SettingsOverlay from "@/components/SettingsOverlay";
 import LoginModal from "@/components/LoginModal";
@@ -778,6 +781,8 @@ import { useLanguage } from "@/lib/useLanguage";
 
 export default function Navbar() {
   const router = useRouter();
+  const dispatch = useAppDispatch();
+  const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const { t, ready } = useTranslation("common");
   const { isRTL } = useLanguage();
 
@@ -789,7 +794,6 @@ export default function Navbar() {
   const [showSearch, setShowSearch] = useState(false);
   const [showWishlist, setShowWishlist] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // ✅ NEW PROMOTION STATES
   const [offers, setOffers] = useState<string[]>([]);
@@ -797,11 +801,6 @@ export default function Navbar() {
 
   useEffect(() => {
     setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) setIsLoggedIn(true);
   }, []);
 
   // ✅ FETCH PROMOTION STRIP
@@ -846,22 +845,13 @@ export default function Navbar() {
 
   const handleLogout = async () => {
     try {
-      const token = localStorage.getItem("token");
-
-      await fetch("http://localhost:8000/user/logout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      localStorage.removeItem("token");
-      setIsLoggedIn(false);
+      await dispatch(logoutUser());
+      toast.success("Logged out successfully");
       setShowUserDropdown(false);
       router.push("/");
     } catch (error) {
       console.error("Logout failed:", error);
+      toast.error("Logout failed");
     }
   };
 
@@ -899,12 +889,12 @@ export default function Navbar() {
                 size={18}
                 className="cursor-pointer"
                 onClick={() => {
-                  if (!isLoggedIn) setShowLogin(true);
+                  if (!isAuthenticated) setShowLogin(true);
                   else setShowUserDropdown(!showUserDropdown);
                 }}
               />
 
-              {isLoggedIn && showUserDropdown && (
+              {isAuthenticated && showUserDropdown && (
                 <div className="absolute right-0 mt-2 w-40 bg-[#1a1a1a] border border-gray-700 rounded-lg shadow-lg">
                   <button
                     className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700"

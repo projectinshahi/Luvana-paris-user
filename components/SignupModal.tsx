@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, Eye, EyeOff } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/lib/useLanguage";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { registerUser, selectAuthLoading, selectIsAuthenticated, selectAuthError } from "@/app/features/auth";
 import Toast from "./Toast";
 
 interface SignupModalProps {
@@ -13,90 +15,25 @@ interface SignupModalProps {
 }
 
 export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: SignupModalProps) {
+  const dispatch = useAppDispatch();
+  const loading = useAppSelector(selectAuthLoading);
+  const isAuthenticated = useAppSelector(selectIsAuthenticated);
+  const error = useAppSelector(selectAuthError);
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" | "info" } | null>(null);
 
   const { t } = useTranslation("common");
   const { isRTL } = useLanguage();
 
-  if (!isOpen) return null;
-
-  // const handleSubmit = (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   // Handle signup logic here
-  //   if (password !== confirmPassword) {
-  //     alert("Passwords don't match!");
-  //     return;
-  //   }
-  //   console.log("Signup:", { name, email, password });
-  // };
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    setError("");
-    setLoading(true);
-
-    // Validation
-    if (!name || !email || !password || !confirmPassword) {
-      setToast({ message: "All fields are required", type: "error" });
-      setLoading(false);
-      return;
-    }
-
-    // Email format validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setToast({ message: "Invalid email address", type: "error" });
-      setLoading(false);
-      return;
-    }
-
-    // Password length validation
-    if (password.length < 6) {
-      setToast({ message: "Password must be at least 6 characters", type: "error" });
-      setLoading(false);
-      return;
-    }
-
-    // Confirm password match
-    if (password !== confirmPassword) {
-      setToast({ message: "Passwords do not match", type: "error" });
-      setLoading(false);
-      return;
-    }
-
-    try {
-      // API CALL
-      const response = await fetch("http://localhost:8000/user/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name,
-          email,
-          password,
-          confirmPassword,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Registration failed");
-      }
-
-      // Success
+  useEffect(() => {
+    if (isAuthenticated) {
       setToast({ message: "🎉 Registration successful! Welcome aboard!", type: "success" });
-
-      // Reset form
       setTimeout(() => {
         setName("");
         setEmail("");
@@ -104,12 +41,53 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
         setConfirmPassword("");
         onClose();
       }, 2000);
-
-    } catch (err: any) {
-      setToast({ message: err.message || "Registration failed. Please try again.", type: "error" });
-    } finally {
-      setLoading(false);
     }
+  }, [isAuthenticated, onClose]);
+
+  useEffect(() => {
+    if (error) {
+      setToast({ message: error, type: "error" });
+    }
+  }, [error]);
+
+  if (!isOpen) return null;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Validation
+    if (!name || !email || !password || !confirmPassword) {
+      setToast({ message: "All fields are required", type: "error" });
+      return;
+    }
+
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setToast({ message: "Invalid email address", type: "error" });
+      return;
+    }
+
+    // Password length validation
+    if (password.length < 6) {
+      setToast({ message: "Password must be at least 6 characters", type: "error" });
+      return;
+    }
+
+    // Confirm password match
+    if (password !== confirmPassword) {
+      setToast({ message: "Passwords do not match", type: "error" });
+      return;
+    }
+
+    // Dispatch Redux action
+    await dispatch(
+      registerUser({
+        name,
+        email,
+        password,
+      })
+    );
   };
 
   const handleGoogleSignUp = () => {
@@ -261,7 +239,8 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
 
         {/* Google Sign Up */}
         <button
-          onClick={handleGoogleSignUp}
+          type="button"
+          onClick={() => setToast({ message: "Google Sign Up coming soon!", type: "info" })}
           className="w-full py-3 bg-gray-800/50 hover:bg-gray-800 border border-gray-700 text-white rounded-lg transition duration-300 flex items-center justify-center gap-3"
         >
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
