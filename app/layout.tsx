@@ -121,11 +121,13 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Cactus_Classical_Serif } from "next/font/google";
 import "./globals.css";
-
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { I18nProvider } from "./providers";
 import { CurrencyProvider } from "@/contexts/CurrencyContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { ReduxProvider } from "../redux/ReduxProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -170,13 +172,16 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${cactusSerif.variable} antialiased w-full overflow-x-hidden bg-black`}
         suppressHydrationWarning
       >
+        <ReduxProvider>
         <I18nProvider>
           <CurrencyProvider>
             <Navbar />
             {children}
             <Footer />
+            <ToastContainer position="top-right" autoClose={3000} />
           </CurrencyProvider>
         </I18nProvider>
+        </ReduxProvider>
       </body>
     </html>
   );
