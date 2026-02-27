@@ -278,8 +278,8 @@ const handleAddToWishlist = async (product: Product) => {
             className="w-full h-2 bg-[#2A2A2A] rounded-lg appearance-none cursor-pointer accent-[#C9A24D]"
           />
           <div className="flex items-center justify-between mt-3">
-            <p className="text-xs text-gray-400">₹0</p>
-            <p className="text-sm font-semibold text-[#C9A24D]">₹{priceRange.toLocaleString("en-IN")}</p>
+            <p className="text-xs text-gray-400">KWD 0</p>
+            <p className="text-sm font-semibold text-[#C9A24D]">KWD {priceRange.toLocaleString("en-IN")}</p>
           </div>
         </div>
 
@@ -557,12 +557,12 @@ const handleAddToWishlist = async (product: Product) => {
   return (
     <div className="flex items-center gap-2 mb-4">
       <span className="text-[#C9A24D] font-bold text-lg">
-        ₹{price.toLocaleString("en-IN")}
+        KWD {price.toLocaleString("en-IN")}
       </span>
 
       {mrp && mrp > price && (
         <span className="text-gray-500 line-through text-sm">
-          ₹{mrp.toLocaleString("en-IN")}
+          KWD {mrp.toLocaleString("en-IN")}
         </span>
       )}
     </div>
