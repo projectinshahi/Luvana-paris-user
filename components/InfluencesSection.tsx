@@ -351,31 +351,6 @@ export default function InfluencersSection() {
 
   return (
     <>
-      {/* ✅ Animation Styles */}
-      {/* <style>{`
-        @keyframes influencer-scroll {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-
-        @keyframes influencer-scroll-reverse {
-          0% { transform: translateX(-50%); }
-          100% { transform: translateX(0); }
-        }
-
-        .influencer-scroll {
-          animation: influencer-scroll 30s linear infinite;
-        }
-
-        .influencer-scroll-reverse {
-          animation: influencer-scroll-reverse 30s linear infinite;
-        }
-
-        .pause-on-hover:hover .influencer-scroll,
-        .pause-on-hover:hover .influencer-scroll-reverse {
-          animation-play-state: paused;
-        }
-      `}</style> */}
       <style>{`
   @keyframes influencerScroll {
     from { transform: translateX(0); }
