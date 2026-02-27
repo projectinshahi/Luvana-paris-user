@@ -448,7 +448,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { Libre_Bodoni, Charm } from "next/font/google";
 import { useTranslation } from "react-i18next";
 
@@ -473,9 +473,10 @@ export default function ImageSection() {
 
   const [banners, setBanners] = useState<Banner[]>([]);
   const [current, setCurrent] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // ✅ Fetch Home API
+  // Fetch banners
   useEffect(() => {
     const fetchHome = async () => {
       try {
@@ -488,44 +489,57 @@ export default function ImageSection() {
             .sort((a: Banner, b: Banner) => a.sortOrder - b.sortOrder);
 
           setBanners(activeBanners);
+          setIsLoading(false);
         }
       } catch (error) {
         console.error("Failed to fetch home data:", error);
+        setIsLoading(false);
       }
     };
 
     fetchHome();
   }, []);
 
-  // ✅ Auto Slide
-  useEffect(() => {
-    if (!banners.length) return;
-
-    startAutoSlide();
-    return () => stopAutoSlide();
-  }, [banners]);
-
-  const startAutoSlide = () => {
+  // Auto slide with smooth transitions
+  const startAutoSlide = useCallback(() => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    
     intervalRef.current = setInterval(() => {
       setCurrent((prev) => (prev + 1) % banners.length);
-    }, 4000);
-  };
+    }, 5000);
+  }, [banners.length]);
 
-  const stopAutoSlide = () => {
-    if (intervalRef.current) clearInterval(intervalRef.current);
-  };
+  const stopAutoSlide = useCallback(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  }, []);
 
-  const handleDotClick = (index: number) => {
+  useEffect(() => {
+    if (banners.length > 1) {
+      startAutoSlide();
+    }
+    return () => stopAutoSlide();
+  }, [banners.length, startAutoSlide, stopAutoSlide]);
+
+  const handleDotClick = useCallback((index: number) => {
     stopAutoSlide();
     setCurrent(index);
     startAutoSlide();
-  };
+  }, [startAutoSlide, stopAutoSlide]);
 
-  if (!banners.length) return null;
+  // Loading state
+  if (isLoading || !banners.length) {
+    return (
+      <section className="relative w-full h-[70vh] sm:h-[80vh] md:h-[85vh] lg:h-[95vh] overflow-hidden bg-gray-900">
+        <div className="absolute inset-0 shimmer-dark" />
+      </section>
+    );
+  }
 
   return (
-    <section className="relative w-full h-[70vh] sm:h-[80vh] md:h-[85vh] lg:h-[95vh] overflow-hidden">
-
+    <section className="relative w-full h-[70vh] sm:h-[80vh] md:h-[85vh] lg:h-[95vh] overflow-hidden bg-black">
       {banners.map((banner, index) => {
         const image = isRTL ? banner.imageUrlArabic : banner.imageUrlEnglish;
         const title = isRTL ? banner.titleArabic : banner.titleEnglish;
@@ -533,35 +547,49 @@ export default function ImageSection() {
           ? banner.descriptionArabic
           : banner.descriptionEnglish;
 
+        const isActive = current === index;
+        const isPrev = current === (index + 1) % banners.length;
+
         return (
           <div
             key={banner._id}
-            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-              current === index ? "opacity-100 z-20" : "opacity-0 z-10"
+            className={`absolute inset-0 transition-all duration-1000 ease-in-out ${
+              isActive 
+                ? "opacity-100 z-20 scale-100" 
+                : isPrev 
+                ? "opacity-0 z-10 scale-105" 
+                : "opacity-0 z-0 scale-95"
             }`}
+            style={{
+              transitionProperty: "opacity, transform",
+              willChange: isActive || isPrev ? "opacity, transform" : "auto",
+            }}
           >
             <Image
               src={image}
               alt={title}
               fill
               priority={index === 0}
+              quality={90}
               className="object-cover object-center"
               sizes="100vw"
+              loading={index === 0 ? "eager" : "lazy"}
             />
 
-            <div className="absolute inset-0 bg-black/50" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/60" />
 
             <div
-              className={`relative z-30 h-full flex items-center px-5 sm:px-8 md:px-16 lg:px-24
-                ${isRTL ? "justify-end text-right" : "justify-start text-left"}
-              `}
+              className={`relative z-30 h-full flex items-center px-5 sm:px-8 md:px-16 lg:px-24 transition-all duration-700 ${
+                isActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+              } ${isRTL ? "justify-end text-right" : "justify-start text-left"}`}
             >
               <div className="max-w-5xl">
-
                 <h1
                   className={`${libreBodoni.className}
                     text-[24px] sm:text-[34px] md:text-[48px] lg:text-[60px] xl:text-[72px]
                     leading-tight text-[#E3C6A8] mb-3
+                    transition-all duration-700 delay-100
+                    ${isActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}
                   `}
                 >
                   {title}
@@ -571,31 +599,35 @@ export default function ImageSection() {
                   className={`${charm.className}
                     text-[16px] sm:text-[20px] md:text-[26px] lg:text-[34px]
                     text-[#C5A059]
+                    transition-all duration-700 delay-200
+                    ${isActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}
                   `}
                 >
                   {description}
                 </p>
-
               </div>
             </div>
           </div>
         );
       })}
 
-      {/* Dots */}
-      <div className="absolute bottom-6 sm:bottom-10 left-1/2 -translate-x-1/2 flex gap-3 z-40">
-        {banners.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => handleDotClick(index)}
-            className={`transition-all duration-300 rounded-full ${
-              current === index
-                ? "w-4 h-4 bg-white scale-110"
-                : "w-3 h-3 bg-white/50 hover:bg-white/80"
-            }`}
-          />
-        ))}
-      </div>
+      {/* Navigation Dots */}
+      {banners.length > 1 && (
+        <div className="absolute bottom-6 sm:bottom-10 left-1/2 -translate-x-1/2 flex gap-3 z-40">
+          {banners.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => handleDotClick(index)}
+              aria-label={`Go to slide ${index + 1}`}
+              className={`transition-all duration-500 rounded-full ${
+                current === index
+                  ? "w-8 h-3 bg-white"
+                  : "w-3 h-3 bg-white/50 hover:bg-white/80 hover:scale-110"
+              }`}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 }

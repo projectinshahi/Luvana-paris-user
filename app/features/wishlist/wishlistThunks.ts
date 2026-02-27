@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { WishlistItem } from "./wishlistTypes";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = "http://localhost:8000";
 
 const getAuthHeader = () => {
   if (typeof window === "undefined") return {};
@@ -15,7 +15,7 @@ const getAuthHeader = () => {
   };
 };
 
-// 🔥 FETCH WISHLIST
+// 🔥 FETCH WISHLIST - GET http://localhost:8000/user/wishlist
 export const fetchWishlist = createAsyncThunk<
   WishlistItem[],
   void,
@@ -23,7 +23,7 @@ export const fetchWishlist = createAsyncThunk<
 >("wishlist/fetchWishlist", async (_, { rejectWithValue }) => {
   try {
     const response = await axios.get(
-      `${API_URL}/wishlist`,
+      `${API_URL}/user/wishlist`,
       getAuthHeader()
     );
     return response.data;
@@ -34,7 +34,7 @@ export const fetchWishlist = createAsyncThunk<
   }
 });
 
-// 🔥 ADD TO WISHLIST
+// 🔥 ADD TO WISHLIST - POST http://localhost:8000/user/wishlist
 export const addToWishlistDB = createAsyncThunk<
   WishlistItem[],
   { productId: string },
@@ -42,7 +42,7 @@ export const addToWishlistDB = createAsyncThunk<
 >("wishlist/addToWishlistDB", async (data, { rejectWithValue }) => {
   try {
     const response = await axios.post(
-      `${API_URL}/wishlist`,
+      `${API_URL}/user/wishlist`,
       data,
       getAuthHeader()
     );
@@ -54,7 +54,7 @@ export const addToWishlistDB = createAsyncThunk<
   }
 });
 
-// 🔥 REMOVE FROM WISHLIST
+// 🔥 REMOVE FROM WISHLIST - DELETE http://localhost:8000/user/wishlist
 export const removeFromWishlistDB = createAsyncThunk<
   WishlistItem[],
   string,
@@ -62,8 +62,11 @@ export const removeFromWishlistDB = createAsyncThunk<
 >("wishlist/removeFromWishlistDB", async (productId, { rejectWithValue }) => {
   try {
     const response = await axios.delete(
-      `${API_URL}/wishlist/${productId}`,
-      getAuthHeader()
+      `${API_URL}/user/wishlist`,
+      {
+        ...getAuthHeader(),
+        data: { productId }
+      }
     );
     return response.data;
   } catch (error: any) {

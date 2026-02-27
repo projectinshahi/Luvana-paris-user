@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/lib/useLanguage";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { registerUser, selectAuthLoading, selectIsAuthenticated, selectAuthError } from "@/app/features/auth";
-import Toast from "./Toast";
+import { toast } from "react-toastify";
 
 interface SignupModalProps {
   isOpen: boolean;
@@ -26,14 +26,13 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [toast, setToast] = useState<{ message: string; type: "success" | "error" | "info" } | null>(null);
 
   const { t } = useTranslation("common");
   const { isRTL } = useLanguage();
 
   useEffect(() => {
     if (isAuthenticated) {
-      setToast({ message: "🎉 Registration successful! Welcome aboard!", type: "success" });
+      toast.success("🎉 Registration successful! Welcome aboard!");
       setTimeout(() => {
         setName("");
         setEmail("");
@@ -46,7 +45,7 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
 
   useEffect(() => {
     if (error) {
-      setToast({ message: error, type: "error" });
+      toast.error(error);
     }
   }, [error]);
 
@@ -57,37 +56,44 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
 
     // Validation
     if (!name || !email || !password || !confirmPassword) {
-      setToast({ message: "All fields are required", type: "error" });
+      toast.error("All fields are required");
       return;
     }
 
     // Email format validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      setToast({ message: "Invalid email address", type: "error" });
+      toast.error("Invalid email address");
       return;
     }
 
     // Password length validation
     if (password.length < 6) {
-      setToast({ message: "Password must be at least 6 characters", type: "error" });
+      toast.error("Password must be at least 6 characters");
       return;
     }
 
     // Confirm password match
     if (password !== confirmPassword) {
-      setToast({ message: "Passwords do not match", type: "error" });
+      toast.error("Passwords do not match");
       return;
     }
 
     // Dispatch Redux action
-    await dispatch(
+    const resultAction = await dispatch(
       registerUser({
         name,
         email,
         password,
+        confirmPassword,
       })
     );
+
+    if (registerUser.rejected.match(resultAction)) {
+      toast.error(
+        (resultAction.payload as string) || "Registration failed"
+      );
+    }
   };
 
   const handleGoogleSignUp = () => {
@@ -97,15 +103,6 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
 
   return (
     <>
-      {/* Toast Notification */}
-      {toast && (
-        <Toast
-          message={toast.message}
-          type={toast.type}
-          onClose={() => setToast(null)}
-        />
-      )}
-
       {/* Backdrop - starts below complete navbar (offer bar + main navbar) */}
       <div 
         className="fixed top-18 sm:top-20 left-0 right-0 bottom-0 backdrop-blur-sm transition-opacity duration-300"
@@ -240,7 +237,7 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
         {/* Google Sign Up */}
         <button
           type="button"
-          onClick={() => setToast({ message: "Google Sign Up coming soon!", type: "info" })}
+          onClick={() => toast.info("Google Sign Up coming soon!")}
           className="w-full py-3 bg-gray-800/50 hover:bg-gray-800 border border-gray-700 text-white rounded-lg transition duration-300 flex items-center justify-center gap-3"
         >
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
