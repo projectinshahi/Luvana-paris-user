@@ -88,7 +88,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
       <div
         className={`fixed top-16 sm:top-14 bottom-0 ${
           isRTL ? "left-0" : "right-0"
-        } w-full sm:w-100 bg-[#1A1A1A] text-white z-80 transform transition-transform duration-300 ease-in-out ${
+        } w-80 sm:w-100 bg-[#1A1A1A] text-white z-80 transform transition-transform duration-300 ease-in-out ${
           isOpen
             ? "translate-x-0"
             : isRTL

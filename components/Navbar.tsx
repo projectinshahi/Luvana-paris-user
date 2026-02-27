@@ -783,6 +783,7 @@ export default function Navbar() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
+  console.log("AUTH STATE:", isAuthenticated);
   const { t, ready } = useTranslation("common");
   const { isRTL } = useLanguage();
 
@@ -895,7 +896,7 @@ export default function Navbar() {
               />
 
               {isAuthenticated && showUserDropdown && (
-                <div className="absolute right-0 mt-2 w-40 bg-[#1a1a1a] border border-gray-700 rounded-lg shadow-lg">
+                <div className="absolute right-0 mt-2 w-40 bg-[#1a1a1a] border border-gray-700 rounded-lg shadow-lg z-60">
                   <button
                     className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700"
                     onClick={() => {

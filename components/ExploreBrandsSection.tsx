@@ -180,9 +180,10 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { Charm } from "next/font/google";
 import { useTranslation } from "react-i18next";
+import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 
 const charm = Charm({ subsets: ["latin"], weight: "400" });
 
@@ -204,7 +205,14 @@ export default function ExploreBrandsSection() {
 
   const [slides, setSlides] = useState<Slide[]>([]);
   const [current, setCurrent] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [progress, setProgress] = useState(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  const SLIDE_DURATION = 5000;
+  const PROGRESS_UPDATE_INTERVAL = 50;
 
   // ✅ FETCH BRANDS FROM BACKEND
   useEffect(() => {
@@ -234,53 +242,111 @@ export default function ExploreBrandsSection() {
     fetchBrands();
   }, [i18n.language]);
 
-  // ✅ AUTO SLIDER
-  useEffect(() => {
-    if (!slides.length) return;
+  // ✅ SMOOTH SLIDE TRANSITION
+  const goToSlide = useCallback((index: number) => {
+    if (isTransitioning) return;
+    setIsTransitioning(true);
+    setCurrent(index);
+    setProgress(0);
+    setTimeout(() => setIsTransitioning(false), 300);
+  }, [isTransitioning]);
 
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
+  const goNext = useCallback(() => {
+    if (!slides.length) return;
+    goToSlide((current + 1) % slides.length);
+  }, [current, slides.length, goToSlide]);
+
+  const goPrev = useCallback(() => {
+    if (!slides.length) return;
+    goToSlide((current - 1 + slides.length) % slides.length);
+  }, [current, slides.length, goToSlide]);
+
+  // ✅ AUTO SLIDER WITH PROGRESS BAR
+  useEffect(() => {
+    if (!slides.length || !isPlaying) {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
+      return;
     }
 
+    // Reset progress
+    setProgress(0);
+
+    // Progress bar animation
+    const startTime = Date.now();
+    progressIntervalRef.current = setInterval(() => {
+      const elapsed = Date.now() - startTime;
+      const newProgress = Math.min((elapsed / SLIDE_DURATION) * 100, 100);
+      setProgress(newProgress);
+    }, PROGRESS_UPDATE_INTERVAL);
+
+    // Auto advance slide
     intervalRef.current = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % slides.length);
-    }, 5000);
+      goNext();
+    }, SLIDE_DURATION);
 
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
+    };
+  }, [slides.length, isPlaying, current, goNext]);
+
+  // ✅ KEYBOARD NAVIGATION
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") goPrev();
+      if (e.key === "ArrowRight") goNext();
+      if (e.key === " ") {
+        e.preventDefault();
+        setIsPlaying(prev => !prev);
       }
     };
-  }, [slides]);
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [goNext, goPrev]);
 
   const currentSlide = slides[current];
 
-  if (!slides.length) return null;
+  if (!slides.length) {
+    return (
+      <section
+        className="relative w-full overflow-hidden bg-black animate-pulse"
+        style={{ height: "682px" }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-900 to-black" />
+      </section>
+    );
+  }
 
   return (
     <section
-      className="relative w-full overflow-hidden bg-black"
+      className="relative w-full overflow-hidden bg-black group"
       style={{ height: "682px" }}
     >
-      {/* BACKGROUND IMAGE */}
-      <Image
-        key={currentSlide._id}
-        src={currentSlide.src}
-        alt="Brand"
-        fill
-        className="object-cover transition-opacity duration-1000 ease-in-out"
-        priority={current === 0}
-        unoptimized
-      />
+      {/* BACKGROUND IMAGE WITH SMOOTH TRANSITION */}
+      <div className="absolute inset-0">
+        <Image
+          key={currentSlide._id}
+          src={currentSlide.src}
+          alt="Brand"
+          fill
+          className={`object-cover transition-all duration-700 ease-in-out ${
+            isTransitioning ? "opacity-0 scale-105" : "opacity-100 scale-100"
+          }`}
+          priority={current === 0}
+          unoptimized
+        />
+      </div>
 
       {/* DARK OVERLAY */}
-      <div className="absolute inset-0 bg-black/40 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent pointer-events-none" />
 
-      {/* TOP TEXT */}
+      {/* TOP TEXT WITH FADE-IN ANIMATION */}
       <div
-        className={`absolute top-10 z-20 ${
+        className={`absolute top-10 z-20 transition-all duration-700 ${
           isRTL ? "left-10 text-left" : "right-10 text-right"
-        }`}
+        } ${isTransitioning ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"}`}
         style={{ maxWidth: "475px" }}
       >
         <h2
@@ -300,14 +366,45 @@ export default function ExploreBrandsSection() {
         </p>
       </div>
 
-      {/* BUTTON */}
+      {/* NAVIGATION ARROWS - VISIBLE ON HOVER */}
+      {slides.length > 1 && (
+        <>
+          <button
+            onClick={goPrev}
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-[#C9A24D] hover:border-[#C9A24D] transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-110 active:scale-95"
+            aria-label="Previous slide"
+          >
+            <ChevronLeft size={24} />
+          </button>
+          <button
+            onClick={goNext}
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-[#C9A24D] hover:border-[#C9A24D] transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-110 active:scale-95"
+            aria-label="Next slide"
+          >
+            <ChevronRight size={24} />
+          </button>
+        </>
+      )}
+
+      {/* PLAY/PAUSE BUTTON */}
+      {slides.length > 1 && (
+        <button
+          onClick={() => setIsPlaying(!isPlaying)}
+          className="absolute top-4 left-1/2 -translate-x-1/2 z-30 w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-[#C9A24D] hover:border-[#C9A24D] transition-all duration-300 opacity-0 group-hover:opacity-100"
+          aria-label={isPlaying ? "Pause slideshow" : "Play slideshow"}
+        >
+          {isPlaying ? <Pause size={18} /> : <Play size={18} className="ml-0.5" />}
+        </button>
+      )}
+
+      {/* SHOP NOW BUTTON WITH ANIMATION */}
       <div
-        className={`absolute bottom-10 z-20 ${
+        className={`absolute bottom-10 z-20 transition-all duration-700 ${
           isRTL ? "left-10" : "right-10"
-        }`}
+        } ${isTransitioning ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"}`}
       >
         <button
-          className={`rounded-[25px] bg-linear-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] text-black font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300 active:scale-95 ${
+          className={`rounded-[25px] bg-gradient-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] text-black font-semibold hover:shadow-[0_0_30px_rgba(212,175,55,0.5)] hover:scale-105 transition-all duration-300 active:scale-95 ${
             isRTL ? "font-arabic" : ""
           }`}
           style={{ width: "185px", height: "69px" }}
@@ -316,19 +413,43 @@ export default function ExploreBrandsSection() {
         </button>
       </div>
 
-      {/* DOTS NAVIGATION */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 z-20">
-        {slides.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => setCurrent(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${
-              current === index
-                ? "bg-white scale-110"
-                : "bg-white/50 hover:bg-white/70"
-            }`}
-          />
-        ))}
+      {/* DOTS NAVIGATION WITH PROGRESS BARS */}
+      {slides.length > 1 && (
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 z-20">
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => goToSlide(index)}
+              className="relative group/dot"
+              aria-label={`Go to slide ${index + 1}`}
+            >
+              {/* Progress bar background */}
+              <div className={`w-12 h-1 rounded-full bg-white/30 overflow-hidden transition-all duration-300 ${
+                current === index ? "w-16" : "group-hover/dot:bg-white/50"
+              }`}>
+                {/* Active progress fill */}
+                {current === index && isPlaying && (
+                  <div
+                    className="h-full bg-white rounded-full transition-all"
+                    style={{
+                      width: `${progress}%`,
+                      transition: "width 50ms linear"
+                    }}
+                  />
+                )}
+                {/* Static fill for current slide when paused */}
+                {current === index && !isPlaying && (
+                  <div className="h-full bg-white rounded-full w-full" />
+                )}
+              </div>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* SLIDE COUNTER */}
+      <div className="absolute top-4 right-4 z-20 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 text-white text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        {current + 1} / {slides.length}
       </div>
     </section>
   );

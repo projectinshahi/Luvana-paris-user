@@ -352,27 +352,55 @@ export default function InfluencersSection() {
   return (
     <>
       <style>{`
-  @keyframes influencerScroll {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
-  }
+        @keyframes scroll-left {
+          0% {
+            transform: translateX(0);
+          }
+          99.99% {
+            transform: translateX(calc(-50% - 0.75rem));
+          }
+          100% {
+            transform: translateX(0);
+          }
+        }
 
-  .influencer-track {
-    display: inline-flex;
-    animation: influencerScroll 30s linear infinite;
-    will-change: transform;
-  }
+        @keyframes scroll-right {
+          0% {
+            transform: translateX(calc(-50% - 0.75rem));
+          }
+          99.99% {
+            transform: translateX(0);
+          }
+          100% {
+            transform: translateX(calc(-50% - 0.75rem));
+          }
+        }
 
-  .pause-on-hover:hover .influencer-track {
-    animation-play-state: paused;
-  }
+        .carousel-track {
+          display: flex;
+          gap: 1.5rem;
+          animation: ${isRTL ? "scroll-right" : "scroll-left"} 50s linear infinite;
+          will-change: transform;
+        }
 
-  .influencer-wrapper {
-    direction: ltr;
-    overflow: hidden;
-    width: 100%;
-  }
-`}</style>
+        .carousel-container:hover .carousel-track {
+          animation-play-state: paused;
+        }
+
+        @media (min-width: 768px) {
+          .carousel-track {
+            gap: 2rem;
+            animation: ${isRTL ? "scroll-right" : "scroll-left"} 55s linear infinite;
+          }
+        }
+
+        @media (min-width: 1024px) {
+          .carousel-track {
+            gap: 3rem;
+            animation: ${isRTL ? "scroll-right" : "scroll-left"} 60s linear infinite;
+          }
+        }
+      `}</style>
 
       <section className="relative w-full py-16 md:py-24 bg-black overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-10">
@@ -392,7 +420,7 @@ export default function InfluencersSection() {
                 isRTL ? "font-arabic" : ""
               }`}
             >
-              <h2 className="text-[#C5A059] text-2xl md:text-3xl leading-tight">
+              <h2 className="text-[#C5A059] text-2xl md:text-3xl leading-tight whitespace-nowrap">
                 {t("influencers.title")}
               </h2>
               <p className="text-[#C5A059]/80 text-xs md:text-sm mt-1">
@@ -404,33 +432,30 @@ export default function InfluencersSection() {
             <div className="h-px flex-1 max-w-32 md:max-w-64 bg-linear-to-l from-transparent via-[#C5A059]/70 to-[#C5A059]/70" />
           </div>
 
-          {/* ✅ AUTO MOVING CAROUSEL */}
-          {/* <div className="relative w-full overflow-hidden pause-on-hover">
-            <div
-              className={`flex w-max gap-6 md:gap-8 lg:gap-12 ${
-                isRTL ? "influencer-scroll-reverse" : "influencer-scroll"
-              }`}
-            > */}
-            <div className="influencer-wrapper pause-on-hover">
-  <div className="influencer-track gap-6 md:gap-8 lg:gap-12">
+          {/* ✅ INFINITE CAROUSEL WITH SEAMLESS LOOP */}
+          <div className="relative w-full overflow-hidden carousel-container">
+            <div className="carousel-track">
+              {/* Render items twice for seamless loop */}
               {[...influencers, ...influencers].map((item, i) => (
                 <div
                   key={i}
-                  className="shrink-0 text-center flex flex-col items-center w-55 md:w-65 lg:w-[320px]"
+                  className="shrink-0 text-center flex flex-col items-center w-48 sm:w-56 md:w-64 lg:w-80"
                 >
                   {/* Image */}
                   <div className="relative w-full aspect-[3/4.8] overflow-hidden rounded-sm border border-[#C5A059]/40 hover:border-[#C5A059] transition-colors duration-300">
                     <Image
                       src={item.img}
-                      alt={`Influencer ${i + 1}`}
+                      alt={`Influencer ${(i % influencers.length) + 1}`}
                       fill
                       className="object-cover hover:scale-105 transition-transform duration-500"
+                      priority={i < 2}
+                      sizes="(max-width: 640px) 192px, (max-width: 768px) 224px, (max-width: 1024px) 256px, 320px"
                     />
                   </div>
 
                   {/* Text */}
                   <p
-                    className={`mt-4 md:mt-6 text-[#C5A059] text-xs md:text-sm leading-relaxed max-w-xs ${
+                    className={`mt-4 md:mt-6 text-[#C5A059] text-xs md:text-sm leading-relaxed ${
                       isRTL ? "text-right font-arabic" : "text-left"
                     }`}
                   >
