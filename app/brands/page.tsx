@@ -1,1202 +1,485 @@
 
-
-// "use client";
-
-// import { useState, useMemo } from "react";
-// import { ShoppingCart, Home, SlidersHorizontal, X } from "lucide-react";
-
-// interface Product {
-//   id: number;
-//   name: string;
-//   description: string;
-//   price: number;
-//   image: string;
-//   category: string;
-//   brand: string;
-// }
-
-// export default function BrandsPage() {
-//   const [priceRange, setPriceRange] = useState(5000);
-//   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-//   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
-//   const [sortBy, setSortBy] = useState("default");
-//   const [searchQuery, setSearchQuery] = useState("");
-//   const [isFilterOpen, setIsFilterOpen] = useState(false);
-
-//   /* ================= PRODUCTS ================= */
-//   const products: Product[] = [
-//     {
-//       id: 1,
-//       name: "Hydra Glow Face Serum",
-//       description: "Lightweight hyaluronic acid serum for intense hydration.",
-//       price: 1299,
-//       image:
-//         "https://www.jovees.com/cdn/shop/files/Artboard_3_b97ec74d-8c5a-4ea6-81ed-7360dfbfa50e.jpg?v=1738930572",
-//       category: "Skincare",
-//       brand: "GlowLab",
-//     },
-//     {
-//       id: 2,
-//       name: "Vitamin C Brightening Cream",
-//       description: "Daily moisturizer enriched with Vitamin C.",
-//       price: 1799,
-//       image:
-//         "https://healthstores.in/cdn/shop/files/PP_whitening_Cream_7.jpg?v=1766571833&width=1445",
-//       category: "Skincare",
-//       brand: "DermaCare",
-//     },
-//     {
-//       id: 3,
-//       name: "Matte Finish Foundation",
-//       description: "Full coverage matte foundation.",
-//       price: 2199,
-//       image:
-//         "https://assets.myntassets.com/h_1440,q_75,w_1080/v1/assets/images/24576580/2023/11/28/a7cac8ba-5190-410f-994a-c4b3a0aefce61701159587240-NOY-Set-Of-15-Makeup-Gift-Set-9491701159587175-1.jpg",
-//       category: "Makeup",
-//       brand: "Luxe Beauty",
-//     },
-//     {
-//       id: 4,
-//       name: "Velvet Touch Lipstick",
-//       description: "Creamy matte lipstick with rich pigment.",
-//       price: 899,
-//       image:
-//         "https://cdn.thewirecutter.com/wp-content/media/2026/02/BEST-LIPSTICK-0410-2x1-1.jpg",
-//       category: "Makeup",
-//       brand: "Luxe Beauty",
-//     },
-//     {
-//       id: 5,
-//       name: "Argan Repair Hair Serum",
-//       description: "Nourishing serum to control frizz.",
-//       price: 999,
-//       image:
-//         "https://m.media-amazon.com/images/I/61Nnnk9WDIL._AC_UF1000,1000_QL80_.jpg",
-//       category: "Haircare",
-//       brand: "SilkRoots",
-//     },
-//     {
-//       id: 6,
-//       name: "Keratin Smooth Shampoo",
-//       description: "Strengthens hair and reduces breakage.",
-//       price: 749,
-//       image:
-//         "https://svashudhi.com/cdn/shop/collections/hairfall_treatment_square_2400x.jpg?v=1690965512",
-//       category: "Haircare",
-//       brand: "SilkRoots",
-//     },
-//   ];
-
-//   const categories = ["Skincare", "Makeup", "Haircare", "Fragrance"];
-//   const brands = ["GlowLab", "DermaCare", "Luxe Beauty", "SilkRoots", "Maison Aura"];
-
-//   /* ================= FILTER ================= */
-//   const filteredProducts = useMemo(() => {
-//     let data = [...products];
-
-//     if (searchQuery)
-//       data = data.filter((p) =>
-//         p.name.toLowerCase().includes(searchQuery.toLowerCase())
-//       );
-
-//     data = data.filter((p) => p.price <= priceRange);
-
-//     if (selectedCategories.length)
-//       data = data.filter((p) => selectedCategories.includes(p.category));
-
-//     if (selectedBrands.length)
-//       data = data.filter((p) => selectedBrands.includes(p.brand));
-
-//     if (sortBy === "low") data.sort((a, b) => a.price - b.price);
-//     if (sortBy === "high") data.sort((a, b) => b.price - a.price);
-
-//     return data;
-//   }, [priceRange, selectedCategories, selectedBrands, sortBy, searchQuery]);
-
-//   /* ================= FILTER UI ================= */
-//   const FilterContent = () => (
-//     <div className="space-y-6">
-//       {/* Price */}
-//       <div>
-//         <h3 className="text-[#C9A24D] mb-2 font-semibold">Price</h3>
-//         <input
-//           type="range"
-//           min="0"
-//           max="5000"
-//           value={priceRange}
-//           onChange={(e) => setPriceRange(Number(e.target.value))}
-//           className="w-full accent-[#C9A24D]"
-//         />
-//         <p className="text-sm text-gray-400 mt-1">Up to ₹{priceRange}</p>
-//       </div>
-
-//       {/* Categories */}
-//       <div>
-//         <h3 className="text-[#C9A24D] mb-2 font-semibold">Categories</h3>
-//         {categories.map((cat) => (
-//           <label key={cat} className="flex gap-2 text-sm text-gray-300">
-//             <input
-//               type="checkbox"
-//               className="accent-[#C9A24D]"
-//               checked={selectedCategories.includes(cat)}
-//               onChange={() =>
-//                 setSelectedCategories((prev) =>
-//                   prev.includes(cat)
-//                     ? prev.filter((c) => c !== cat)
-//                     : [...prev, cat]
-//                 )
-//               }
-//             />
-//             {cat}
-//           </label>
-//         ))}
-//       </div>
-
-//       {/* Brands */}
-//       <div>
-//         <h3 className="text-[#C9A24D] mb-2 font-semibold">Brands</h3>
-//         {brands.map((brand) => (
-//           <label key={brand} className="flex gap-2 text-sm text-gray-300">
-//             <input
-//               type="checkbox"
-//               className="accent-[#C9A24D]"
-//               checked={selectedBrands.includes(brand)}
-//               onChange={() =>
-//                 setSelectedBrands((prev) =>
-//                   prev.includes(brand)
-//                     ? prev.filter((b) => b !== brand)
-//                     : [...prev, brand]
-//                 )
-//               }
-//             />
-//             {brand}
-//           </label>
-//         ))}
-//       </div>
-//     </div>
-//   );
-
-//   /* ================= UI ================= */
-//   return (
-//     <div className="pt-16 pb-16 min-h-screen bg-[#0D0D0D] text-white">
-//       <div className="max-w-7xl mx-auto px-4">
-
-//         {/* Breadcrumb */}
-//         <div className="flex items-center gap-2 text-sm text-gray-400 mb-4">
-//           <Home size={16} />
-//           <span>Home</span>
-//           <span>›</span>
-//           <span className="text-[#C9A24D]">Cosmetics</span>
-//         </div>
-
-//         {/* Mobile Filter Button */}
-//         <div className="flex gap-3 mb-4 lg:hidden">
-//           <button
-//             onClick={() => setIsFilterOpen(true)}
-//             className="flex items-center gap-2 border border-[#C9A24D] px-4 py-2 rounded-lg text-[#C9A24D]"
-//           >
-//             <SlidersHorizontal size={16} />
-//             Filters
-//           </button>
-
-//           <select
-//             onChange={(e) => setSortBy(e.target.value)}
-//             className="flex-1 px-4 py-2 bg-[#1A1A1A] border border-[#2A2A2A] rounded-lg text-white"
-//           >
-//             <option value="default">Sort</option>
-//             <option value="low">Price: Low → High</option>
-//             <option value="high">Price: High → Low</option>
-//           </select>
-//         </div>
-
-//         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-
-//           {/* Desktop Sidebar */}
-//           <aside className="hidden lg:block bg-[#1A1A1A] border border-[#2A2A2A] p-6 rounded-lg">
-//             <FilterContent />
-//           </aside>
-
-//           {/* Products */}
-//           <main className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-//             {filteredProducts.map((product) => (
-//               <div
-//                 key={product.id}
-//                 className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-lg overflow-hidden"
-//               >
-//                 <img
-//                   src={product.image}
-//                   alt={product.name}
-//                   className="aspect-square object-cover"
-//                 />
-//                 <div className="p-4">
-//                   <p className="text-xs text-gray-400">
-//                     {product.brand} • {product.category}
-//                   </p>
-//                   <h3 className="font-semibold">{product.name}</h3>
-//                   <p className="text-gray-400 text-sm mb-2">
-//                     {product.description}
-//                   </p>
-//                   <p className="text-[#C9A24D] font-bold mb-3">
-//                     ₹{product.price}
-//                   </p>
-//                   <button className="w-full flex items-center justify-center gap-2 border border-[#C9A24D] py-2 rounded-lg text-[#C9A24D] hover:bg-[#C9A24D] hover:text-black">
-//                     <ShoppingCart size={16} />
-//                     Add to Cart
-//                   </button>
-//                 </div>
-//               </div>
-//             ))}
-//           </main>
-//         </div>
-
-//         {/* Mobile Filter Drawer */}
-//         {isFilterOpen && (
-//           <>
-//             <div
-//               className="fixed inset-0 bg-black/60 z-40"
-//               onClick={() => setIsFilterOpen(false)}
-//             />
-//             <div className="fixed top-0 left-0 h-full w-80 bg-[#0D0D0D] z-50 p-6 overflow-y-auto">
-//               <div className="flex justify-between items-center mb-4">
-//                 <h2 className="text-lg font-semibold">Filters</h2>
-//                 <button onClick={() => setIsFilterOpen(false)}>
-//                   <X />
-//                 </button>
-//               </div>
-//               <FilterContent />
-//             </div>
-//           </>
-//         )}
-//       </div>
-//     </div>
-//   );
-// }
-
-// "use client";
-
-// import { useState, useMemo } from "react";
-// import { ShoppingCart, Home, X } from "lucide-react";
-
-// interface Product {
-//   id: number;
-//   name: string;
-//   description: string;
-//   price: number;
-//   image: string;
-//   category: string;
-//   brand: string;
-// }
-
-// export default function BrandsPage() {
-//   const [priceRange, setPriceRange] = useState(5000);
-//   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-//   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
-//   const [sortBy, setSortBy] = useState("default");
-//   const [searchQuery, setSearchQuery] = useState("");
-//   const [isFilterOpen, setIsFilterOpen] = useState(false);
-
-//   /* ================= PRODUCTS ================= */
-//   const products: Product[] = [
-//     {
-//       id: 1,
-//       name: "Hydra Glow Face Serum",
-//       description: "Lightweight hyaluronic acid serum for intense hydration.",
-//       price: 1299,
-//       image:
-//         "https://www.jovees.com/cdn/shop/files/Artboard_3_b97ec74d-8c5a-4ea6-81ed-7360dfbfa50e.jpg?v=1738930572",
-//       category: "Skincare",
-//       brand: "GlowLab",
-//     },
-//     {
-//       id: 2,
-//       name: "Vitamin C Brightening Cream",
-//       description: "Daily moisturizer enriched with Vitamin C.",
-//       price: 1799,
-//       image:
-//         "https://healthstores.in/cdn/shop/files/PP_whitening_Cream_7.jpg?v=1766571833&width=1445",
-//       category: "Skincare",
-//       brand: "DermaCare",
-//     },
-//     { 
-//       id: 3,
-//       name: "Matte Finish Foundation",
-//       description: "Full coverage matte foundation.",
-//       price: 2199,
-//       image:
-//         "https://assets.myntassets.com/h_1440,q_75,w_1080/v1/assets/images/24576580/2023/11/28/a7cac8ba-5190-410f-994a-c4b3a0aefce61701159587240-NOY-Set-Of-15-Makeup-Gift-Set-9491701159587175-1.jpg",
-//       category: "Makeup",
-//       brand: "Luxe Beauty",
-//     },
-//     {
-//       id: 4,
-//       name: "Velvet Touch Lipstick",
-//       description: "Creamy matte lipstick with rich pigment.",
-//       price: 899,
-//       image:
-//         "https://cdn.thewirecutter.com/wp-content/media/2026/02/BEST-LIPSTICK-0410-2x1-1.jpg",
-//       category: "Makeup",
-//       brand: "Luxe Beauty",
-//     },
-//     {
-//       id: 5,
-//       name: "Argan Repair Hair Serum",
-//       description: "Nourishing serum to control frizz.",
-//       price: 999,
-//       image:
-//         "https://m.media-amazon.com/images/I/61Nnnk9WDIL._AC_UF1000,1000_QL80_.jpg",
-//       category: "Haircare",
-//       brand: "SilkRoots",
-//     },
-//     {
-//       id: 6,
-//       name: "Keratin Smooth Shampoo",
-//       description: "Strengthens hair and reduces breakage.",
-//       price: 749,
-//       image:
-//         "https://svashudhi.com/cdn/shop/collections/hairfall_treatment_square_2400x.jpg?v=1690965512",
-//       category: "Haircare",
-//       brand: "SilkRoots",
-//     },
-//   ];
-
-//   const categories = ["Skincare", "Makeup", "Haircare", "Fragrance"];
-//   const brands = ["GlowLab", "DermaCare", "Luxe Beauty", "SilkRoots", "Maison Aura"];
-
-//   /* ================= FILTER LOGIC ================= */
-//   const filteredProducts = useMemo(() => {
-//     let data = [...products];
-
-//     if (searchQuery) {
-//       data = data.filter((p) =>
-//         p.name.toLowerCase().includes(searchQuery.toLowerCase())
-//       );
-//     }
-
-//     data = data.filter((p) => p.price <= priceRange);
-
-//     if (selectedCategories.length > 0) {
-//       data = data.filter((p) => selectedCategories.includes(p.category));
-//     }
-
-//     if (selectedBrands.length > 0) {
-//       data = data.filter((p) => selectedBrands.includes(p.brand));
-//     }
-
-//     if (sortBy === "low") data.sort((a, b) => a.price - b.price);
-//     if (sortBy === "high") data.sort((a, b) => b.price - a.price);
-
-//     return data;
-//   }, [priceRange, selectedCategories, selectedBrands, sortBy, searchQuery]);
-
-//   /* ================= FILTER CONTENT ================= */
-//   const FilterContent = () => (
-//     <div className="space-y-6">
-//       {/* Price */}
-//       <div>
-//         <h3 className="text-[#C9A24D] font-semibold mb-2">Price</h3>
-//         <input
-//           type="range"
-//           min="0"
-//           max="5000"
-//           value={priceRange}
-//           onChange={(e) => setPriceRange(Number(e.target.value))}
-//           className="w-full accent-[#C9A24D]"
-//         />
-//         <p className="text-sm text-gray-400 mt-1">Up to ₹{priceRange}</p>
-//       </div>
-
-//       {/* Categories */}
-//       <div>
-//         <h3 className="text-[#C9A24D] font-semibold mb-2">Categories</h3>
-//         {categories.map((cat) => (
-//           <label key={cat} className="flex gap-2 text-sm text-gray-300">
-//             <input
-//               type="checkbox"
-//               className="accent-[#C9A24D]"
-//               checked={selectedCategories.includes(cat)}
-//               onChange={() =>
-//                 setSelectedCategories((prev) =>
-//                   prev.includes(cat)
-//                     ? prev.filter((c) => c !== cat)
-//                     : [...prev, cat]
-//                 )
-//               }
-//             />
-//             {cat}
-//           </label>
-//         ))}
-//       </div>
-
-//       {/* Brands */}
-//       <div>
-//         <h3 className="text-[#C9A24D] font-semibold mb-2">Brands</h3>
-//         {brands.map((brand) => (
-//           <label key={brand} className="flex gap-2 text-sm text-gray-300">
-//             <input
-//               type="checkbox"
-//               className="accent-[#C9A24D]"
-//               checked={selectedBrands.includes(brand)}
-//               onChange={() =>
-//                 setSelectedBrands((prev) =>
-//                   prev.includes(brand)
-//                     ? prev.filter((b) => b !== brand)
-//                     : [...prev, brand]
-//                 )
-//               }
-//             />
-//             {brand}
-//           </label>
-//         ))}
-//       </div>
-//     </div>
-//   );
-
-//   /* ================= UI ================= */
-//   return (
-//     <div className="pt-16 pb-16 min-h-screen bg-[#0D0D0D] text-white">
-//       <div className="max-w-7xl mx-auto px-4">
-
-//         {/* Breadcrumb */}
-//         <div className="flex items-center gap-2 text-sm text-gray-400 mb-4">
-//           <Home size={16} />
-//           <span>Home</span>
-//           <span>›</span>
-//           <span className="text-[#C9A24D]">All Collection</span>
-//         </div>
-
-//         {/* MOBILE SEARCH + FILTER BAR */}
-//         <div className="lg:hidden mb-4">
-//           <div className="flex items-center gap-3">
-
-//             {/* Search */}
-//             <div className="flex items-center flex-1 bg-gray-800 rounded-full border border-gold-200 px-4 py-2">
-//               <svg
-//                 xmlns="http://www.w3.org/2000/svg"
-//                 className="h-4 w-4 text-gray-400 mr-2"
-//                 fill="none"
-//                 viewBox="0 0 24 24"
-//                 stroke="currentColor"
-//               >
-//                 <path
-//                   strokeLinecap="round"
-//                   strokeLinejoin="round"
-//                   strokeWidth={2}
-//                   d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z"
-//                 />
-//               </svg>
-
-//               <input
-//                 type="text"
-//                 placeholder="Search"
-//                 value={searchQuery}
-//                 onChange={(e) => setSearchQuery(e.target.value)}
-//                 className="flex-1 text-sm text-gray-700 outline-none bg-transparent placeholder-gray-400"
-//               />
-//             </div>
-
-//             {/* Filters */}
-//             <button
-//               onClick={() => setIsFilterOpen(true)}
-//               className="px-4 py-2 rounded-full text-sm font-medium text-white"
-//               style={{ backgroundColor: "#FF7A00" }}
-//             >
-//               Filters
-//             </button>
-//           </div>
-//         </div>
-
-//         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-
-//           {/* DESKTOP SIDEBAR */}
-//           <aside className="hidden lg:block bg-[#1A1A1A] border border-[#2A2A2A] p-6 rounded-lg">
-//             <FilterContent />
-//           </aside>
-
-//           {/* PRODUCTS */}
-//           <main className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-//             {filteredProducts.map((product) => (
-//               <div
-//                 key={product.id}
-//                 className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-lg overflow-hidden"
-//               >
-//                 <img
-//                   src={product.image}
-//                   alt={product.name}
-//                   className="aspect-square object-cover"
-//                 />
-
-//                 <div className="p-4">
-//                   <p className="text-xs text-gray-400">
-//                     {product.brand} • {product.category}
-//                   </p>
-//                   <h3 className="font-semibold">{product.name}</h3>
-//                   <p className="text-gray-400 text-sm mb-2">
-//                     {product.description}
-//                   </p>
-//                   <p className="text-[#C9A24D] font-bold mb-3">
-//                     ₹{product.price}
-//                   </p>
-
-//                   <button className="w-full flex items-center justify-center gap-2 border border-[#C9A24D] py-2 rounded-lg text-[#C9A24D] hover:bg-[#C9A24D] hover:text-black">
-//                     <ShoppingCart size={16} />
-//                     Add to Cart
-//                   </button>
-//                 </div>
-//               </div>
-//             ))}
-//           </main>
-//         </div>
-
-//         {/* MOBILE FILTER DRAWER */}
-//         {isFilterOpen && (
-//           <>
-//             <div
-//               className="fixed inset-0 bg-black/60 z-40"
-//               onClick={() => setIsFilterOpen(false)}
-//             />
-//             <div className="fixed top-0 left-0 h-full w-80 bg-[#0D0D0D] z-50 p-6 overflow-y-auto">
-//               <div className="flex items-center justify-between mb-4">
-//                 <h2 className="text-lg font-semibold">Filters</h2>
-//                 <button onClick={() => setIsFilterOpen(false)}>
-//                   <X />
-//                 </button>
-//               </div>
-//               <FilterContent />
-//             </div>
-//           </>
-//         )}
-
-//       </div>
-//     </div>
-//   );
-// }
-
-// "use client";
-
-// import { useState, useMemo } from "react";
-// import {
-//   ShoppingCart,
-//   Home,
-//   X,
-//   Heart,
-// } from "lucide-react";
-
-// interface Product {
-//   id: number;
-//   name: string;
-//   description: string;
-//   price: number;
-//   image: string;
-//   category: string;
-//   brand: string;
-// }
-
-// export default function BrandsPage() {
-//   const [priceRange, setPriceRange] = useState(5000);
-//   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-//   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
-//   const [sortBy, setSortBy] = useState("default");
-//   const [searchQuery, setSearchQuery] = useState("");
-//   const [isFilterOpen, setIsFilterOpen] = useState(false);
-
-//   /* ================= PRODUCTS ================= */
-//   const products: Product[] = [
-//     {
-//       id: 1,
-//       name: "Hydra Glow Face Serum",
-//       description: "Lightweight hyaluronic acid serum for intense hydration.",
-//       price: 1299,
-//       image:
-//         "https://www.jovees.com/cdn/shop/files/Artboard_3_b97ec74d-8c5a-4ea6-81ed-7360dfbfa50e.jpg?v=1738930572",
-//       category: "Skincare",
-//       brand: "GlowLab",
-//     },
-//     {
-//       id: 2,
-//       name: "Vitamin C Brightening Cream",
-//       description: "Daily moisturizer enriched with Vitamin C.",
-//       price: 1799,
-//       image:
-//         "https://healthstores.in/cdn/shop/files/PP_whitening_Cream_7.jpg?v=1766571833&width=1445",
-//       category: "Skincare",
-//       brand: "DermaCare",
-//     },
-//     {
-//       id: 3,
-//       name: "Matte Finish Foundation",
-//       description: "Full coverage matte foundation.",
-//       price: 2199,
-//       image:
-//         "https://assets.myntassets.com/h_1440,q_75,w_1080/v1/assets/images/24576580/2023/11/28/a7cac8ba-5190-410f-994a-c4b3a0aefce61701159587240-NOY-Set-Of-15-Makeup-Gift-Set-9491701159587175-1.jpg",
-//       category: "Makeup",
-//       brand: "Luxe Beauty",
-//     },
-//     {
-//       id: 4,
-//       name: "Velvet Touch Lipstick",
-//       description: "Creamy matte lipstick with rich pigment.",
-//       price: 899,
-//       image:
-//         "https://cdn.thewirecutter.com/wp-content/media/2026/02/BEST-LIPSTICK-0410-2x1-1.jpg",
-//       category: "Makeup",
-//       brand: "Luxe Beauty",
-//     },
-    // {
-    //   id: 5,
-    //   name: "Argan Repair Hair Serum",
-    //   description: "Nourishing serum to control frizz.",
-    //   price: 999,
-    //   image:
-    //     "https://m.media-amazon.com/images/I/61Nnnk9WDIL._AC_UF1000,1000_QL80_.jpg",
-    //   category: "Haircare",
-    //   brand: "SilkRoots",
-    // },
-    // {
-    //   id: 6,
-    //   name: "Keratin Smooth Shampoo",
-    //   description: "Strengthens hair and reduces breakage.",
-    //   price: 749,
-    //   image:
-    //     "https://svashudhi.com/cdn/shop/collections/hairfall_treatment_square_2400x.jpg?v=1690965512",
-    //   category: "Haircare",
-    //   brand: "SilkRoots",
-    // },
-//   ];
-
-//   const categories = ["Skincare", "Makeup", "Haircare", "Fragrance"];
-//   const brands = ["GlowLab", "DermaCare", "Luxe Beauty", "SilkRoots", "Maison Aura"];
-
-//   /* ================= FILTER + SORT ================= */
-//   const filteredProducts = useMemo(() => {
-//     let data = [...products];
-
-//     if (searchQuery) {
-//       data = data.filter((p) =>
-//         p.name.toLowerCase().includes(searchQuery.toLowerCase())
-//       );
-//     }
-
-//     data = data.filter((p) => p.price <= priceRange);
-
-//     if (selectedCategories.length) {
-//       data = data.filter((p) =>
-//         selectedCategories.includes(p.category)
-//       );
-//     }
-
-//     if (selectedBrands.length) {
-//       data = data.filter((p) =>
-//         selectedBrands.includes(p.brand)
-//       );
-//     }
-
-//     if (sortBy === "low") {
-//       data.sort((a, b) => a.price - b.price);
-//     } else if (sortBy === "high") {
-//       data.sort((a, b) => b.price - a.price);
-//     }
-
-//     return data;
-//   }, [priceRange, selectedCategories, selectedBrands, sortBy, searchQuery]);
-
-//   /* ================= FILTER CONTENT ================= */
-//   const FilterContent = () => (
-//     <div className="space-y-5 text-sm">
-//       {/* Price (compact) */}
-//       <div>
-//         <h3 className="text-[#C9A24D] font-semibold mb-1">Price</h3>
-//         <input
-//           type="range"
-//           min="0"
-//           max="5000"
-//           value={priceRange}
-//           onChange={(e) => setPriceRange(Number(e.target.value))}
-//           className="w-full accent-[#C9A24D]"
-//         />
-//         <p className="text-xs text-gray-400 mt-1">
-//           Up to ₹{priceRange}
-//         </p>
-//       </div>
-
-//       {/* Categories */}
-//       <div>
-//         <h3 className="text-[#C9A24D] font-semibold mb-2">Categories</h3>
-//         {categories.map((cat) => (
-//           <label key={cat} className="flex gap-2 text-gray-300">
-//             <input
-//               type="checkbox"
-//               className="accent-[#C9A24D]"
-//               checked={selectedCategories.includes(cat)}
-//               onChange={() =>
-//                 setSelectedCategories((prev) =>
-//                   prev.includes(cat)
-//                     ? prev.filter((c) => c !== cat)
-//                     : [...prev, cat]
-//                 )
-//               }
-//             />
-//             {cat}
-//           </label>
-//         ))}
-//       </div>
-
-//       {/* Brands */}
-//       <div>
-//         <h3 className="text-[#C9A24D] font-semibold mb-2">Brands</h3>
-//         {brands.map((brand) => (
-//           <label key={brand} className="flex gap-2 text-gray-300">
-//             <input
-//               type="checkbox"
-//               className="accent-[#C9A24D]"
-//               checked={selectedBrands.includes(brand)}
-//               onChange={() =>
-//                 setSelectedBrands((prev) =>
-//                   prev.includes(brand)
-//                     ? prev.filter((b) => b !== brand)
-//                     : [...prev, brand]
-//                 )
-//               }
-//             />
-//             {brand}
-//           </label>
-//         ))}
-//       </div>
-//     </div>
-//   );
-
-//   /* ================= UI ================= */
-//   return (
-//     <div className="pt-16 pb-16 min-h-screen bg-[#0D0D0D] text-white">
-//       <div className="max-w-7xl mx-auto px-4">
-
-//         {/* Breadcrumb */}
-//         <div className="flex items-center gap-2 text-sm text-gray-400 mb-4">
-//           <Home size={16} />
-//           <span>Home</span>
-//           <span>›</span>
-//           <span className="text-[#C9A24D]">All Collection</span>
-//         </div>
-
-//         {/* MOBILE SEARCH + SORT + FILTER */}
-//         <div className="lg:hidden mb-4 space-y-3">
-//           <div className="flex gap-3">
-//             <input
-//               placeholder="Search"
-//               value={searchQuery}
-//               onChange={(e) => setSearchQuery(e.target.value)}
-//               className="flex-1 bg-gray-800 rounded-full px-4 py-2 text-sm outline-none"
-//             />
-
-//             <select
-//               value={sortBy}
-//               onChange={(e) => setSortBy(e.target.value)}
-//               className="px-4 py-2 rounded-full text-sm bg-gray-800"
-//             >
-//               <option value="default">Sort</option>
-//               <option value="low">Low → High</option>
-//               <option value="high">High → Low</option>
-//             </select>
-
-//             <button
-//               onClick={() => setIsFilterOpen(true)}
-//               className="px-4 py-2 rounded-full text-sm font-medium bg-[#FF7A00]"
-//             >
-//               Filters
-//             </button>
-//           </div>
-//         </div>
-
-//         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-
-//           {/* Desktop Filters */}
-//           <aside className="hidden lg:block bg-[#1A1A1A] border border-[#2A2A2A] p-5 rounded-lg">
-//             <FilterContent />
-//           </aside>
-
-//           {/* Products */}
-//           <main className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-//             {filteredProducts.map((product) => (
-//               <div
-//                 key={product.id}
-//                 className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-lg overflow-hidden flex flex-col"
-//               >
-//                 {/* Image */}
-//                 <div className="relative aspect-square">
-//                   <img
-//                     src={product.image}
-//                     alt={product.name}
-//                     className="w-full h-full object-cover"
-//                   />
-//                   {/* Wishlist */}
-//                   <button className="absolute top-3 right-3 bg-black/60 p-2 rounded-full hover:bg-[#C9A24D]">
-//                     <Heart size={16} />
-//                   </button>
-//                 </div>
-
-//                 {/* Content */}
-//                 <div className="p-4 flex flex-col flex-1">
-//                   <p className="text-xs text-gray-400">
-//                     {product.brand} • {product.category}
-//                   </p>
-//                   <h3 className="font-semibold">{product.name}</h3>
-//                   <p className="text-gray-400 text-sm line-clamp-2">
-//                     {product.description}
-//                   </p>
-
-//                   <p className="text-[#C9A24D] font-bold mt-3">
-//                     ₹{product.price}
-//                   </p>
-
-//                   {/* Button aligned */}
-//                   <button className="mt-auto w-full flex items-center justify-center gap-2 border border-[#C9A24D] py-2 rounded-lg text-[#C9A24D] hover:bg-[#C9A24D] hover:text-black">
-//                     <ShoppingCart size={16} />
-//                     Add to Cart
-//                   </button>
-//                 </div>
-//               </div>
-//             ))}
-//           </main>
-//         </div>
-
-//         {/* Mobile Filter Drawer */}
-//         {isFilterOpen && (
-//           <>
-//             <div
-//               className="fixed inset-0 bg-black/60 z-40"
-//               onClick={() => setIsFilterOpen(false)}
-//             />
-//             <div className="fixed top-0 left-0 h-full w-80 bg-[#0D0D0D] z-50 p-6 overflow-y-auto">
-//               <div className="flex justify-between items-center mb-4">
-//                 <h2 className="text-lg font-semibold">Filters</h2>
-//                 <button onClick={() => setIsFilterOpen(false)}>
-//                   <X />
-//                 </button>
-//               </div>
-//               <FilterContent />
-//             </div>
-//           </>
-//         )}
-//       </div>
-//     </div>
-//   );
-// }
-
-"use client";
-
-import { useState, useMemo } from "react";
-import { ShoppingCart, Home, X, Heart } from "lucide-react";
-import { useRouter } from "next/navigation";
-
+  "use client";
+
+  import { useState, useEffect, useMemo } from "react";
+  import { ShoppingCart, X, Heart, Search, Sliders } from "lucide-react";
+  import { useRouter, useSearchParams } from "next/navigation";
+  import { useLanguage } from "@/lib/useLanguage";
+  
+  import axios from "axios";
+
+ 
+interface Variant {
+  _id: string;
+  price: number;
+  mrp: number;
+}
 
 interface Product {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  image: string;
-  category: string;
-  brand: string;
+  _id: string;
+  nameEnglish: string;
+  shortDescriptionEnglish: string;
+  minPrice: number | null;
+  variants?: Variant[];
+  category: {
+    _id: string;
+    nameEnglish: string;
+  };
+  brand: {
+    _id: string;
+    nameEnglish: string;
+  };
+  imageUrlEnglish: {
+    imageUrl: string;
+  }[];
+}
+  export default function BrandsPage() {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    // const { t } = useLanguage();
+    const { t, currentLanguage } = useLanguage();
+const isArabic = currentLanguage === "ar";
+
+    const [products, setProducts] = useState<Product[]>([]);
+    const [priceRange, setPriceRange] = useState(5000);
+    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+    const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [sortBy, setSortBy] = useState("default");
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [homeCategories, setHomeCategories] = useState<any[]>([]);
+const [homeBrands, setHomeBrands] = useState<any[]>([]);
+
+    /* ================= LOAD BRAND FROM URL PARAMETER ================= */
+    useEffect(() => {
+    const brandParam = searchParams.get("brand");
+    if (brandParam) {
+      setSelectedBrands([brandParam]);
+    }
+  }, [searchParams]);
+
+    /* ================= LOAD CATEGORY FROM URL PARAMETER ================= */
+    useEffect(() => {
+    const categoryParam = searchParams.get("category");
+    if (categoryParam) {
+      setSelectedCategories([categoryParam]);
+    }
+  }, [searchParams]);
+
+    /* ================= FETCH PRODUCTS ================= */
+    useEffect(() => {
+  const fetchHomeData = async () => {
+    try {
+      const res = await axios.get("http://localhost:8000/user/home");
+
+      const activeCategories = res.data.categories.filter(
+        (cat: any) => cat.status === "active"
+      );
+
+      const activeBrands = res.data.brands.filter(
+        (brand: any) => brand.status === "active"
+      );
+
+      setHomeCategories(activeCategories);
+      setHomeBrands(activeBrands);
+    } catch (error) {
+      console.error("Error fetching home data:", error);
+    }
+  };
+
+  fetchHomeData();
+}, []);
+    useEffect(() => {
+      const fetchProducts = async () => {
+        try {
+          setLoading(true);
+
+    
+const params: any = {
+  page: 1,
+  limit: 50,
+  search: searchQuery,
+};
+
+if (selectedCategories.length > 0) {
+  params.category = selectedCategories.join(",");
 }
 
-export default function BrandsPage() {
-  const [priceRange, setPriceRange] = useState(5000);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
-  const [sortBy, setSortBy] = useState("default");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const router = useRouter();
+if (selectedBrands.length > 0) {
+  params.brand = selectedBrands.join(",");
+}
 
+// Only apply price filter if user actually changed it
+if (priceRange < 5000) {
+  params.maxPrice = priceRange;
+}
+          const res = await axios.get(
+            "http://localhost:8000/user/product",
+            { params }
+          );
 
-  /* ================= PRODUCTS ================= */
-  const products: Product[] = [
-    {
-      id: 1,
-      name: "Hydra Glow Face Serum",
-      description: "Lightweight hyaluronic acid serum for intense hydration.",
-      price: 1299,
-      image:
-        "https://www.jovees.com/cdn/shop/files/Artboard_3_b97ec74d-8c5a-4ea6-81ed-7360dfbfa50e.jpg?v=1738930572",
-      category: "Skincare",
-      brand: "GlowLab",
-    },
-    {
-      id: 2,
-      name: "Vitamin C Brightening Cream",
-      description: "Daily moisturizer enriched with Vitamin C.",
-      price: 1799,
-      image:
-        "https://healthstores.in/cdn/shop/files/PP_whitening_Cream_7.jpg?v=1766571833&width=1445",
-      category: "Skincare",
-      brand: "DermaCare",
-    },
-    {
-      id: 3,
-      name: "Matte Finish Foundation",
-      description: "Full coverage matte foundation.",
-      price: 2199,
-      image:
-        "https://assets.myntassets.com/h_1440,q_75,w_1080/v1/assets/images/24576580/2023/11/28/a7cac8ba-5190-410f-994a-c4b3a0aefce61701159587240-NOY-Set-Of-15-Makeup-Gift-Set-9491701159587175-1.jpg",
-      category: "Makeup",
-      brand: "Luxe Beauty",
-    },
-    {
-      id: 4,
-      name: "Velvet Touch Lipstick",
-      description: "Creamy matte lipstick with rich pigment.",
-      price: 899,
-      image:
-        "https://cdn.thewirecutter.com/wp-content/media/2026/02/BEST-LIPSTICK-0410-2x1-1.jpg",
-      category: "Makeup",
-      brand: "Luxe Beauty",
-    },
-        {
-      id: 5,
-      name: "Argan Repair Hair Serum",
-      description: "Nourishing serum to control frizz.",
-      price: 999,
-      image:
-        "https://m.media-amazon.com/images/I/61Nnnk9WDIL._AC_UF1000,1000_QL80_.jpg",
-      category: "Haircare",
-      brand: "SilkRoots",
-    },
-    {
-      id: 6,
-      name: "Keratin Smooth Shampoo",
-      description: "Strengthens hair and reduces breakage.",
-      price: 749,
-      image:
-        "https://svashudhi.com/cdn/shop/collections/hairfall_treatment_square_2400x.jpg?v=1690965512",
-      category: "Haircare",
-      brand: "SilkRoots",
-    },
-  ];
+          console.log("API Response:", res.data); // Debug log
+          const items = res.data.items || [];
+          console.log("Products count:", items.length); // Debug log
+          console.log("Sample product:", items[0]); // Debug log
+          
+          setProducts(items);
+        } catch (error) {
+          console.error("Error fetching products:", error);
+          setProducts([]);
+        } finally {
+          setLoading(false);
+        }
+      };
 
-  const categories = ["Skincare", "Makeup", "Haircare", "Fragrance"];
-  const brands = ["GlowLab", "DermaCare", "Luxe Beauty", "SilkRoots", "Maison Aura"];
+      fetchProducts();
+    }, [priceRange, selectedCategories, selectedBrands, searchQuery]);
 
-  /* ================= FILTER + SORT ================= */
-  const filteredProducts = useMemo(() => {
-    let data = [...products];
+    /* ================= UNIQUE CATEGORY & BRAND ================= */
 
-    if (searchQuery) {
-      data = data.filter((p) =>
-        p.name.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
+    // const categories = useMemo(() => {
+    //   const map = new Map();
+    //   products.forEach((p) => {
+    //     if (p.category?._id) {
+    //       map.set(p.category._id, p.category.nameEnglish);
+    //     }
+    //   });
+    //   return Array.from(map, ([id, name]) => ({ id, name }));
+    // }, [products]);
 
-    data = data.filter((p) => p.price <= priceRange);
+    // const brands = useMemo(() => {
+    //   const map = new Map();
+    //   products.forEach((p) => {
+    //     if (p.brand?._id) {
+    //       map.set(p.brand._id, p.brand.nameEnglish);
+    //     }
+    //   });
+    //   return Array.from(map, ([id, name]) => ({ id, name }));
+    // }, [products]);
 
-    if (selectedCategories.length) {
-      data = data.filter((p) => selectedCategories.includes(p.category));
-    }
+    /* ================= SORT PRODUCTS ================= */
+    const sortedProducts = useMemo(() => {
+      let sorted = [...products];
 
-    if (selectedBrands.length) {
-      data = data.filter((p) => selectedBrands.includes(p.brand));
-    }
+      if (sortBy === "low") {
+        sorted.sort((a, b) => {
+          const priceA = a.minPrice || 0;
+          const priceB = b.minPrice || 0;
+          return priceA - priceB;
+        });
+      } else if (sortBy === "high") {
+        sorted.sort((a, b) => {
+          const priceA = a.minPrice || 0;
+          const priceB = b.minPrice || 0;
+          return priceB - priceA;
+        });
+      }
 
-    if (sortBy === "low") data.sort((a, b) => a.price - b.price);
-    if (sortBy === "high") data.sort((a, b) => b.price - a.price);
+      return sorted;
+    }, [products, sortBy]);
 
-    return data;
-  }, [priceRange, selectedCategories, selectedBrands, sortBy, searchQuery]);
+    /* ================= FILTER CONTENT ================= */
+    const FilterContent = () => (
+      <div className="space-y-6">
 
-  /* ================= FILTER CONTENT ================= */
-  const FilterContent = () => (
-    // <div className="space-y-4 text-sm">
-    <div className="space-y-4 text-sm h-fit self-start">
-
-      {/* Price (compact) */}
-      <div>
-        <h3 className="text-[#C9A24D] font-semibold mb-1"> Filter By Price</h3>
-        <input
-          type="range"
-          min="0"
-          max="5000"
-          value={priceRange}
-          onChange={(e) => setPriceRange(Number(e.target.value))}
-          className="w-full accent-[#C9A24D]"
-        />
-        <p className="text-xs text-gray-400 mt-1">
-          Up to ₹{priceRange}
-        </p>
-      </div>
-
-      {/* Categories */}
-      <div>
-        <h3 className="text-[#C9A24D] font-semibold mb-1">Categories</h3>
-        {categories.map((cat) => (
-          <label key={cat} className="flex gap-2 text-gray-300">
-            <input
-              type="checkbox"
-              className="accent-[#C9A24D]"
-              checked={selectedCategories.includes(cat)}
-              onChange={() =>
-                setSelectedCategories((prev) =>
-                  prev.includes(cat)
-                    ? prev.filter((c) => c !== cat)
-                    : [...prev, cat]
-                )
-              }
-            />
-            {cat}
-          </label>
-        ))}
-      </div>
-
-      {/* Brands */}
-      <div>
-        <h3 className="text-[#C9A24D] font-semibold mb-1">Brands</h3>
-        {brands.map((brand) => (
-          <label key={brand} className="flex gap-2 text-gray-300">
-            <input
-              type="checkbox"
-              className="accent-[#C9A24D]"
-              checked={selectedBrands.includes(brand)}
-              onChange={() =>
-                setSelectedBrands((prev) =>
-                  prev.includes(brand)
-                    ? prev.filter((b) => b !== brand)
-                    : [...prev, brand]
-                )
-              }
-            />
-            {brand}
-          </label>
-        ))}
-      </div>
-    </div>
-  );
-
-  /* ================= UI ================= */
-  return (
-    <div className="pt-16 pb-16 min-h-screen bg-[#0D0D0D] text-white">
-      <div className="max-w-7xl mx-auto px-4">
-
-        {/* Breadcrumb */}
-       
-        {/* TOP BAR (ALL DEVICES) */}
-        {/* <div className="flex flex-col sm:flex-row gap-3 mb-5"> */}
-          {/* <input
-            placeholder="Search"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1 bg-gray-800 rounded-full px-4 py-2 text-sm outline-none"
-          /> */}
-
-<div className="flex flex-col sm:flex-row gap-3 mb-5">
-  <div className="ml-auto flex gap-3">
-    <select
-      value={sortBy}
-      onChange={(e) => setSortBy(e.target.value)}
-      className="h-9 px-4 rounded-full text-sm bg-gray-800"
-    >
-      <option value="default">Sort</option>
-      <option value="low">Price: Low → High</option>
-      <option value="high">Price: High → Low</option>
-    </select>
-
-    <button
-      onClick={() => setIsFilterOpen(true)}
-      className="h-9 px-4 rounded-full text-sm font-medium bg-[#FF7A00] lg:hidden w-fit flex items-center"
-    >
-      Filters
-    </button>
-  </div>
-
-
-
-</div>
-
-
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-
-          {/* Filters */}
-          {/* <aside className="hidden lg:block bg-[#1A1A1A] border border-[#2A2A2A] p-4 rounded-lg"> */}
-          <aside className="hidden lg:block bg-[#1A1A1A] border border-[#2A2A2A] p-4 rounded-lg h-fit">
-
-            <FilterContent />
-          </aside>
-
-          {/* Products */}
-          <main className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProducts.map((product) => (
-              <div
-                key={product.id}
-                 onClick={() => router.push(`/brands/${product.id}`)}
-                className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-lg overflow-hidden flex flex-col"
-              >
-                {/* Image */}
-                {/* <div className="relative aspect-square">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-full object-cover"
-                  />
-                  <button className="absolute top-3 right-3 bg-black/60 p-2 rounded-full">
-                    <Heart size={16} />
-                  </button>
-                </div> */}
-                {/* Image */}
-<div className="relative w-full h-64 overflow-hidden">
-  <img
-    src={product.image}
-    alt={product.name}
-    className="w-full h-full object-cover object-center"
-  />
-
-  {/* Wishlist */}
-  <button className="absolute top-3 right-3 bg-black/60 p-2 rounded-full hover:bg-[#C9A24D] transition">
-    <Heart size={16} />
-  </button>
-</div>
-
-
-                {/* Content */}
-                <div className="p-4 flex flex-col flex-1">
-                  <p className="text-xs text-gray-400">
-                    {product.brand} • {product.category}
-                  </p>
-
-                  <h3 className="font-semibold">{product.name}</h3>
-
-                  <p className="text-gray-400 text-sm line-clamp-2">
-                    {product.description}
-                  </p>
-
-                  <p className="text-[#C9A24D] font-bold mt-3">
-                    ₹{product.price}
-                  </p>
-
-                  <button className="mt-auto w-full flex items-center justify-center gap-2 border border-[#C9A24D] py-2 rounded-lg text-[#C9A24D] hover:bg-[#C9A24D] hover:text-black">
-                    <ShoppingCart size={16} />
-                    Add to Cart
-                  </button>
-                </div>
-              </div>
-            ))}
-          </main>
+        {/* Price */}
+        <div className="pb-5 border-b border-[#2A2A2A]">
+          <h3 className="text-[#C9A24D] font-semibold mb-3 text-sm uppercase tracking-wide">{t("brandsPage.filterByPrice")}</h3>
+          <input
+            type="range"
+            min="0"
+            max="5000"
+            value={priceRange}
+            onChange={(e) => setPriceRange(Number(e.target.value))}
+            className="w-full h-2 bg-[#2A2A2A] rounded-lg appearance-none cursor-pointer accent-[#C9A24D]"
+          />
+          <div className="flex items-center justify-between mt-3">
+            <p className="text-xs text-gray-400">₹0</p>
+            <p className="text-sm font-semibold text-[#C9A24D]">₹{priceRange.toLocaleString("en-IN")}</p>
+          </div>
         </div>
 
-        {/* Mobile Filter Drawer */}
-        {isFilterOpen && (
-          <>
-            <div
-              className="fixed inset-0 bg-black/60 z-40"
-              onClick={() => setIsFilterOpen(false)}
-            />
-            <div className="fixed top-0 left-0 h-full w-80 bg-[#0D0D0D] z-50 p-5 overflow-y-auto">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold">Filters</h2>
-                <button onClick={() => setIsFilterOpen(false)}>
-                  <X />
-                </button>
-              </div>
-              <FilterContent />
-            </div>
-          </>
-        )}
+        {/* Categories */}
+        <div className="pb-5 border-b border-[#2A2A2A]">
+          <h3 className="text-[#C9A24D] font-semibold mb-3 text-sm uppercase tracking-wide">{t("brandsPage.categories")}</h3>
+          <div className="space-y-2">
+            {/* {categories.map((cat) => (
+              <label key={cat.id} className="flex items-center gap-3 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  checked={selectedCategories.includes(cat.id)}
+                  onChange={() =>
+                    setSelectedCategories((prev) =>
+                      prev.includes(cat.id)
+                        ? prev.filter((c) => c !== cat.id)
+                        : [...prev, cat.id]
+                    )
+                  }
+                  className="w-4 h-4 rounded border-[#2A2A2A] accent-[#C9A24D] cursor-pointer"
+                />
+                <span className="text-sm text-gray-300 group-hover:text-[#C9A24D] transition-colors">{cat.name}</span>
+              </label>
+            ))} */}
+            {homeCategories.map((cat) => (
+  <label key={cat._id} className="flex items-center gap-3 cursor-pointer group">
+    <input
+      type="checkbox"
+      checked={selectedCategories.includes(cat._id)}
+      onChange={() =>
+        setSelectedCategories((prev) =>
+          prev.includes(cat._id)
+            ? prev.filter((c) => c !== cat._id)
+            : [...prev, cat._id]
+        )
+      }
+      className="w-4 h-4 rounded border-[#2A2A2A] accent-[#C9A24D] cursor-pointer"
+    />
+    <span className="text-sm text-gray-300 group-hover:text-[#C9A24D] transition-colors">
+      {isArabic ? cat.nameArabic : cat.nameEnglish}
+    </span>
+  </label>
+))}
+          </div>
+        </div>
+
+        {/* Brands */}
+        <div>
+          <h3 className="text-[#C9A24D] font-semibold mb-3 text-sm uppercase tracking-wide">{t("Brands")}</h3>
+          <div className="space-y-2">
+            {/* {brands.map((brand) => (
+              <label key={brand.id} className="flex items-center gap-3 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  checked={selectedBrands.includes(brand.id)}
+                  onChange={() =>
+                    setSelectedBrands((prev) =>
+                      prev.includes(brand.id)
+                        ? prev.filter((b) => b !== brand.id)
+                        : [...prev, brand.id]
+                    )
+                  }
+                  className="w-4 h-4 rounded border-[#2A2A2A] accent-[#C9A24D] cursor-pointer"
+                />
+                <span className="text-sm text-gray-300 group-hover:text-[#C9A24D] transition-colors">{brand.name}</span>
+              </label>
+            ))} */}
+            {homeBrands.map((brand) => (
+  <label key={brand._id} className="flex items-center gap-3 cursor-pointer group">
+    <input
+      type="checkbox"
+      checked={selectedBrands.includes(brand._id)}
+      onChange={() =>
+        setSelectedBrands((prev) =>
+          prev.includes(brand._id)
+            ? prev.filter((b) => b !== brand._id)
+            : [...prev, brand._id]
+        )
+      }
+      className="w-4 h-4 rounded border-[#2A2A2A] accent-[#C9A24D] cursor-pointer"
+    />
+    <span className="text-sm text-gray-300 group-hover:text-[#C9A24D] transition-colors">
+      {isArabic ? brand.nameArabic : brand.nameEnglish}
+    </span>
+  </label>
+))}
+          </div>
+        </div>
       </div>
+    );
+
+    /* ================= UI ================= */
+    return (
+      <div dir="ltr" className="pt-16 pb-16 min-h-screen bg-linear-to-b from-[#0D0D0D] to-[#1A1A1A] text-white">
+        <div className="max-w-7xl mx-auto px-4">
+
+          {/* Header Section */}
+          <div className="mb-10">
+            {/* <h1 className="text-4xl font-bold text-center mb-2">Explore Our Collection</h1>
+            <p className="text-center text-gray-400 text-sm">Discover premium beauty and skincare products curated just for you</p> */}
+          </div>
+
+          {/* Centered Search Bar */}
+          <div className="mb-8 flex justify-center">
+            <div className="w-full max-w-2xl flex gap-3 items-center">
+              <div className="flex-1 relative">
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500" size={18} />
+                <input
+                  placeholder={t("brandsPage.searchProducts")}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-[#1A1A1A] border border-[#2A2A2A] rounded-full pl-12 pr-4 py-3 text-sm outline-none placeholder-gray-500  transition-colors"
+                />
+              </div>
+
+              {/* Sort Dropdown */}
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="px-6 py-3 bg-[#1A1A1A] border border-[#2A2A2A] rounded-full text-sm font-medium text-white outline-none transition-colors cursor-pointer whitespace-nowrap"
+              >
+                <option value="default">{t("brandsPage.default")}</option>
+                <option value="low">{t("brandsPage.priceLowToHigh")}</option>
+                <option value="high">{t("brandsPage.priceHighToLow")}</option>
+              </select>
+
+              <button
+                onClick={() => setIsFilterOpen(true)}
+                className="h-11 px-6 rounded-full text-sm font-medium bg-[#FF7A00] hover:bg-[#E66E00] transition-colors lg:hidden flex items-center gap-2"
+              >
+                <Sliders size={16} />
+                {t("brandsPage.customize")}
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+
+            {/* Desktop Filters */}
+            <aside className="hidden lg:block bg-[#1A1A1A] border border-[#2A2A2A] p-6 rounded-xl h-fit sticky top-20">
+              <h2 className="text-lg font-bold mb-6 text-white">{t("brandsPage.customize")}</h2>
+              <FilterContent />
+            </aside>
+
+            {/* Products Grid */}
+            <main className="lg:col-span-3">
+              {loading ? (
+                // Loading Skeleton
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {[...Array(6)].map((_, i) => (
+                    <div
+                      key={i}
+                      className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-xl overflow-hidden flex flex-col animate-pulse"
+                    >
+                      {/* Skeleton Image */}
+                      <div className="relative w-full h-64 bg-[#2A2A2A]" />
+
+                      {/* Skeleton Content */}
+                      <div className="p-4 flex flex-col flex-1">
+                        <div className="h-3 bg-[#2A2A2A] rounded w-20 mb-3" />
+                        <div className="h-4 bg-[#2A2A2A] rounded w-32 mb-2" />
+                        <div className="h-3 bg-[#2A2A2A] rounded w-full mb-2" />
+                        <div className="h-3 bg-[#2A2A2A] rounded w-24 mb-4" />
+                        <div className="h-10 bg-[#2A2A2A] rounded-lg mt-auto" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : products.length === 0 ? (
+                // Empty State
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <div className="text-6xl mb-4">🔍</div>
+                  <h3 className="text-xl font-semibold mb-2">{t("brandsPage.noProducts")}</h3>
+                  <p className="text-gray-400 mb-6">{t("brandsPage.noProducts")}</p>
+                  <button
+                    onClick={() => {
+                      setSearchQuery("");
+                      setPriceRange(5000);
+                      setSelectedCategories([]);
+                      setSelectedBrands([]);
+                    }}
+                    className="px-6 py-2 bg-[#C9A24D] text-black rounded-full font-medium hover:bg-[#D9B25D] transition-colors"
+                  >
+                    {t("brandsPage.resetFilters")}
+                  </button>
+                </div>
+              ) : (
+                // Products Grid
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {sortedProducts.map((product) => (
+                    <div
+                      key={product._id}
+                      onClick={() => router.push(`/brands/${product._id}`)}
+                      className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-xl overflow-hidden flex flex-col cursor-pointer group  transition-all duration-300 hover:shadow-lg hover:shadow-[#C9A24D]/10"
+                    >
+                      {/* Image Container */}
+                      <div className="relative w-full h-64 overflow-hidden bg-[#0D0D0D]">
+                        <img
+                          src={
+                            product.imageUrlEnglish?.[0]?.imageUrl ||
+                            "/placeholder.png"
+                          }
+                          alt={product.nameEnglish}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                        />
+                        {/* Gradient Overlay */}
+                        <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                        {/* Wishlist Button */}
+                        <button className="absolute top-3 right-3 bg-black/70 hover:bg-[#C9A24D] p-2.5 rounded-full transition-all duration-300 transform group-hover:scale-110">
+                          <Heart size={16} strokeWidth={2} />
+                        </button>
+                      </div>
+
+                      {/* Content */}
+                      <div className="p-5 flex flex-col flex-1">
+                        <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
+                          {product.brand?.nameEnglish || "N/A"} • {product.category?.nameEnglish || "N/A"}
+                        </p>
+
+                        <h3 className="font-semibold text-base leading-tight mb-2 group-hover:text-[#C9A24D] transition-colors">
+                          {product.nameEnglish || "Product"}
+                        </h3>
+
+                        <p className="text-gray-400 text-sm line-clamp-2 mb-3 -grow">
+                          {product.shortDescriptionEnglish || "No description"}
+                        </p>
+
+                        {/* <p className="text-[#C9A24D] font-bold text-lg mb-4">
+                          ₹{product.minPrice ? product.minPrice.toLocaleString("en-IN") : "0"}
+                        </p> */}
+                        {(() => {
+  const firstVariant = product.variants?.[0];
+
+  const price = firstVariant?.price ?? product.minPrice ?? 0;
+  const mrp = firstVariant?.mrp ?? null;
+
+  return (
+    <div className="flex items-center gap-2 mb-4">
+      <span className="text-[#C9A24D] font-bold text-lg">
+        ₹{price.toLocaleString("en-IN")}
+      </span>
+
+      {mrp && mrp > price && (
+        <span className="text-gray-500 line-through text-sm">
+          ₹{mrp.toLocaleString("en-IN")}
+        </span>
+      )}
     </div>
   );
-}
+})()}
+
+                        <button className="w-full flex items-center justify-center gap-2 border-2 border-[#C9A24D] py-2.5 rounded-lg text-[#C9A24D] hover:bg-[#C9A24D] hover:text-black transition-all duration-300 font-medium">
+                          <ShoppingCart size={16} />
+                          {t("products.addToCart")}
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </main>
+          </div>
+
+          {/* Mobile Filter Drawer */}
+          {isFilterOpen && (
+            <>
+              <div
+                className="fixed inset-0 bg-black/70 z-40 backdrop-blur-sm"
+                onClick={() => setIsFilterOpen(false)}
+              />
+              <div className="fixed top-0 left-0 h-full w-80 max-w-full bg-[#0D0D0D] z-50 p-6 overflow-y-auto shadow-2xl">
+                <div className="flex justify-between items-center mb-6 pb-4 border-b border-[#2A2A2A]">
+                  <h2 className="text-lg font-bold">{t("brandsPage.customize")}</h2>
+                  <button onClick={() => setIsFilterOpen(false)} className="hover:bg-[#1A1A1A] p-2 rounded-lg transition-colors">
+                    <X size={20} />
+                  </button>
+                </div>
+                <FilterContent />
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    );
+  }

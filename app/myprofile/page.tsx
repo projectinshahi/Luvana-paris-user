@@ -317,7 +317,7 @@ export default function ProfilePage() {
   // ✅ FETCH PROFILE
   const fetchProfile = async () => {
     if (!token) {
-      router.push("/login");
+      router.push("/");
       return;
     }
 
@@ -331,7 +331,7 @@ export default function ProfilePage() {
 
       if (res.status === 401) {
         localStorage.removeItem("token");
-        router.push("/login");
+        router.push("/");
         return;
       }
 
@@ -385,7 +385,7 @@ export default function ProfilePage() {
 
       if (res.status === 401) {
         localStorage.removeItem("token");
-        router.push("/login");
+        router.push("/");
         return;
       }
 
@@ -407,7 +407,7 @@ export default function ProfilePage() {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    router.push("/login");
+    router.push("/");
   };
 
   if (fetching) {
