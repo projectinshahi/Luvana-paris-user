@@ -20,7 +20,3 @@ export const selectAuthLoading = (state: RootState) =>
 // 🔥 Get error state
 export const selectAuthError = (state: RootState) =>
   state.auth.error;
-
-// 🔥 Check if admin (for protected admin routes)
-export const selectIsAdmin = (state: RootState) =>
-  state.auth.user?.role === "admin";

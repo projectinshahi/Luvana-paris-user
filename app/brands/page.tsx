@@ -5,7 +5,8 @@
   import { ShoppingCart, X, Heart, Search, Sliders } from "lucide-react";
   import { useRouter, useSearchParams } from "next/navigation";
   import { useLanguage } from "@/lib/useLanguage";
-  
+  import { toast } from "react-toastify";
+  import api from "@/lib/axios";
   import axios from "axios";
 
  
@@ -150,7 +151,7 @@ const handleAddToCart = async (product: Product) => {
   try {
     const token = localStorage.getItem("token");
     if (!token) {
-      alert("Please login first");
+      toast.error("Please login first");
       return;
     }
 
@@ -159,56 +160,28 @@ const handleAddToCart = async (product: Product) => {
       product.variants?.[0]?._id;
 
     if (!selectedVariantId) {
-      alert("No variant available");
+      toast.error("No variant available");
       return;
     }
 
-    const res = await axios.post(
-      "http://localhost:8000/user/cart",
-      {
-        variant: selectedVariantId,
-        quantity: 1,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await api.post("/user/cart", {
+      variant: selectedVariantId,
+      quantity: 1,
+    });
 
-    console.log("Cart Response:", res.data);
-    alert("Item added to cart successfully ✅");
+    console.log("✅ Cart Response:", response.data);
+    toast.success("✅ Item added to cart successfully!");
   } catch (error: any) {
-    console.error("Cart error:", error);
-    alert(error?.response?.data?.message || "Failed to add to cart");
+    console.error("❌ Cart error:", error?.response?.data || error.message);
+    toast.error(error?.response?.data?.message || "Failed to add to cart");
   }
 };
 
-// const handleAddToWishlist = async (productId: string) => {
-//   try {
-//     await axios.post(
-//       "http://localhost:8000/user/wishlist",
-//       {
-//         productId,
-//       },
-//       {
-//         headers: {
-//           Authorization: `Bearer ${localStorage.getItem("token")}`,
-//         },
-//       }
-//     );
-
-//     alert("Added to wishlist ❤️");
-//   } catch (error: any) {
-//     console.error("Wishlist error:", error);
-//     alert(error?.response?.data?.message || "Failed to add to wishlist");
-//   }
-// };
 const handleAddToWishlist = async (product: Product) => {
   try {
     const token = localStorage.getItem("token");
     if (!token) {
-      alert("Please login first");
+      toast.error("Please login first");
       return;
     }
 
@@ -217,27 +190,19 @@ const handleAddToWishlist = async (product: Product) => {
       product.variants?.[0]?._id;
 
     if (!selectedVariantId) {
-      alert("No variant available");
+      toast.error("No variant available");
       return;
     }
 
-    const res = await axios.post(
-      "http://localhost:8000/user/wishlist",
-      {
-        variant: selectedVariantId,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await api.post("/user/wishlist", {
+      variant: selectedVariantId,
+    });
 
-    console.log("Wishlist Response:", res.data);
-    alert("Added to wishlist ❤️");
+    console.log("✅ Wishlist Response:", response.data);
+    toast.success("❤️ Added to wishlist!");
   } catch (error: any) {
-    console.error("Wishlist error:", error);
-    alert(error?.response?.data?.message || "Failed to add to wishlist");
+    console.error("❌ Wishlist error:", error?.response?.data || error.message);
+    toast.error(error?.response?.data?.message || "Failed to add to wishlist");
   }
 };
 

@@ -320,18 +320,20 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const [password, setPassword] = useState("");
   const [showSignup, setShowSignup] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [justLoggedIn, setJustLoggedIn] = useState(false);
 
   const { t } = useTranslation("common");
   const { isRTL } = useLanguage();
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && justLoggedIn) {
       toast.success("✨ Login successful! Welcome back!");
+      setJustLoggedIn(false);
       setTimeout(() => {
         onClose();
       }, 1000);
     }
-  }, [isAuthenticated, onClose]);
+  }, [isAuthenticated, justLoggedIn, onClose]);
 
   if (!isOpen && !showSignup) return null;
 
@@ -347,7 +349,9 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
       loginUser({ email, password })
     );
 
-    if (loginUser.rejected.match(resultAction)) {
+    if (loginUser.fulfilled.match(resultAction)) {
+      setJustLoggedIn(true);
+    } else if (loginUser.rejected.match(resultAction)) {
       toast.error(
         (resultAction.payload as string) || "Login failed"
       );

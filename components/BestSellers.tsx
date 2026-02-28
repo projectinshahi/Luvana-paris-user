@@ -590,6 +590,8 @@ import { Heart } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import api from "@/lib/axios";
 
 interface Product {
   _id: string;
@@ -598,6 +600,7 @@ interface Product {
   imageUrlEnglish: { imageUrl: string }[];
   imageUrlArabic: { imageUrl: string }[];
   minPrice: number | null;
+  variants?: { _id: string }[];
 }
 
 export default function BestSellers() {
@@ -608,6 +611,79 @@ export default function BestSellers() {
   const [products, setProducts] = useState<Product[]>([]);
 
   // ✅ Fetch featuredProducts from home API
+  useEffect(() => {
+    const fetchHome = async () => {
+      try {
+        const res = await fetch("http://localhost:8000/user/home");
+        const data = await res.json();
+
+        if (res.ok) {
+          setProducts(data.featuredProducts || []);
+        }
+      } catch (error) {
+        console.error("Failed to fetch featured products:", error);
+      }
+    };
+
+    fetchHome();
+  }, []);
+
+  /* ================= ADD TO CART ================= */
+  const handleAddToCart = async (product: Product, e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.error("Please login first");
+        return;
+      }
+
+      const variantId = product.variants?.[0]?._id;
+      if (!variantId) {
+        toast.error("No variant available");
+        return;
+      }
+
+      const response = await api.post("/user/cart", {
+        variant: variantId,
+        quantity: 1,
+      });
+
+      console.log("✅ Cart Response:", response.data);
+      toast.success("✅ Added to cart!");
+    } catch (error: any) {
+      console.error("❌ Cart error:", error?.response?.data || error.message);
+      toast.error(error?.response?.data?.message || "Failed to add to cart");
+    }
+  };
+
+  /* ================= ADD TO WISHLIST ================= */
+  const handleAddToWishlist = async (product: Product, e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.error("Please login first");
+        return;
+      }
+
+      const variantId = product.variants?.[0]?._id;
+      if (!variantId) {
+        toast.error("No variant available");
+        return;
+      }
+
+      const response = await api.post("/user/wishlist", {
+        variant: variantId,
+      });
+
+      console.log("✅ Wishlist Response:", response.data);
+      toast.success("❤️ Added to wishlist!");
+    } catch (error: any) {
+      console.error("❌ Wishlist error:", error?.response?.data || error.message);
+      toast.error(error?.response?.data?.message || "Failed to add to wishlist");
+    }
+  };
   useEffect(() => {
     const fetchHome = async () => {
       try {
@@ -670,7 +746,7 @@ export default function BestSellers() {
                 isRTL ? "font-arabic" : ""
               }`}
             >
-              Featured Products
+              Best Sellers
             </h2>
             <div className="flex-1 h-px bg-white/30" />
           </div>
@@ -701,6 +777,7 @@ export default function BestSellers() {
 
                           {/* Wishlist */}
                           <button
+                            onClick={(e) => handleAddToWishlist(product, e)}
                             className={`absolute top-3 ${
                               isRTL ? "left-3" : "right-3"
                             } z-10 w-8 h-8 rounded-full bg-linear-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] flex items-center justify-center opacity-0 group-hover:opacity-100 transition`}
@@ -719,6 +796,7 @@ export default function BestSellers() {
 
                           {/* Add to Cart */}
                           <button
+                            onClick={(e) => handleAddToCart(product, e)}
                             className={`absolute bottom-3 left-1/2 -translate-x-1/2 w-[85%] h-9 rounded-lg bg-linear-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] text-black text-xs opacity-0 group-hover:opacity-100 transition ${
                               isRTL ? "font-arabic" : ""
                             }`}

@@ -755,7 +755,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Heart,
   User,
@@ -783,7 +783,6 @@ export default function Navbar() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
-  console.log("AUTH STATE:", isAuthenticated);
   const { t, ready } = useTranslation("common");
   const { isRTL } = useLanguage();
 
@@ -795,6 +794,9 @@ export default function Navbar() {
   const [showSearch, setShowSearch] = useState(false);
   const [showWishlist, setShowWishlist] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
+
+  // Ref for dropdown to detect outside clicks
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   // ✅ NEW PROMOTION STATES
   const [offers, setOffers] = useState<string[]>([]);
@@ -842,6 +844,30 @@ export default function Navbar() {
     return () => clearInterval(interval);
   }, [offers]);
 
+  // ✅ CLOSE DROPDOWN ON OUTSIDE CLICK
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowUserDropdown(false);
+      }
+    };
+
+    if (showUserDropdown) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showUserDropdown]);
+
+  // ✅ CLOSE DROPDOWN WHEN SIDEBARS OPEN
+  useEffect(() => {
+    if (showWishlist || showCart || showSearch || showSettings) {
+      setShowUserDropdown(false);
+    }
+  }, [showWishlist, showCart, showSearch, showSettings]);
+
   if (!mounted || !ready) return null;
 
   const handleLogout = async () => {
@@ -868,11 +894,10 @@ export default function Navbar() {
         </div>
 
         {/* DESKTOP NAVBAR */}
-        {/* <nav className="hidden sm:flex items-center justify-between bg-[#0D0D0D] text-white px-4 md:px-10 py-3"> */}
         <nav
-  dir="ltr"
-  className="hidden sm:flex items-center justify-between bg-[#0D0D0D] text-white px-4 md:px-10 py-3"
->
+          dir="ltr"
+          className="hidden sm:flex items-center justify-between bg-[#0D0D0D] text-white px-4 md:px-10 py-3"
+        >
           <div
             onClick={() => router.push("/")}
             className="text-yellow-400 font-bold text-lg cursor-pointer"
@@ -882,13 +907,13 @@ export default function Navbar() {
 
           <div className="flex items-center gap-4">
 
-            <Search size={18} onClick={() => setShowSearch(true)} className="cursor-pointer" />
-            <Heart size={18} onClick={() => setShowWishlist(true)} className="cursor-pointer" />
+            <Search size={18} onClick={() => setShowSearch(true)} className="cursor-pointer hover:text-gray-300 transition" />
+            <Heart size={18} onClick={() => setShowWishlist(true)} className="cursor-pointer hover:text-red-500 transition" />
 
-            <div className="relative">
+            <div className="relative" ref={dropdownRef}>
               <User
                 size={18}
-                className="cursor-pointer"
+                className="cursor-pointer hover:text-gray-300 transition"
                 onClick={() => {
                   if (!isAuthenticated) setShowLogin(true);
                   else setShowUserDropdown(!showUserDropdown);
@@ -896,9 +921,9 @@ export default function Navbar() {
               />
 
               {isAuthenticated && showUserDropdown && (
-                <div className="absolute right-0 mt-2 w-40 bg-[#1a1a1a] border border-gray-700 rounded-lg shadow-lg z-60">
+                <div className="absolute right-0 mt-2 w-40 bg-[#1a1a1a] border border-gray-700 rounded-lg shadow-lg z-[100]">
                   <button
-                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700"
+                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition rounded-t-lg"
                     onClick={() => {
                       setShowUserDropdown(false);
                       router.push("/myprofile");
@@ -908,7 +933,7 @@ export default function Navbar() {
                   </button>
 
                   <button
-                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700 text-red-400"
+                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700 text-red-400 transition rounded-b-lg"
                     onClick={handleLogout}
                   >
                     Logout
@@ -917,17 +942,16 @@ export default function Navbar() {
               )}
             </div>
 
-            <ShoppingCart size={18} onClick={() => setShowCart(true)} className="cursor-pointer" />
-            <Settings size={18} onClick={() => setShowSettings(true)} className="cursor-pointer hidden sm:block" />
+            <ShoppingCart size={18} onClick={() => setShowCart(true)} className="cursor-pointer hover:text-gray-300 transition" />
+            <Settings size={18} onClick={() => setShowSettings(true)} className="cursor-pointer hover:text-gray-300 transition hidden sm:block" />
           </div>
         </nav>
 
         {/* MOBILE NAVBAR */}
-        {/* <nav className="sm:hidden flex items-center justify-between bg-[#0D0D0D] text-white px-4 py-3"> */}
         <nav
-  dir="ltr"
-  className="sm:hidden flex items-center justify-between bg-[#0D0D0D] text-white px-4 py-3"
->
+          dir="ltr"
+          className="sm:hidden flex items-center justify-between bg-[#0D0D0D] text-white px-4 py-3"
+        >
           <Menu size={22} onClick={() => setMobileMenuOpen(true)} className="cursor-pointer" />
           <div
             onClick={() => router.push("/")}
@@ -940,17 +964,16 @@ export default function Navbar() {
       </div>
 
       {/* MOBILE FLOAT NAV */}
-      {/* <nav className="sm:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-40"> */}
       <nav
-  dir="ltr"
-  className="sm:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-40"
->
+        dir="ltr"
+        className="sm:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-40"
+      >
         <div className="flex items-center gap-6 px-6 py-3 rounded-full bg-[#2a2a2a]/90 backdrop-blur-md shadow-lg">
-          <Home size={20} />
-          <Heart size={20} onClick={() => setShowWishlist(true)} />
-          <ShoppingCart size={20} onClick={() => setShowCart(true)} />
-          <Search size={20} onClick={() => setShowSearch(true)} />
-          <User size={20} onClick={() => setShowLogin(true)} />
+          <Home size={20} onClick={() => router.push("/")} className="cursor-pointer" />
+          <Heart size={20} onClick={() => setShowWishlist(true)} className="cursor-pointer" />
+          <ShoppingCart size={20} onClick={() => setShowCart(true)} className="cursor-pointer" />
+          <Search size={20} onClick={() => setShowSearch(true)} className="cursor-pointer" />
+          <User size={20} onClick={() => setShowLogin(true)} className="cursor-pointer" />
         </div>
       </nav>
 
