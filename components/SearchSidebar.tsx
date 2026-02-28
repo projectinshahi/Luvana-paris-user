@@ -39,38 +39,67 @@ export default function SearchSidebar({ isOpen, onClose }: SearchSidebarProps) {
   const debouncedQuery = useDebounce(query, 500);
 
   /* ================= SEARCH PRODUCTS ================= */
+  // useEffect(() => {
+  //   const searchProducts = async () => {
+  //     if (!debouncedQuery.trim()) {
+  //       setProducts([]);
+  //       setShowResults(false);
+  //       return;
+  //     }
+
+  //     try {
+  //       setLoading(true);
+  //       setShowResults(true);
+
+  //       const response = await fetch(
+  //         `http://localhost:8000/user/product?search=${encodeURIComponent(
+  //           debouncedQuery
+  //         )}&limit=10`
+  //       );
+
+  //       const data = await response.json();
+  //       console.log("🔍 Search results:", data);
+
+  //       setProducts(data.items || []);
+  //     } catch (error) {
+  //       console.error("Search error:", error);
+  //       setProducts([]);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   searchProducts();
+  // }, [debouncedQuery]);
   useEffect(() => {
-    const searchProducts = async () => {
-      if (!debouncedQuery.trim()) {
-        setProducts([]);
-        setShowResults(false);
-        return;
+  const searchProducts = async () => {
+    try {
+      setLoading(true);
+      setShowResults(true);
+
+      let url = "http://localhost:8000/user/product?limit=10";
+
+      // If user typed something, use search API
+      if (debouncedQuery.trim()) {
+        url = `http://localhost:8000/user/product?search=${encodeURIComponent(
+          debouncedQuery
+        )}&limit=10`;
       }
 
-      try {
-        setLoading(true);
-        setShowResults(true);
+      const response = await fetch(url);
+      const data = await response.json();
 
-        const response = await fetch(
-          `http://localhost:8000/user/product?search=${encodeURIComponent(
-            debouncedQuery
-          )}&limit=10`
-        );
+      setProducts(data.items || []);
+    } catch (error) {
+      console.error("Search error:", error);
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        const data = await response.json();
-        console.log("🔍 Search results:", data);
-
-        setProducts(data.items || []);
-      } catch (error) {
-        console.error("Search error:", error);
-        setProducts([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    searchProducts();
-  }, [debouncedQuery]);
+  searchProducts();
+}, [debouncedQuery, isOpen]);
 
   /* ================= HANDLE PRODUCT CLICK ================= */
   const handleProductClick = (productId: string) => {
@@ -87,6 +116,30 @@ export default function SearchSidebar({ isOpen, onClose }: SearchSidebarProps) {
 
   return (
     <>
+    <style>{`
+  .custom-scroll::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .custom-scroll::-webkit-scrollbar-track {
+    background: #1A1A1A;
+  }
+
+  .custom-scroll::-webkit-scrollbar-thumb {
+    background: #C9A24D;
+    border-radius: 10px;
+  }
+
+  .custom-scroll::-webkit-scrollbar-thumb:hover {
+    background: #D4AF37;
+  }
+
+  /* Firefox */
+  .custom-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: #C9A24D #1A1A1A;
+  }
+`}</style>
       {/* BACKDROP */}
       {isOpen && (
         <div
@@ -135,7 +188,11 @@ export default function SearchSidebar({ isOpen, onClose }: SearchSidebarProps) {
         </div>
 
         {/* RESULTS */}
-        <div className="px-4 pb-4 overflow-y-auto" style={{ maxHeight: "calc(100vh - 180px)" }}>
+        {/* <div className="px-4 pb-4 overflow-y-auto" style={{ maxHeight: "calc(100vh - 180px)" }}> */}
+        <div
+  className="px-4 pb-4 overflow-y-auto custom-scroll"
+  style={{ maxHeight: "calc(100vh - 180px)" }}
+>
           {loading ? (
             <div className="flex items-center justify-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#C9A24D]"></div>
