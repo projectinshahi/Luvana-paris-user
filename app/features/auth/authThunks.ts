@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { User } from "./authTypes";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 // 🔥 LOGIN
 export const loginUser = createAsyncThunk<
@@ -23,17 +23,18 @@ export const loginUser = createAsyncThunk<
   }
 );
 
-// 🔥 REGISTER
+// 🔥 REGISTER (without auto-login)
 export const registerUser = createAsyncThunk<
-  { user: User; token: string },
-  { name: string; email: string; password: string; confirmPassword: string },
+  { message: string },
+  { name: string; email: string; password: string; confirmPassword: string; phone?: string },
   { rejectValue: string }
 >(
   "auth/registerUser",
   async (userData, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${API_URL}/user/register`, userData);
-      return response.data;
+      // Return only the message, not the token or user
+      return { message: response.data.message || "Registration successful" };
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data?.message || "Registration failed"
@@ -60,13 +61,19 @@ export const fetchCurrentUser = createAsyncThunk<
         return rejectWithValue("No token found");
       }
 
-      const response = await axios.get(`${API_URL}/auth/me`, {
+      const response = await axios.get(`${API_URL}/user/profile`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      return response.data;
+      // Backend returns { user: {...} }
+      return {
+        id: response.data.user._id,
+        name: response.data.user.name,
+        email: response.data.user.email,
+        phone: response.data.user.phone,
+      };
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to fetch user"

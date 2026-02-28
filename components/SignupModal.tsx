@@ -5,7 +5,7 @@ import { X, Eye, EyeOff } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/lib/useLanguage";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { registerUser, selectAuthLoading, selectIsAuthenticated, selectAuthError } from "@/app/features/auth";
+import { registerUser, selectAuthLoading, selectAuthError } from "@/app/features/auth";
 import { toast } from "react-toastify";
 
 interface SignupModalProps {
@@ -17,11 +17,11 @@ interface SignupModalProps {
 export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: SignupModalProps) {
   const dispatch = useAppDispatch();
   const loading = useAppSelector(selectAuthLoading);
-  const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const error = useAppSelector(selectAuthError);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -29,19 +29,6 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
 
   const { t } = useTranslation("common");
   const { isRTL } = useLanguage();
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      toast.success("🎉 Registration successful! Welcome aboard!");
-      setTimeout(() => {
-        setName("");
-        setEmail("");
-        setPassword("");
-        setConfirmPassword("");
-        onClose();
-      }, 2000);
-    }
-  }, [isAuthenticated, onClose]);
 
   useEffect(() => {
     if (error) {
@@ -84,12 +71,25 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
       registerUser({
         name,
         email,
+        phone,
         password,
         confirmPassword,
       })
     );
 
-    if (registerUser.rejected.match(resultAction)) {
+    if (registerUser.fulfilled.match(resultAction)) {
+      toast.success("🎉 Registration successful! Please login to continue.");
+      // Clear form
+      setName("");
+      setEmail("");
+      setPhone("");
+      setPassword("");
+      setConfirmPassword("");
+      // Switch to login modal after a short delay
+      setTimeout(() => {
+        onSwitchToLogin();
+      }, 1500);
+    } else if (registerUser.rejected.match(resultAction)) {
       toast.error(
         (resultAction.payload as string) || "Registration failed"
       );
@@ -164,6 +164,21 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
               dir={isRTL ? 'rtl' : 'ltr'}
               style={{ fontSize: '16px' }}
               required
+            />
+          </div>
+
+          {/* Phone Input */}
+          <div>
+            <input
+              type="tel"
+              placeholder="Phone number (optional)"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className={`w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none  transition ${
+                isRTL ? 'text-right' : 'text-left'
+              }`}
+              dir={isRTL ? 'rtl' : 'ltr'}
+              style={{ fontSize: '16px' }}
             />
           </div>
 

@@ -83,20 +83,15 @@ const authSlice = createSlice({
         state.error = action.payload as string;
       })
 
-      // 🔥 REGISTER
+      // 🔥 REGISTER (no auto-login)
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload.user;
-        state.token = action.payload.token;
-        state.isAuthenticated = true;
-
-        if (typeof window !== "undefined") {
-          localStorage.setItem("token", action.payload.token);
-        }
+        // Don't set user or token - just clear any errors
+        state.error = null;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
@@ -111,11 +106,25 @@ const authSlice = createSlice({
         state.loading = false;
         state.user = action.payload;
         state.isAuthenticated = true;
+        
+        // Restore token from localStorage if available
+        if (typeof window !== "undefined") {
+          const savedToken = localStorage.getItem("token");
+          if (savedToken) {
+            state.token = savedToken;
+          }
+        }
       })
       .addCase(fetchCurrentUser.rejected, (state) => {
         state.loading = false;
         state.user = null;
         state.isAuthenticated = false;
+        state.token = null;
+        
+        // Clear invalid token from localStorage
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("token");
+        }
       });
   },
 });
