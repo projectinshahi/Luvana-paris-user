@@ -77,11 +77,12 @@ export default function SearchSidebar({ isOpen, onClose }: SearchSidebarProps) {
       setLoading(true);
       setShowResults(true);
 
-      let url = "http://localhost:8000/user/product?limit=10";
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      let url = `${API_URL}/user/product?limit=10`;
 
       // If user typed something, use search API
       if (debouncedQuery.trim()) {
-        url = `http://localhost:8000/user/product?search=${encodeURIComponent(
+        url = `${API_URL}/user/product?search=${encodeURIComponent(
           debouncedQuery
         )}&limit=10`;
       }
