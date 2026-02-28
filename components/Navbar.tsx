@@ -810,8 +810,9 @@ export default function Navbar() {
   useEffect(() => {
     const fetchPromotions = async () => {
       try {
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
         const res = await fetch(
-          "http://localhost:8000/admin/promotion-strip",
+          `${API_URL}/admin/promotion-strip`,
           { cache: "no-store" }
         );
 

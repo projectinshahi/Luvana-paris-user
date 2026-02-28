@@ -1062,8 +1062,9 @@ const ZOOM_FACTOR = 3;
       try {
         setLoading(true);
 
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
         const res = await fetch(
-          `http://localhost:8000/user/product/${productId}`
+          `${API_URL}/user/product/${productId}`
         );
 
         const data = await res.json();

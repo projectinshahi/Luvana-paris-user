@@ -218,7 +218,8 @@ export default function ExploreBrandsSection() {
   useEffect(() => {
     const fetchBrands = async () => {
       try {
-        const res = await fetch("http://localhost:8000/user/home");
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+        const res = await fetch(`${API_URL}/user/home`);
         const data = await res.json();
 
         if (data?.brands) {
@@ -314,7 +315,7 @@ export default function ExploreBrandsSection() {
         className="relative w-full overflow-hidden bg-black animate-pulse"
         style={{ height: "682px" }}
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-900 to-black" />
+        <div className="absolute inset-0 bg-linear-to-br from-gray-900 to-black" />
       </section>
     );
   }
@@ -340,7 +341,7 @@ export default function ExploreBrandsSection() {
       </div>
 
       {/* DARK OVERLAY */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/30 to-transparent pointer-events-none" />
 
       {/* TOP TEXT WITH FADE-IN ANIMATION */}
       <div
@@ -404,7 +405,7 @@ export default function ExploreBrandsSection() {
         } ${isTransitioning ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"}`}
       >
         <button
-          className={`rounded-[25px] bg-gradient-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] text-black font-semibold hover:shadow-[0_0_30px_rgba(212,175,55,0.5)] hover:scale-105 transition-all duration-300 active:scale-95 ${
+          className={`rounded-[25px] bg-linear-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] text-black font-semibold hover:shadow-[0_0_30px_rgba(212,175,55,0.5)] hover:scale-105 transition-all duration-300 active:scale-95 ${
             isRTL ? "font-arabic" : ""
           }`}
           style={{ width: "185px", height: "69px" }}

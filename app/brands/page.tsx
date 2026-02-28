@@ -75,7 +75,8 @@ const [homeBrands, setHomeBrands] = useState<any[]>([]);
     useEffect(() => {
   const fetchHomeData = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/user/home");
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const res = await axios.get(`${API_URL}/user/home`);
 
       const activeCategories = res.data.categories.filter(
         (cat: any) => cat.status === "active"
@@ -124,8 +125,9 @@ if (selectedBrands.length > 0) {
 if (priceRange < 5000) {
   params.maxPrice = priceRange;
 }
+          const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
           const res = await axios.get(
-            "http://localhost:8000/user/product",
+            `${API_URL}/user/product`,
             { params }
           );
 

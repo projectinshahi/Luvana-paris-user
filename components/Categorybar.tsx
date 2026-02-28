@@ -221,7 +221,8 @@ export default function CategoryBar() {
   useEffect(() => {
     const fetchHomeData = async () => {
       try {
-        const res = await fetch("http://localhost:8000/user/home");
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+        const res = await fetch(`${API_URL}/user/home`);
         const data = await res.json();
 
         const activeCategories = data.categories.filter(
