@@ -74,12 +74,37 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
   const fetchCart = async () => {
     try {
       setLoading(true);
+      const token = localStorage.getItem("token");
+      
+      if (!token) {
+        console.log("⚠️ No token found - user not logged in");
+        setCartItems([]);
+        setSummary({
+          itemCount: 0,
+          totalQuantity: 0,
+          subtotal: 0,
+          mrpTotal: 0,
+          discount: 0,
+          discountPercentage: 0,
+          couponCode: null,
+          couponDiscount: 0,
+          tax: 0,
+          total: 0,
+        });
+        return;
+      }
+
+      console.log("🔄 Fetching cart with token...");
       const res = await api.get("/user/cart");
       console.log("✅ Cart API Response:", res.data);
       setCartItems(res.data.items || []);
       setSummary(res.data.summary || {});
     } catch (error: any) {
       console.error("❌ Cart fetch error:", error?.response?.data || error.message);
+      if (error?.response?.status === 401) {
+        console.log("⚠️ Unauthorized - clearing cart");
+        setCartItems([]);
+      }
     } finally {
       setLoading(false);
     }
