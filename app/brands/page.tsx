@@ -56,20 +56,36 @@ const isArabic = currentLanguage === "ar";
 const [homeBrands, setHomeBrands] = useState<any[]>([]);
 
     /* ================= LOAD BRAND FROM URL PARAMETER ================= */
-    useEffect(() => {
-    const brandParam = searchParams.get("brand");
-    if (brandParam) {
-      setSelectedBrands([brandParam]);
-    }
-  }, [searchParams]);
+  //   useEffect(() => {
+  //   const brandParam = searchParams.get("brand");
+  //   if (brandParam) {
+  //     setSelectedBrands([brandParam]);
+  //   }
+  // }, [searchParams]);
 
     /* ================= LOAD CATEGORY FROM URL PARAMETER ================= */
-    useEffect(() => {
-    const categoryParam = searchParams.get("category");
-    if (categoryParam) {
-      setSelectedCategories([categoryParam]);
-    }
-  }, [searchParams]);
+  //   useEffect(() => {
+  //   const categoryParam = searchParams.get("category");
+  //   if (categoryParam) {
+  //     setSelectedCategories([categoryParam]);
+  //   }
+  // }, [searchParams]);
+  useEffect(() => {
+  const categoryParam = searchParams.get("category");
+  const brandParam = searchParams.get("brand");
+
+  if (categoryParam) {
+    setSelectedCategories(categoryParam.split(","));
+  } else {
+    setSelectedCategories([]);
+  }
+
+  if (brandParam) {
+    setSelectedBrands(brandParam.split(","));
+  } else {
+    setSelectedBrands([]);
+  }
+}, [searchParams]);
 
     /* ================= FETCH PRODUCTS ================= */
     useEffect(() => {
@@ -95,18 +111,32 @@ const [homeBrands, setHomeBrands] = useState<any[]>([]);
 
   fetchHomeData();
 }, []);
-    useEffect(() => {
-      const fetchProducts = async () => {
-        try {
-          setLoading(true);
+//     useEffect(() => {
+//       const fetchProducts = async () => {
+//         try {
+//           setLoading(true);
 
     
-const params: any = {
-  page: 1,
-  limit: 50,
-  search: searchQuery,
-};
+// const params: any = {
+//   page: 1,
+//   limit: 50,
+//   search: searchQuery,
+// };
 
+// // if (selectedCategories.length > 0) {
+// //   params.category = selectedCategories.join(",");
+// // }
+
+// // if (selectedBrands.length > 0) {
+// //   params.brand = selectedBrands.join(",");
+// // }
+// // if (selectedCategories.length > 0) {
+// //   params.category = selectedCategories;
+// // }
+
+// // if (selectedBrands.length > 0) {
+// //   params.brand = selectedBrands;
+// // }
 // if (selectedCategories.length > 0) {
 //   params.category = selectedCategories.join(",");
 // }
@@ -114,41 +144,122 @@ const params: any = {
 // if (selectedBrands.length > 0) {
 //   params.brand = selectedBrands.join(",");
 // }
-if (selectedCategories.length > 0) {
-  params.category = selectedCategories;
-}
+// // Only apply price filter if user actually changed it
+// if (priceRange < 5000) {
+//   params.maxPrice = priceRange;
+// }
+//           const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+//           const res = await axios.get(
+//             `${API_URL}/user/product`,
+//             { params }
+//           );
 
-if (selectedBrands.length > 0) {
-  params.brand = selectedBrands;
-}
-// Only apply price filter if user actually changed it
-if (priceRange < 5000) {
-  params.maxPrice = priceRange;
-}
-          const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-          const res = await axios.get(
-            `${API_URL}/user/product`,
-            { params }
-          );
-
-          console.log("API Response:", res.data); // Debug log
-          const items = res.data.items || [];
-          console.log("Products count:", items.length); // Debug log
-          console.log("Sample product:", items[0]); // Debug log
+//           console.log("API Response:", res.data); // Debug log
+//           const items = res.data.items || [];
+//           console.log("Products count:", items.length); // Debug log
+//           console.log("Sample product:", items[0]); // Debug log
           
-          setProducts(items);
-        } catch (error) {
-          console.error("Error fetching products:", error);
-          setProducts([]);
-        } finally {
-          setLoading(false);
-        }
+//           setProducts(items);
+//         } catch (error) {
+//           console.error("Error fetching products:", error);
+//           setProducts([]);
+//         } finally {
+//           setLoading(false);
+//         }
+//       };
+
+//       fetchProducts();
+//     }, [priceRange, selectedCategories, selectedBrands, searchQuery]);
+// useEffect(() => {
+//   const fetchProducts = async () => {
+//     try {
+//       setLoading(true);
+
+//       const params: any = {
+//         page: 1,
+//         limit: 50,
+//         search: searchQuery,
+//       };
+
+//       // ✅ FIXED CATEGORY FILTER
+//       if (selectedCategories.length > 0) {
+//         params.category = selectedCategories.join(",");
+//       }
+
+//       // ✅ FIXED BRAND FILTER
+//       if (selectedBrands.length > 0) {
+//         params.brand = selectedBrands.join(",");
+//       }
+
+//       // ✅ Apply price only if changed
+//       if (priceRange < 5000) {
+//         params.maxPrice = priceRange;
+//       }
+
+//       const API_URL =
+//         process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+//       const res = await axios.get(`${API_URL}/user/product`, {
+//         params,
+//       });
+
+//       const items = res.data.items || [];
+//       setProducts(items);
+//     } catch (error) {
+//       console.error("Error fetching products:", error);
+//       setProducts([]);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   fetchProducts();
+// }, [priceRange, selectedCategories, selectedBrands, searchQuery]);
+  useEffect(() => {
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+
+      const categoryParam = searchParams.get("category");
+      const brandParam = searchParams.get("brand");
+
+      const params: any = {
+        page: 1,
+        limit: 50,
+        search: searchQuery,
       };
 
-      fetchProducts();
-    }, [priceRange, selectedCategories, selectedBrands, searchQuery]);
+      // ✅ Use URL param directly
+      if (categoryParam) {
+        params.category = categoryParam;
+      }
 
-  
+      if (brandParam) {
+        params.brand = brandParam;
+      }
+
+      if (priceRange < 5000) {
+        params.maxPrice = priceRange;
+      }
+
+      const API_URL =
+        process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+      const res = await axios.get(`${API_URL}/user/product`, {
+        params,
+      });
+
+      setProducts(res.data.items || []);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchProducts();
+}, [searchParams, priceRange, searchQuery]);
 const handleAddToCart = async (product: Product) => {
   try {
     const token = localStorage.getItem("token");
@@ -209,26 +320,62 @@ const handleAddToWishlist = async (product: Product) => {
 };
 
     /* ================= SORT PRODUCTS ================= */
-    const sortedProducts = useMemo(() => {
-      let sorted = [...products];
+    // const sortedProducts = useMemo(() => {
+    //   let sorted = [...products];
 
-      if (sortBy === "low") {
-        sorted.sort((a, b) => {
-          const priceA = a.minPrice || 0;
-          const priceB = b.minPrice || 0;
-          return priceA - priceB;
-        });
-      } else if (sortBy === "high") {
-        sorted.sort((a, b) => {
-          const priceA = a.minPrice || 0;
-          const priceB = b.minPrice || 0;
-          return priceB - priceA;
-        });
-      }
+    //   if (sortBy === "low") {
+    //     sorted.sort((a, b) => {
+    //       const priceA = a.minPrice || 0;
+    //       const priceB = b.minPrice || 0;
+    //       return priceA - priceB;
+    //     });
+    //   } else if (sortBy === "high") {
+    //     sorted.sort((a, b) => {
+    //       const priceA = a.minPrice || 0;
+    //       const priceB = b.minPrice || 0;
+    //       return priceB - priceA;
+    //     });
+    //   }
 
-      return sorted;
-    }, [products, sortBy]);
+    //   return sorted;
+    // }, [products, sortBy]);
+// const sortedProducts = useMemo(() => {
+//   let filtered = [...products];
 
+//   // ✅ Filter by category (frontend filtering)
+//   if (selectedCategories.length > 0) {
+//     filtered = filtered.filter((product) =>
+//       selectedCategories.includes(product.category?._id)
+//     );
+//   }
+
+//   // ✅ Filter by brand (frontend filtering)
+//   if (selectedBrands.length > 0) {
+//     filtered = filtered.filter((product) =>
+//       selectedBrands.includes(product.brand?._id)
+//     );
+//   }
+
+//   // ✅ Sort
+//   if (sortBy === "low") {
+//     filtered.sort((a, b) => (a.minPrice || 0) - (b.minPrice || 0));
+//   } else if (sortBy === "high") {
+//     filtered.sort((a, b) => (b.minPrice || 0) - (a.minPrice || 0));
+//   }
+
+//   return filtered;
+// }, [products, sortBy, selectedCategories, selectedBrands]);
+const sortedProducts = useMemo(() => {
+  let sorted = [...products];
+
+  if (sortBy === "low") {
+    sorted.sort((a, b) => (a.minPrice || 0) - (b.minPrice || 0));
+  } else if (sortBy === "high") {
+    sorted.sort((a, b) => (b.minPrice || 0) - (a.minPrice || 0));
+  }
+
+  return sorted;
+}, [products, sortBy]);
     /* ================= FILTER CONTENT ================= */
     const FilterContent = () => (
       <div className="space-y-6">
@@ -348,6 +495,67 @@ const handleAddToWishlist = async (product: Product) => {
             {/* <h1 className="text-4xl font-bold text-center mb-2">Explore Our Collection</h1>
             <p className="text-center text-gray-400 text-sm">Discover premium beauty and skincare products curated just for you</p> */}
           </div>
+
+          {/* Applied Filters Display */}
+          {(selectedCategories.length > 0 || selectedBrands.length > 0) && (
+            <div className="mb-6 flex flex-wrap gap-3">
+              {selectedCategories.map((catId) => {
+                const category = homeCategories.find((c) => c._id === catId);
+                return (
+                  <div
+                    key={catId}
+                    className="flex items-center gap-2 bg-[#C9A24D]/20 border border-[#C9A24D] text-[#C9A24D] px-4 py-2 rounded-full text-sm"
+                  >
+                    <span>{isArabic ? category?.nameArabic : category?.nameEnglish}</span>
+                    <button
+                      onClick={() =>
+                        setSelectedCategories((prev) =>
+                          prev.filter((c) => c !== catId)
+                        )
+                      }
+                      className="hover:text-white transition-colors"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                );
+              })}
+
+              {selectedBrands.map((brandId) => {
+                const brand = homeBrands.find((b) => b._id === brandId);
+                return (
+                  <div
+                    key={brandId}
+                    className="flex items-center gap-2 bg-[#C9A24D]/20 border border-[#C9A24D] text-[#C9A24D] px-4 py-2 rounded-full text-sm"
+                  >
+                    <span>{isArabic ? brand?.nameArabic : brand?.nameEnglish}</span>
+                    <button
+                      onClick={() =>
+                        setSelectedBrands((prev) =>
+                          prev.filter((b) => b !== brandId)
+                        )
+                      }
+                      className="hover:text-white transition-colors"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                );
+              })}
+
+              {(selectedCategories.length > 0 || selectedBrands.length > 0) && (
+                <button
+                  onClick={() => {
+                    setSelectedCategories([]);
+                    setSelectedBrands([]);
+                  }}
+                  className="text-gray-400 hover:text-[#C9A24D] text-sm underline transition-colors"
+                >
+                  Clear all
+                </button>
+              )}
+            </div>
+          )}
 
           {/* Centered Search Bar */}
           <div className="mb-8 flex justify-center">

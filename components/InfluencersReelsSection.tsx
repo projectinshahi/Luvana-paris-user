@@ -219,7 +219,8 @@ export default function InfluencersReelsSection() {
   // ============= RENDER =============
   if (loading || !influencers.length) return null;
 
-  const duplicatedInfluencers = [...influencers, ...influencers];
+  // Duplicate influencers for infinite loop - same for all languages
+  const duplicatedInfluencers = [...influencers, ...influencers, ...influencers];
 
   return (
     <>
@@ -229,21 +230,12 @@ export default function InfluencersReelsSection() {
             transform: translateX(0);
           }
           100% {
-            transform: translateX(calc(-50% - 1.5rem));
-          }
-        }
-
-        @keyframes scroll-right {
-          0% {
-            transform: translateX(calc(-50% - 1.5rem));
-          }
-          100% {
-            transform: translateX(0);
+            transform: translateX(calc(-33.333% - 1rem));
           }
         }
 
         .carousel-track {
-          animation: ${isRTL ? "scroll-right" : "scroll-left"} 60s linear infinite;
+          animation: scroll-left 60s linear infinite;
         }
 
         .carousel-track.paused {
@@ -251,7 +243,7 @@ export default function InfluencersReelsSection() {
         }
       `}</style>
 
-      <section className="relative w-full py-20 bg-black overflow-hidden">
+      <section className="relative w-full py-20 bg-black overflow-hidden" dir="ltr">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-center gap-6 mb-16">
             <div className="flex-1 h-px bg-linear-to-r from-transparent via-[#C9A24D]/50 to-[#C9A24D]" />

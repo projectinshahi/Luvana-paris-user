@@ -253,7 +253,7 @@ export default function CategoryBar() {
       router.push("/brands");
     } else {
       // Navigate to brands page with category filter
-      router.push(`/brands?category=${key}`);
+      router.push(`/brands?[category=${key}]`);
     }
   };
 
