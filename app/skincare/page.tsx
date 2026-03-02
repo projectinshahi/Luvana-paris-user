@@ -1,94 +1,79 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { ShoppingCart, Home, X, Heart } from "lucide-react";
+import { useState, useMemo, useEffect } from "react";
+import { ShoppingCart, Heart } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import { useLanguage } from "@/lib/useLanguage";
+import { toast } from "react-toastify";
+import api from "@/lib/axios";
 
 interface Product {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  image: string;
-  category: string;
-  brand: string;
+  _id: string;
+  nameEnglish: string;
+  nameArabic: string;
+  shortDescriptionEnglish?: string;
+  shortDescriptionArabic?: string;
+  minPrice: number;
+  maxPrice: number;
+  imageUrlEnglish?: { imageUrl: string }[];
+  imageUrlArabic?: { imageUrl: string }[];
+  brand?: {
+    nameEnglish: string;
+    nameArabic: string;
+  };
+  category?: {
+    nameEnglish: string;
+    nameArabic: string;
+  };
 }
 
-export default function BrandsPage() {
+export default function SkincarePage() {
+  const router = useRouter();
   const { formatPrice } = useCurrency();
-  const [priceRange, setPriceRange] = useState(5000);
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const { currentLanguage, isRTL } = useLanguage();
+  
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [priceRange, setPriceRange] = useState(10000);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState("default");
   const [searchQuery, setSearchQuery] = useState("");
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-  /* ================= PRODUCTS ================= */
-  const products: Product[] = [
-    {
-      id: 1,
-      name: "Hydra Glow Face Serum",
-      description: "Lightweight hyaluronic acid serum for intense hydration.",
-      price: 1299,
-      image:
-        "https://www.jovees.com/cdn/shop/files/Artboard_3_b97ec74d-8c5a-4ea6-81ed-7360dfbfa50e.jpg?v=1738930572",
-      category: "Skincare",
-      brand: "GlowLab",
-    },
-    {
-      id: 2,
-      name: "Vitamin C Brightening Cream",
-      description: "Daily moisturizer enriched with Vitamin C.",
-      price: 1799,
-      image:
-        "https://healthstores.in/cdn/shop/files/PP_whitening_Cream_7.jpg?v=1766571833&width=1445",
-      category: "Skincare",
-      brand: "DermaCare",
-    },
-    {
-      id: 3,
-      name: "Matte Finish Foundation",
-      description: "Full coverage matte foundation.",
-      price: 2199,
-      image:
-        "https://assets.myntassets.com/h_1440,q_75,w_1080/v1/assets/images/24576580/2023/11/28/a7cac8ba-5190-410f-994a-c4b3a0aefce61701159587240-NOY-Set-Of-15-Makeup-Gift-Set-9491701159587175-1.jpg",
-      category: "Makeup",
-      brand: "Luxe Beauty",
-    },
-    {
-      id: 4,
-      name: "Velvet Touch Lipstick",
-      description: "Creamy matte lipstick with rich pigment.",
-      price: 899,
-      image:
-        "https://cdn.thewirecutter.com/wp-content/media/2026/02/BEST-LIPSTICK-0410-2x1-1.jpg",
-      category: "Makeup",
-      brand: "Luxe Beauty",
-    },
-        {
-      id: 5,
-      name: "Argan Repair Hair Serum",
-      description: "Nourishing serum to control frizz.",
-      price: 999,
-      image:
-        "https://m.media-amazon.com/images/I/61Nnnk9WDIL._AC_UF1000,1000_QL80_.jpg",
-      category: "Haircare",
-      brand: "SilkRoots",
-    },
-    {
-      id: 6,
-      name: "Keratin Smooth Shampoo",
-      description: "Strengthens hair and reduces breakage.",
-      price: 749,
-      image:
-        "https://svashudhi.com/cdn/shop/collections/hairfall_treatment_square_2400x.jpg?v=1690965512",
-      category: "Haircare",
-      brand: "SilkRoots",
-    },
-  ];
+  // Fetch products from backend
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+        const res = await fetch(`${API_URL}/user/product?category=Skincare`);
+        const data = await res.json();
+        
+        if (data.products && Array.isArray(data.products)) {
+          setProducts(data.products);
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        toast.error("Failed to load products");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const categories = ["Skincare", "Makeup", "Haircare", "Fragrance"];
-  const brands = ["GlowLab", "DermaCare", "Luxe Beauty", "SilkRoots", "Maison Aura"];
+    fetchProducts();
+  }, []);
+
+  // Get unique brands
+  const brands = useMemo(() => {
+    const brandSet = new Set<string>();
+    products.forEach((p) => {
+      const brandName = currentLanguage === "ar" 
+        ? p.brand?.nameArabic || p.brand?.nameEnglish
+        : p.brand?.nameEnglish || p.brand?.nameArabic;
+      if (brandName) brandSet.add(brandName);
+    });
+    return Array.from(brandSet);
+  }, [products, currentLanguage]);
 
   /* ================= FILTER + SORT ================= */
   const filteredProducts = useMemo(() => {
