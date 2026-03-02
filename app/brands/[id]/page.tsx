@@ -1081,6 +1081,27 @@ const ZOOM_FACTOR = 3;
     fetchProduct();
   }, [productId]);
 
+  // Reset selected image when variant changes
+  useEffect(() => {
+    setSelectedImage(0);
+    console.log("Variant changed to:", selectedVariant);
+    console.log("Variant data:", product?.variants?.[selectedVariant]);
+  }, [selectedVariant, product]);
+
+  // Log product images when they change
+  useEffect(() => {
+    if (product) {
+      const variantData = product.variants?.[selectedVariant];
+      console.log("Current variant images:", {
+        variantIndex: selectedVariant,
+        variantName: variantData?.nameEnglish || variantData?.nameArabic,
+        englishImages: variantData?.imageUrlEnglish,
+        arabicImages: variantData?.imageUrlArabic,
+        currentLanguage,
+      });
+    }
+  }, [selectedVariant, product, currentLanguage]);
+
   if (loading || !product) {
     return (
       <div className="pt-20 min-h-screen bg-[#0D0D0D] text-white flex justify-center items-center">
@@ -1090,11 +1111,6 @@ const ZOOM_FACTOR = 3;
   }
 
   // ================= LANGUAGE BASED DATA =================
-
-  const productImages =
-    currentLanguage === "ar"
-      ? product.imageUrlArabic?.map((img: any) => img.imageUrl)
-      : product.imageUrlEnglish?.map((img: any) => img.imageUrl);
 
   const productName =
     currentLanguage === "ar"
@@ -1112,6 +1128,26 @@ const ZOOM_FACTOR = 3;
       : product.shortDescriptionEnglish;
 
   const selectedVariantData = product.variants?.[selectedVariant];
+
+  // Get images based on selected variant or fallback to product images
+  const productImages = (() => {
+    if (selectedVariantData) {
+      const variantImages =
+        currentLanguage === "ar"
+          ? selectedVariantData.imageUrlArabic?.map((img: any) => img.imageUrl)
+          : selectedVariantData.imageUrlEnglish?.map((img: any) => img.imageUrl);
+      
+      // If variant has images, use them; otherwise fallback to product images
+      if (variantImages && variantImages.length > 0) {
+        return variantImages;
+      }
+    }
+    
+    // Fallback to product images
+    return currentLanguage === "ar"
+      ? product.imageUrlArabic?.map((img: any) => img.imageUrl)
+      : product.imageUrlEnglish?.map((img: any) => img.imageUrl);
+  })();
 
   // ================= UI =================
 
@@ -1192,10 +1228,15 @@ const ZOOM_FACTOR = 3;
 <div className="relative bg-[#1A1A1A] rounded-xl overflow-hidden aspect-square select-none group">
 
   <img
+    key={`${selectedVariant}-${selectedImage}`}
     ref={imgRef}
     src={productImages?.[selectedImage]}
     alt={productName}
     className="w-full h-full object-cover"
+    onError={(e) => {
+      console.error("Image failed to load:", productImages?.[selectedImage]);
+      e.currentTarget.src = "/placeholder.png";
+    }}
   />
 
   {/* Hover Layer */}
@@ -1281,16 +1322,23 @@ const ZOOM_FACTOR = 3;
             <div className="grid grid-cols-3 gap-4 mt-4">
               {productImages?.map((img: string, idx: number) => (
                 <button
-                  key={idx}
+                  key={`${selectedVariant}-thumb-${idx}`}
                   onClick={() => setSelectedImage(idx)}
                   onDoubleClick={() => openLightbox(idx)}
-                  className={`rounded-lg overflow-hidden border-2 transition ${
+                  className={`rounded-lg overflow-hidden border-2 transition aspect-square ${
                     selectedImage === idx
                       ? "border-[#C9A24D]"
-                      : "border-[#2A2A2A]"
+                      : "border-[#2A2A2A] hover:border-[#C9A24D]/50"
                   }`}
                 >
-                  <img src={img} className="w-full h-full object-cover" />
+                  <img 
+                    src={img} 
+                    alt={`View ${idx + 1}`}
+                    className="w-full h-full object-cover" 
+                    onError={(e) => {
+                      e.currentTarget.src = "/placeholder.png";
+                    }}
+                  />
                 </button>
               ))}
             </div>
@@ -1325,20 +1373,58 @@ const ZOOM_FACTOR = 3;
             {/* Variants */}
             {product.variants?.length > 0 && (
               <div className="mb-6">
-                <h3 className="mb-3 font-semibold">Colors</h3>
-                <div className="flex gap-3">
-                  {product.variants.map((variant: any, idx: number) => (
-                    <button
-                      key={variant._id}
-                      onClick={() => setSelectedVariant(idx)}
-                      className={`w-10 h-10 rounded-full border-2 ${
-                        selectedVariant === idx
-                          ? "border-[#C9A24D] scale-110"
-                          : "border-[#2A2A2A]"
-                      }`}
-                      style={{ backgroundColor: variant.color }}
-                    />
-                  ))}
+                <h3 className="mb-3 font-semibold">
+                  {isRTL ? "الألوان" : "Colors"}
+                  {selectedVariantData && (
+                    <span className="text-sm text-gray-400 font-normal ml-2">
+                      - {currentLanguage === "ar" 
+                        ? selectedVariantData.nameArabic || selectedVariantData.nameEnglish
+                        : selectedVariantData.nameEnglish || selectedVariantData.nameArabic}
+                    </span>
+                  )}
+                </h3>
+                <div className="flex flex-wrap gap-3">
+                  {product.variants.map((variant: any, idx: number) => {
+                    // Get variant image for preview
+                    const variantPreviewImage = currentLanguage === "ar"
+                      ? variant.imageUrlArabic?.[0]?.imageUrl || variant.imageUrlEnglish?.[0]?.imageUrl
+                      : variant.imageUrlEnglish?.[0]?.imageUrl || variant.imageUrlArabic?.[0]?.imageUrl;
+                    
+                    const variantName = currentLanguage === "ar"
+                      ? variant.nameArabic || variant.nameEnglish
+                      : variant.nameEnglish || variant.nameArabic;
+
+                    return (
+                      <button
+                        key={variant._id}
+                        onClick={() => setSelectedVariant(idx)}
+                        title={variantName}
+                        className={`relative w-16 h-16 rounded-lg border-2 overflow-hidden transition-all ${
+                          selectedVariant === idx
+                            ? "border-[#C9A24D] scale-110 shadow-lg shadow-[#C9A24D]/30"
+                            : "border-[#2A2A2A] hover:border-[#C9A24D]/50"
+                        }`}
+                      >
+                        {variantPreviewImage ? (
+                          <img 
+                            src={variantPreviewImage} 
+                            alt={variantName}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <div 
+                            className="w-full h-full"
+                            style={{ backgroundColor: variant.color || "#666" }}
+                          />
+                        )}
+                        {selectedVariant === idx && (
+                          <div className="absolute inset-0 bg-[#C9A24D]/20 flex items-center justify-center">
+                            <div className="w-4 h-4 rounded-full bg-[#C9A24D] border-2 border-white" />
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}

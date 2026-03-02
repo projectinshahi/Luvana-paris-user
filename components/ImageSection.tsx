@@ -577,7 +577,7 @@ export default function ImageSection() {
               loading={index === 0 ? "eager" : "lazy"}
             />
 
-            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/60" />
+            <div className="absolute inset-0 blinear-to-b from-black/40 via-black/30 to-black/60" />
 
             <div
               className={`relative z-30 h-full flex items-center px-5 sm:px-8 md:px-16 lg:px-24 transition-all duration-700 ${

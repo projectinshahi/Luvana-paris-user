@@ -1,473 +1,490 @@
-// import Image from "next/image";
-
-// export default function InfluencersSection() {
-//   return (
-//     <section className="relative w-full py-24 bg-black">
-//       <div className="max-w-[1500px] mx-auto px-10">
-
-//         {/* HEADER */}
-//         <div className="flex items-center justify-center mb-16">
-//           <div className="flex items-center gap-10">
-//             <div className={`text-center ${cactus.className}`}>
-//               <h2 className="text-[#C5A059] text-[28px] leading-[1]">
-//                 Influencers
-//               </h2>
-//               <p className="text-[#C5A059]/80 text-[14px] mt-1">
-//                 Scrolls
-//               </p>
-//             </div>
-
-//             {/* LINE */}
-//             <div className="h-[1px] w-[360px] bg-[#C5A059]/60" />
-//           </div>
-//         </div>
-
-//         {/* GRID */}
-//         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-
-//           {/* CARD 1 */}
-//           <div className="text-center">
-//             <div className="relative w-full h-[520px] overflow-hidden">
-//               <Image
-//                 src="/images/v1.jpg"
-//                 alt="Influencer 1"
-//                 fill
-//                 className="object-cover"
-//               />
-//             </div>
-//             <p className="mt-6 text-[#C5A059] text-sm">
-//               From simple skincare to spa-level luxury <br />
-//               explore brands you trust
-//             </p>
-//           </div>
-
-//           {/* CARD 2 */}
-//           <div className="text-center">
-//             <div className="relative w-full h-[520px] overflow-hidden">
-//               <Image
-//                 src="/images/v2.jpg"
-//                 alt="Influencer 2"
-//                 fill
-//                 className="object-cover"
-//               />
-//             </div>
-//             <p className="mt-6 text-[#C5A059] text-sm">
-//               explore hair care from brands you love <br />
-//               Discover the best in hair care
-//             </p>
-//           </div>
-
-//           {/* CARD 3 */}
-//           <div className="text-center">
-//             <div className="relative w-full h-[520px] overflow-hidden">
-//               <Image
-//                 src="/images/v3.jpg"
-//                 alt="Influencer 3"
-//                 fill
-//                 className="object-cover"
-//               />
-//             </div>
-//             <p className="mt-6 text-[#C5A059] text-sm">
-//               Quality fragrances at every price point
-//             </p>
-//           </div>
-
-//         </div>
-//       </div>
-//     </section>
-//   );
-// }
-
-// import Image from "next/image";
-
-// const influencers = [
-//   {
-//     img: "/images/v1.jpg",
-//     text: "From simple skincare to spa-level luxury explore brands you trust",
-//   },
-//   {
-//     img: "/images/v2.jpg",
-//     text: "explore hair care from brands you love Discover the best in hair care",
-//   },
-//   {
-//     img: "/images/v3.png",
-//     text: "Quality fragrances at every price point",
-//   },
-// ];
-
-// export default function InfluencersSection() {
-//   return (
-//     <section className="relative w-full py-24 bg-black">
-//       <div className="max-w-[1500px] mx-auto px-10">
-
-//         {/* HEADER */}
-//         <div className="flex items-center justify-center mb-16">
-//           <div className="flex items-center gap-10">
-//             {/* TEXT */}
-//             <div className="text-center [font-family:'Cactus_Classical_Serif',serif]">
-//               <h2 className="text-[#C5A059] text-[28px] leading-[1]">
-//                 Influencers
-//               </h2>
-//               <p className="text-[#C5A059]/80 text-[14px] mt-1">
-//                 Scrolls
-//               </p>
-//             </div>
-
-//             {/* LINE */}
-//             <div className="h-[1px] w-[360px] bg-[#C5A059]/60" />
-//           </div>
-//         </div>
-
-//         {/* GRID */}
-//         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-//           {influencers.map((item, i) => (
-//             <div key={i} className="text-center">
-//               <div className="relative w-full h-[520px] overflow-hidden">
-//                 <Image
-//                   src={item.img}
-//                   alt={`Influencer ${i + 1}`}
-//                   fill
-//                   className="object-cover"
-//                 />
-//               </div>
-
-//               <p className="mt-6 text-[#C5A059] text-sm leading-relaxed max-w-[320px] mx-auto">
-//                 {item.text}
-//               </p>
-//             </div>
-//           ))}
-//         </div>
-
-//       </div>
-//     </section>
-//   );
-// }
-
-// "use client";
-
-// import Image from "next/image";
-// import { useTranslation } from "react-i18next";
-
-// export default function InfluencersSection() {
-//   const { t, i18n } = useTranslation('common');
-//   const isRTL = i18n.language === 'ar';
-
-//   const influencers = [
-//     {
-//       img: "/images/v1.jpg",
-//       textKey: "influencers.skincare",
-//     },
-//     {
-//       img: "/images/v2.jpg",
-//       textKey: "influencers.haircare",
-//     },
-//     {
-//       img: "/images/v3.png",
-//       textKey: "influencers.fragrance",
-//     },
-//     {
-//       img: "/images/inf4.jpg",
-//       textKey: "influencers.fragrance",
-//     },
-//   ];
-
-//   return (
-//     <section className="relative w-full py-16 md:py-24 bg-black">
-//       <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-10">
-
-//         {/* HEADER */}
-//         <div className={`flex justify-center mb-12 md:mb-16 ${isRTL ? 'flex-row-reverse' : ''}`}>
-//           <div className={`flex items-center gap-6 md:gap-10 ${isRTL ? 'flex-row-reverse' : ''}`}>
-//             <div className={`text-center [font-family:var(--font-cactus-serif)] ${isRTL ? 'font-arabic' : ''}`}>
-//               <h2 className="text-[#C5A059] text-2xl md:text-3xl leading-tight">
-//                 {t('influencers.title')}
-//               </h2>
-//               <p className="text-[#C5A059]/80 text-xs md:text-sm mt-1">
-//                 {t('influencers.subtitle')}
-//               </p>
-//             </div>
-
-//             <div className="h-px w-20 md:w-64 bg-linear-to-r from-[#C5A059]/60 to-transparent" />
-//           </div>
-//         </div>
-
-//         {/* IMAGES ROW */}
-//         <div className={`flex flex-col md:flex-row justify-center items-stretch gap-6 md:gap-8 lg:gap-12 ${isRTL ? 'md:flex-row-reverse' : ''}`}>
-//           {influencers.map((item, i) => (
-//             <div key={i} className="text-center flex flex-col items-center">
-//               {/* RESPONSIVE IMAGE */}
-//               <div className="relative w-full md:w-64 lg:w-80 aspect-[3/4.8] overflow-hidden rounded-sm border border-[#C5A059]/40 hover:border-[#C5A059] transition-colors duration-300">
-//                 <Image
-//                   src={item.img}
-//                   alt={`Influencer ${i + 1}`}
-//                   fill
-//                   className="object-cover hover:scale-105 transition-transform duration-500"
-//                 />
-//               </div>
-
-//               {/* TEXT */}
-//               <p className={`mt-4 md:mt-6 text-[#C5A059] text-xs md:text-sm leading-relaxed max-w-xs md:max-w-sm ${isRTL ? 'text-right font-arabic' : 'text-left'}`}>
-//                 {t(item.textKey)}
-//               </p>
-//             </div>
-//           ))}
-//         </div>
-
-//       </div>
-//     </section>
-//   );
-// }
-
-// "use client";
-
-// import Image from "next/image";
-// import { useTranslation } from "react-i18next";
-
-// export default function InfluencersSection() {
-//   const { t, i18n } = useTranslation("common");
-//   const isRTL = i18n.language === "ar";
-
-//   const influencers = [
-//     { img: "/images/v1.jpg", textKey: "influencers.skincare" },
-//     { img: "/images/v2.jpg", textKey: "influencers.haircare" },
-//     { img: "/images/v3.png", textKey: "influencers.fragrance" },
-//     { img: "/images/inf4.jpg", textKey: "influencers.fragrance" },
-//   ];
-
-//   return (
-//     <>
-//       {/* ✅ INLINE CSS – GUARANTEED ANIMATION */}
-//       <style>{`
-//         @keyframes influencer-scroll {
-//           0% { transform: translateX(0); }
-//           100% { transform: translateX(-50%); }
-//         }
-
-//         @keyframes influencer-scroll-reverse {
-//           0% { transform: translateX(-50%); }
-//           100% { transform: translateX(0); }
-//         }
-
-//         .influencer-scroll {
-//           animation: influencer-scroll 30s linear infinite;
-//         }
-
-//         .influencer-scroll-reverse {
-//           animation: influencer-scroll-reverse 30s linear infinite;
-//         }
-
-//         .pause-on-hover:hover .influencer-scroll,
-//         .pause-on-hover:hover .influencer-scroll-reverse {
-//           animation-play-state: paused;
-//         }
-//       `}</style>
-
-//       <section className="relative w-full py-16 md:py-24 bg-black overflow-hidden">
-//         <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-10">
-
-//           {/* HEADER */}
-//           <div
-//             className={`flex justify-center mb-12 md:mb-16 ${
-//               isRTL ? "flex-row-reverse" : ""
-//             }`}
-//           >
-//             <div
-//               className={`flex items-center gap-6 md:gap-10 ${
-//                 isRTL ? "flex-row-reverse" : ""
-//               }`}
-//             >
-//               <div
-//                 className={`text-center [font-family:var(--font-cactus-serif)] ${
-//                   isRTL ? "font-arabic" : ""
-//                 }`}
-//               >
-//                 <h2 className="text-[#C5A059] text-2xl md:text-3xl leading-tight">
-//                   {t("influencers.title")}
-//                 </h2>
-//                 <p className="text-[#C5A059]/80 text-xs md:text-sm mt-1">
-//                   {t("influencers.subtitle")}
-//                 </p>
-//               </div>
-
-//               <div className="h-px w-20 md:w-64 bg-linear-to-r from-[#C5A059]/60 to-transparent" />
-//             </div>
-//           </div>
-
-//           {/* ✅ AUTO MOVING CAROUSEL */}
-//           <div className="relative w-full overflow-hidden pause-on-hover">
-//             <div
-//               className={`flex w-max gap-6 md:gap-8 lg:gap-12 ${
-//                 isRTL ? "influencer-scroll-reverse" : "influencer-scroll"
-//               }`}
-//             >
-//               {[...influencers, ...influencers].map((item, i) => (
-//                 <div
-//                   key={i}
-//                   className="shrink-0 text-center flex flex-col items-center w-55 md:w-65 lg:w-[320px]"
-//                 >
-//                   {/* IMAGE */}
-//                   <div className="relative w-full aspect-[3/4.8] overflow-hidden rounded-sm border border-[#C5A059]/40 hover:border-[#C5A059] transition-colors duration-300">
-//                     <Image
-//                       src={item.img}
-//                       alt={`Influencer ${i + 1}`}
-//                       fill
-//                       className="object-cover hover:scale-105 transition-transform duration-500"
-//                     />
-//                   </div>
-
-//                   {/* TEXT */}
-//                   <p
-//                     className={`mt-4 md:mt-6 text-[#C5A059] text-xs md:text-sm leading-relaxed max-w-xs ${
-//                       isRTL ? "text-right font-arabic" : "text-left"
-//                     }`}
-//                   >
-//                     {t(item.textKey)}
-//                   </p>
-//                 </div>
-//               ))}
-//             </div>
-//           </div>
-
-//         </div>
-//       </section>
-//     </>
-//   );
-// }
 "use client";
 
-import Image from "next/image";
 import { useTranslation } from "react-i18next";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import axios from "axios";
+import { X, ShoppingCart } from "lucide-react";
+import { toast } from "react-toastify";
+import api from "@/lib/axios";
+
+interface Variant {
+  _id: string;
+  nameEnglish: string;
+  nameArabic: string;
+  color: string;
+  price: number;
+  mrp: number;
+  imageUrlEnglish?: { imageUrl: string }[];
+  imageUrlArabic?: { imageUrl: string }[];
+}
+
+interface Product {
+  _id: string;
+  nameEnglish: string;
+  nameArabic: string;
+  imageUrlEnglish?: { imageUrl: string }[];
+  imageUrlArabic?: { imageUrl: string }[];
+}
+
+interface Influencer {
+  _id: string;
+  titleEnglish: string;
+  titleArabic: string;
+  videoUrl?: string;
+  product?: Product;
+  variant?: Variant;
+}
 
 export default function InfluencersSection() {
-  const { t, i18n } = useTranslation("common");
+  const { i18n } = useTranslation("common");
   const isRTL = i18n.language === "ar";
+  const router = useRouter();
 
-  const influencers = [
-    { img: "/images/v1.jpg", textKey: "influencers.skincare" },
-    { img: "/images/v2.jpg", textKey: "influencers.haircare" },
-    { img: "/images/v3.png", textKey: "influencers.fragrance" },
-    { img: "/images/inf4.jpg", textKey: "influencers.fragrance" },
-  ];
+  const [influencers, setInfluencers] = useState<Influencer[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedInfluencer, setSelectedInfluencer] = useState<Influencer | null>(null);
+  const [addingToCart, setAddingToCart] = useState(false);
+
+  useEffect(() => {
+    const fetchInfluencers = async () => {
+      try {
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+        const res = await axios.get(`${API_URL}/user/home`);
+
+        if (res.data?.influencers && res.data.influencers.length > 0) {
+          console.log("✅ Influencers loaded:", res.data.influencers);
+          setInfluencers(res.data.influencers);
+        } else {
+          console.log("⚠️ No influencers found in API response");
+        }
+      } catch (error) {
+        console.error("❌ Error fetching influencers:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInfluencers();
+  }, []);
+
+  const handleVideoClick = (influencer: Influencer) => {
+    if (influencer.product && influencer.variant) {
+      setSelectedInfluencer(influencer);
+    }
+  };
+
+  const handleAddToCart = async () => {
+    if (!selectedInfluencer?.variant?._id) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        toast.error("Please login first");
+        setSelectedInfluencer(null);
+        return;
+      }
+
+      setAddingToCart(true);
+      await api.post("/user/cart", {
+        variant: selectedInfluencer.variant._id,
+        quantity: 1,
+      });
+
+      toast.success("✅ Added to cart!");
+      setSelectedInfluencer(null);
+    } catch (error: any) {
+      console.error("❌ Cart error:", error?.response?.data || error.message);
+      toast.error(error?.response?.data?.message || "Failed to add to cart");
+    } finally {
+      setAddingToCart(false);
+    }
+  };
+
+  const handleViewProduct = () => {
+    if (selectedInfluencer?.product?._id) {
+      router.push(`/brands/${selectedInfluencer.product._id}`);
+      setSelectedInfluencer(null);
+    }
+  };
+
+  if (loading) {
+    return (
+      <section className="relative w-full py-20 bg-black">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <p className="text-[#C9A24D]/50">Loading influencers...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (!influencers.length) {
+    console.log("⚠️ No influencers to display");
+    return null;
+  }
+
+  const getProductImage = (influencer: Influencer): string | undefined => {
+    if (isRTL) {
+      return influencer.variant?.imageUrlArabic?.[0]?.imageUrl ||
+             influencer.variant?.imageUrlEnglish?.[0]?.imageUrl ||
+             influencer.product?.imageUrlArabic?.[0]?.imageUrl ||
+             influencer.product?.imageUrlEnglish?.[0]?.imageUrl;
+    }
+    return influencer.variant?.imageUrlEnglish?.[0]?.imageUrl ||
+           influencer.variant?.imageUrlArabic?.[0]?.imageUrl ||
+           influencer.product?.imageUrlEnglish?.[0]?.imageUrl ||
+           influencer.product?.imageUrlArabic?.[0]?.imageUrl;
+  };
+
+  const getProductName = (influencer: Influencer): string => {
+    if (isRTL) {
+      return influencer.product?.nameArabic || influencer.product?.nameEnglish || "Product";
+    }
+    return influencer.product?.nameEnglish || influencer.product?.nameArabic || "Product";
+  };
+
+  const getVariantName = (influencer: Influencer): string => {
+    if (isRTL) {
+      return influencer.variant?.nameArabic || influencer.variant?.nameEnglish || "";
+    }
+    return influencer.variant?.nameEnglish || influencer.variant?.nameArabic || "";
+  };
 
   return (
     <>
       <style>{`
         @keyframes scroll-left {
-          0% {
-            transform: translateX(0);
-          }
-          99.99% {
-            transform: translateX(calc(-50% - 0.75rem));
-          }
-          100% {
-            transform: translateX(0);
-          }
+          0% { transform: translateX(0); }
+          100% { transform: translateX(calc(-50% - 2rem)); }
         }
 
         @keyframes scroll-right {
-          0% {
-            transform: translateX(calc(-50% - 0.75rem));
-          }
-          99.99% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(calc(-50% - 0.75rem));
-          }
+          0% { transform: translateX(calc(-50% - 2rem)); }
+          100% { transform: translateX(0); }
         }
 
         .carousel-track {
           display: flex;
-          gap: 1.5rem;
-          animation: ${isRTL ? "scroll-right" : "scroll-left"} 50s linear infinite;
-          will-change: transform;
+          gap: 2rem;
+          animation: ${isRTL ? "scroll-right" : "scroll-left"} 60s linear infinite;
         }
 
         .carousel-container:hover .carousel-track {
           animation-play-state: paused;
         }
-
-        @media (min-width: 768px) {
-          .carousel-track {
-            gap: 2rem;
-            animation: ${isRTL ? "scroll-right" : "scroll-left"} 55s linear infinite;
-          }
-        }
-
-        @media (min-width: 1024px) {
-          .carousel-track {
-            gap: 3rem;
-            animation: ${isRTL ? "scroll-right" : "scroll-left"} 60s linear infinite;
-          }
-        }
       `}</style>
 
-      <section className="relative w-full py-16 md:py-24 bg-black overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-10">
+      <section className="relative w-full py-20 bg-black overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4">
 
-          {/* ✅ PERFECT CENTERED HEADER */}
-          <div
-            className={`flex items-center justify-center gap-6 md:gap-10 mb-12 md:mb-16 ${
-              isRTL ? "flex-row-reverse" : ""
-            }`}
-          >
-            {/* Left Line */}
-            <div className="h-px flex-1 max-w-32 md:max-w-64 bg-linear-to-r from-transparent via-[#C5A059]/70 to-[#C5A059]/70" />
-
-            {/* Title */}
-            <div
-              className={`text-center [font-family:var(--font-cactus-serif)] ${
-                isRTL ? "font-arabic" : ""
-              }`}
-            >
-              <h2 className="text-[#C5A059] text-2xl md:text-3xl leading-tight whitespace-nowrap">
-                {t("influencers.title")}
-              </h2>
-              <p className="text-[#C5A059]/80 text-xs md:text-sm mt-1">
-                {t("influencers.subtitle")}
-              </p>
-            </div>
-
-            {/* Right Line */}
-            <div className="h-px flex-1 max-w-32 md:max-w-64 bg-linear-to-l from-transparent via-[#C5A059]/70 to-[#C5A059]/70" />
+          {/* Header */}
+          <div className="text-center mb-16">
+            <h2 className="text-[#C9A24D] text-3xl font-light tracking-widest uppercase">
+              {isRTL ? "المؤثرون" : "Influencers"}
+            </h2>
+            <p className="text-[#C9A24D]/60 text-sm mt-2">
+              {isRTL ? "اكتشف منتجاتنا المميزة" : "Discover Our Featured Products"}
+            </p>
           </div>
 
-          {/* ✅ INFINITE CAROUSEL WITH SEAMLESS LOOP */}
+          {/* Reel Carousel */}
           <div className="relative w-full overflow-hidden carousel-container">
             <div className="carousel-track">
-              {/* Render items twice for seamless loop */}
-              {[...influencers, ...influencers].map((item, i) => (
-                <div
-                  key={i}
-                  className="shrink-0 text-center flex flex-col items-center w-48 sm:w-56 md:w-64 lg:w-80"
-                >
-                  {/* Image */}
-                  <div className="relative w-full aspect-[3/4.8] overflow-hidden rounded-sm border border-[#C5A059]/40 hover:border-[#C5A059] transition-colors duration-300">
-                    <Image
-                      src={item.img}
-                      alt={`Influencer ${(i % influencers.length) + 1}`}
-                      fill
-                      className="object-cover hover:scale-105 transition-transform duration-500"
-                      priority={i < 2}
-                      sizes="(max-width: 640px) 192px, (max-width: 768px) 224px, (max-width: 1024px) 256px, 320px"
-                    />
-                  </div>
 
-                  {/* Text */}
-                  <p
-                    className={`mt-4 md:mt-6 text-[#C5A059] text-xs md:text-sm leading-relaxed ${
-                      isRTL ? "text-right font-arabic" : "text-left"
-                    }`}
+              {[...influencers, ...influencers].map((item, i) => {
+                const title = isRTL
+                  ? (item.titleArabic || item.titleEnglish)
+                  : (item.titleEnglish || item.titleArabic);
+
+                return (
+                  <div
+                    key={`${item._id}-${i}`}
+                    className="shrink-0 w-60 md:w-70 lg:w-[320px] cursor-pointer"
+                    onClick={() => handleVideoClick(item)}
                   >
-                    {t(item.textKey)}
-                  </p>
-                </div>
-              ))}
+                    {/* Fixed height container with specific dimensions */}
+                    <div className="relative w-full h-106.75 md:h-124.5 lg:h-142.25 overflow-hidden rounded-lg border-2 border-[#C9A24D]/30 hover:border-[#C9A24D] transition-all duration-500 bg-[#1a1a1a]">
+
+                      {/* VIDEO OR YOUTUBE EMBED */}
+                      {item.videoUrl ? (
+                        (() => {
+                          const isYouTube = item.videoUrl.includes('youtube.com') || item.videoUrl.includes('youtu.be');
+                          
+                          if (isYouTube) {
+                            let videoId = '';
+                            
+                            if (item.videoUrl.includes('youtube.com/shorts/')) {
+                              videoId = item.videoUrl.split('youtube.com/shorts/')[1]?.split('?')[0];
+                            } else if (item.videoUrl.includes('youtube.com/watch?v=')) {
+                              videoId = item.videoUrl.split('v=')[1]?.split('&')[0];
+                            } else if (item.videoUrl.includes('youtu.be/')) {
+                              videoId = item.videoUrl.split('youtu.be/')[1]?.split('?')[0];
+                            }
+
+                            if (videoId) {
+                              return (
+                                <div className="absolute inset-0 w-full h-full">
+                                  <iframe
+                                    src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&modestbranding=1&rel=0&playsinline=1`}
+                                    className="absolute"
+                                    style={{
+                                      position: 'absolute',
+                                      top: '50%',
+                                      left: '50%',
+                                      transform: 'translate(-50%, -50%)',
+                                      width: '177.78%',
+                                      height: '177.78%',
+                                      minWidth: '177.78%',
+                                      minHeight: '177.78%',
+                                      border: 'none',
+                                      pointerEvents: 'none'
+                                    }}
+                                    allow="autoplay; encrypted-media"
+                                    allowFullScreen
+                                    title={title || 'Influencer video'}
+                                  />
+                                </div>
+                              );
+                            }
+                          }
+
+                          return (
+                            <video
+                              key={`video-${item._id}-${i}`}
+                              src={item.videoUrl}
+                              autoPlay
+                              muted
+                              loop
+                              playsInline
+                              preload="auto"
+                              className="absolute"
+                              style={{
+                                position: 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                transform: 'translate(-50%, -50%)',
+                                width: '100%',
+                                height: '100%',
+                                minWidth: '100%',
+                                minHeight: '100%',
+                                objectFit: 'cover'
+                              }}
+                              onLoadStart={() => console.log(`🎬 Loading video: ${item.videoUrl}`)}
+                              onCanPlay={() => console.log(`✅ Video ready: ${item.videoUrl}`)}
+                              onError={(e) => {
+                                console.error("❌ Video load error:", item.videoUrl, e);
+                              }}
+                            >
+                              <source src={item.videoUrl} type="video/mp4" />
+                            </video>
+                          );
+                        })()
+                      ) : (
+                        <div className="w-full h-full flex flex-col items-center justify-center p-6">
+                          <div className="text-[#C9A24D]/30 text-6xl mb-4">📹</div>
+                          <p className="text-[#C9A24D]/50 text-sm text-center">
+                            {isRTL ? "لا يوجد فيديو" : "No video available"}
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Overlay gradient */}
+                      <div className="absolute bottom-0 left-0 right-0 h-24 bg-linear-to-t from-black/80 to-transparent pointer-events-none z-10" />
+
+                      {/* Tap to view indicator */}
+                      {item.product && item.variant && (
+                        <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-sm px-3 py-1 rounded-full z-10">
+                          <p className="text-white text-xs">
+                            {isRTL ? "انقر للعرض" : "Tap to view"}
+                          </p>
+                        </div>
+                      )}
+
+                    </div>
+
+                    {/* Title */}
+                    <p
+                      className={`mt-5 text-[#C9A24D] text-sm tracking-wide leading-relaxed ${
+                        isRTL ? "text-right" : "text-left"
+                      }`}
+                    >
+                      {title || (isRTL ? "بدون عنوان" : "Untitled")}
+                    </p>
+                  </div>
+                );
+              })}
+
             </div>
           </div>
-
         </div>
       </section>
+
+      {/* Product Modal - Carousel Style */}
+      {selectedInfluencer && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/90 z-100"
+            onClick={() => setSelectedInfluencer(null)}
+          />
+
+          {/* Modal Container */}
+          <div className="fixed inset-0 flex items-center justify-center z-101">
+            
+            {/* Close Button - Top Right */}
+            <button
+              onClick={() => setSelectedInfluencer(null)}
+              className="absolute top-4 right-4 z-102 p-2 bg-white/10 hover:bg-white/20 rounded-full transition"
+            >
+              <X size={24} className="text-white" />
+            </button>
+
+            {/* Previous Button */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                const currentIndex = influencers.findIndex(inf => inf._id === selectedInfluencer._id);
+                const prevIndex = currentIndex > 0 ? currentIndex - 1 : influencers.length - 1;
+                setSelectedInfluencer(influencers[prevIndex]);
+              }}
+              className="absolute left-4 z-102 p-3 bg-white/10 hover:bg-white/20 rounded-full transition"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
+
+            {/* Next Button */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                const currentIndex = influencers.findIndex(inf => inf._id === selectedInfluencer._id);
+                const nextIndex = currentIndex < influencers.length - 1 ? currentIndex + 1 : 0;
+                setSelectedInfluencer(influencers[nextIndex]);
+              }}
+              className="absolute right-4 z-102 p-3 bg-white/10 hover:bg-white/20 rounded-full transition"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </button>
+
+            {/* Main Content */}
+            <div className="relative w-full max-w-sm mx-4" onClick={(e) => e.stopPropagation()}>
+              
+              {/* Video Container */}
+              <div className="relative w-full h-150 bg-black rounded-lg overflow-hidden">
+                {selectedInfluencer.videoUrl ? (
+                  (() => {
+                    const isYouTube = selectedInfluencer.videoUrl.includes('youtube.com') || selectedInfluencer.videoUrl.includes('youtu.be');
+                    
+                    if (isYouTube) {
+                      let videoId = '';
+                      
+                      if (selectedInfluencer.videoUrl.includes('youtube.com/shorts/')) {
+                        videoId = selectedInfluencer.videoUrl.split('youtube.com/shorts/')[1]?.split('?')[0];
+                      } else if (selectedInfluencer.videoUrl.includes('youtube.com/watch?v=')) {
+                        videoId = selectedInfluencer.videoUrl.split('v=')[1]?.split('&')[0];
+                      } else if (selectedInfluencer.videoUrl.includes('youtu.be/')) {
+                        videoId = selectedInfluencer.videoUrl.split('youtu.be/')[1]?.split('?')[0];
+                      }
+
+                      if (videoId) {
+                        return (
+                          <iframe
+                            src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=1&modestbranding=1&rel=0`}
+                            className="w-full h-full"
+                            style={{ border: 'none' }}
+                            allow="autoplay; encrypted-media"
+                            allowFullScreen
+                            title="Influencer video"
+                          />
+                        );
+                      }
+                    }
+
+                    return (
+                      <video
+                        src={selectedInfluencer.videoUrl}
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        controls
+                        className="w-full h-full object-cover"
+                      />
+                    );
+                  })()
+                ) : null}
+
+                {/* Product Card Overlay - Bottom */}
+                {selectedInfluencer.product && selectedInfluencer.variant && (
+                  <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black via-black/95 to-transparent p-6">
+                    
+                    {/* Product Info Card */}
+                    <div className="bg-white/95 backdrop-blur-sm rounded-xl p-4 mb-4">
+                      <div className="flex gap-3">
+                        {/* Product Image */}
+                        <div className="w-16 h-16 shrink-0 bg-gray-100 rounded-lg overflow-hidden">
+                          <img
+                            src={getProductImage(selectedInfluencer) || "/placeholder.png"}
+                            alt={getProductName(selectedInfluencer)}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+
+                        {/* Product Details */}
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-sm font-semibold text-gray-900 truncate">
+                            {getProductName(selectedInfluencer)}
+                          </h3>
+                          <p className="text-xs text-gray-600 truncate">
+                            {getVariantName(selectedInfluencer)}
+                          </p>
+                          
+                          {/* Price */}
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className="text-base font-bold text-gray-900">
+                              ₹{selectedInfluencer.variant.price.toFixed(2)}
+                            </span>
+                            {selectedInfluencer.variant.mrp > selectedInfluencer.variant.price && (
+                              <span className="text-xs text-gray-500 line-through">
+                                ₹{selectedInfluencer.variant.mrp.toFixed(2)}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Add to Cart Button */}
+                    <button
+                      onClick={handleAddToCart}
+                      disabled={addingToCart}
+                      className="w-full bg-[#C9A24D] hover:bg-[#B8934C] text-black font-semibold py-3 px-6 rounded-lg transition disabled:opacity-50 flex items-center justify-center gap-2"
+                    >
+                      {addingToCart ? (
+                        "Adding..."
+                      ) : (
+                        <>
+                          <ShoppingCart size={20} />
+                          {isRTL ? "أضف إلى السلة" : "Add to Cart"}
+                        </>
+                      )}
+                    </button>
+
+                    {/* Powered by text */}
+                    <p className="text-center text-white/60 text-xs mt-3">
+                      powered by Tozoh
+                    </p>
+                  </div>
+                )}
+              </div>
+
+            </div>
+          </div>
+        </>
+      )}
     </>
   );
 }

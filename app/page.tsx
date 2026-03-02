@@ -3,6 +3,7 @@ import CategoryBar from "@/components/Categorybar";
 import ExploreBrandsSection from "@/components/ExploreBrandsSection";
 import ExploreMoreSection from "@/components/ExploreMoreSection";
 import ImageSection from "@/components/ImageSection";
+import InfluencersReelsSection from "@/components/InfluencersReelsSection";
 import InfluencersSection from "@/components/InfluencesSection";
 
 
@@ -21,7 +22,7 @@ export default function Home() {
         <BestSellers/>
         <ExploreBrandsSection/>
         <ExploreMoreSection/>
-        <InfluencersSection/>
+        <InfluencersReelsSection/>
        
       </div>
     </div>
