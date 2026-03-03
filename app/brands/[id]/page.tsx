@@ -967,7 +967,7 @@ function Lightbox({ images, initialIndex, onClose }: LightboxProps) {
       </div>
 
       {images.length > 1 && (
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-10">
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-30">
           {images.map((img, idx) => (
             <button
               key={idx}
@@ -1021,39 +1021,26 @@ const ZOOM_FACTOR = 3;
     setLightboxOpen(true);
   };
 
-  const handleImageMouseMove = useCallback(
-    (e: React.MouseEvent) => {
-      const el = imgRef.current;
-      if (!el) return;
+const handleImageMouseMove = useCallback(
+  (e: React.MouseEvent) => {
+    const el = imgRef.current;
+    if (!el) return;
 
-      const rect = el.getBoundingClientRect();
+    const rect = el.getBoundingClientRect();
 
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+    const cx = e.clientX - rect.left;
+    const cy = e.clientY - rect.top;
 
-      const percentX = (x / rect.width) * 100;
-      const percentY = (y / rect.height) * 100;
+    const percentX = (cx / rect.width) * 100;
+    const percentY = (cy / rect.height) * 100;
 
-      setZoomBg({
-        x: percentX,
-        y: percentY,
-      });
-
-      const lensWidth = rect.width / ZOOM_FACTOR;
-      const lensHeight = rect.height / ZOOM_FACTOR;
-
-      let lensX = x - lensWidth / 2;
-      let lensY = y - lensHeight / 2;
-
-      lensX = Math.max(0, Math.min(lensX, rect.width - lensWidth));
-      lensY = Math.max(0, Math.min(lensY, rect.height - lensHeight));
-
-      setLensPos({ x: lensX, y: lensY });
-      setLensSizePx({ w: lensWidth, h: lensHeight });
-    },
-    []
-  );
-
+    setZoomBg({
+      x: percentX,
+      y: percentY,
+    });
+  },
+  []
+);
   // ================= FETCH PRODUCT =================
   useEffect(() => {
     if (!productId) return;
@@ -1156,76 +1143,12 @@ const ZOOM_FACTOR = 3;
       <div className="max-w-7xl mx-auto px-4">
 
         {/* ================= MAIN SECTION ================= */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-16">
 
+<div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-16 relative">
           {/* ================= IMAGES ================= */}
           <div className="relative">
-            
-            {/* <div className="relative bg-[#1A1A1A] rounded-xl overflow-hidden aspect-square select-none">
-
-  <img
-    ref={imgRef}
-    src={productImages?.[selectedImage]}
-    alt={productName}
-    className="w-full h-full object-cover"
-  />
-<button
-                onClick={() =>
-                  setSelectedImage((prev) =>
-                    prev > 0 ? prev - 1 : productImages.length - 1
-                  )
-                }
-                className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/60 w-10 h-10 rounded-full flex items-center justify-center"
-              >
-                <ChevronLeft />
-              </button> 
-
-              {/* Next */}
-             {/* <button
-                onClick={() =>
-                  setSelectedImage((prev) =>
-                    prev < productImages.length - 1 ? prev + 1 : 0
-                  )
-                }
-                className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/60 w-10 h-10 rounded-full flex items-center justify-center"
-              >
-                <ChevronRight />
-              </button> */}
-  {/* {/* Hover Layer */}
-  {/* <div
-    className="absolute inset-0"
-    style={{ cursor: "crosshair" }}
-    onMouseEnter={() => setIsZooming(true)}
-    onMouseLeave={() => setIsZooming(false)}
-    onMouseMove={handleImageMouseMove}
-  /> */}
-
-  {/* Lens */}
-{/* {isZooming && (
-  <div
-    className="hidden lg:flex sticky top-32 
-    w-105 h-105 
-    rounded-xl overflow-hidden shadow-2xl"
-    style={{
-      backgroundImage: `url(${productImages?.[selectedImage]})`,
-      backgroundRepeat: "no-repeat",
-      backgroundSize: `${ZOOM_FACTOR * 100}%`,
-      backgroundPosition: `${zoomBg.x}% ${zoomBg.y}%`,
-    }}
-  >
-    <div className="absolute inset-0 rounded-xl ring-2 ring-inset ring-[#C9A24D]/40 pointer-events-none" />
-  </div>
-)} */}
-  {/* Maximize Button */}
-  {/* <button
-    onClick={() => openLightbox(selectedImage)}
-    className="absolute top-4 right-4 bg-black/60 hover:bg-[#C9A24D] p-2.5 rounded-full transition"
-  >
-    <Maximize2 size={18} />
-  </button>
-
-</div> */} 
-<div className="relative bg-[#1A1A1A] rounded-xl overflow-hidden aspect-square select-none group">
+        
+<div className="relative bg-[#1A1A1A] rounded-xl overflow-visible aspect-square select-none group">
 
   <img
     key={`${selectedVariant}-${selectedImage}`}
@@ -1239,43 +1162,51 @@ const ZOOM_FACTOR = 3;
     }}
   />
 
-  {/* Hover Layer */}
-  <div
-    className="absolute inset-0 z-10"
-    style={{ cursor: "crosshair" }}
-    onMouseEnter={() => setIsZooming(true)}
-    onMouseLeave={() => setIsZooming(false)}
-    onMouseMove={handleImageMouseMove}
-  />
+{/* Hover Layer */}
+<div
+  className="absolute inset-0"
+  style={{ cursor: "crosshair" }}
+  onMouseEnter={() => setIsZooming(true)}
+  onMouseLeave={() => setIsZooming(false)}
+  onMouseMove={handleImageMouseMove}
+/>
 
-  {/* Lens */}
-  {/* {isZooming && lensSizePx.w > 0 && (
-    <div
-      className="absolute z-20 pointer-events-none rounded border-2 border-[#C9A24D]"
-      style={{
-        left: lensPos.x,
-        top: lensPos.y,
-        width: lensSizePx.w,
-        height: lensSizePx.h,
-        boxShadow: "0 0 0 9999px rgba(0,0,0,0.35)",
-        background: "rgba(201,162,77,0.06)",
-      }}
-    />
-  )} */}
-  {isZooming && (
+
+{/* Zoom Preview Label */}
+{!isZooming && (
+  <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 bg-black/60 backdrop-blur-sm text-white/80 text-xs font-medium px-3 py-1.5 rounded-full pointer-events-none">
+    <Search size={12} />
+    Zoom Preview
+  </div>
+)}
+  {/* {isZooming && (
   <div
     className="hidden lg:block absolute top-0 left-full ml-8 
-    w-105 h-105 
-    rounded-xl overflow-hidden shadow-2xl z-50"
+    w-105 h-105 bg-center
+    z-50 rounded-xl overflow-hidden shadow-2xl"
     style={{
       backgroundImage: `url(${productImages?.[selectedImage]})`,
       backgroundRepeat: "no-repeat",
       backgroundSize: `${ZOOM_FACTOR * 100}%`,
       backgroundPosition: `${zoomBg.x}% ${zoomBg.y}%`,
     }}
-  />
-)}
-
+  >
+    <div className="absolute inset-0 rounded-xl ring-2 ring-inset ring-[#C9A24D]/40 pointer-events-none" />
+  </div>
+)} */}
+{isZooming && (
+    <div 
+      className="hidden lg:block absolute top-1/2 -translate-y-1/2 left-full ml-100 h-100 rounded-lg overflow-hidden shadow-2xl z-40 border-2 border-[#C9A24D]/50"
+      style={{
+        backgroundImage: `url(${productImages?.[selectedImage]})`,
+        backgroundRepeat: "no-repeat",
+        backgroundSize: `${ZOOM_FACTOR * 100}%`,
+        backgroundPosition: `${zoomBg.x}% ${zoomBg.y}%`,
+      }}
+    >
+      <div className="absolute inset-0 rounded-lg ring-1 ring-inset ring-[#C9A24D]/30 pointer-events-none" />
+    </div>
+  )}
   {/* LEFT CHEVRON */}
   <button
     onClick={() =>
@@ -1295,8 +1226,7 @@ const ZOOM_FACTOR = 3;
   <button
     onClick={() =>
       setSelectedImage((prev) =>
-        prev < productImages.length - 1 ? prev + 1 : 0
-      )
+        prev < productImages.length - 1 ? prev + 1 : 0)
     }
     className="absolute right-4 top-1/2 -translate-y-1/2 
     bg-black/60 hover:bg-[#C9A24D] 
@@ -1317,6 +1247,7 @@ const ZOOM_FACTOR = 3;
   </button>
 
 </div>
+
 
             {/* Thumbnails */}
             <div className="grid grid-cols-3 gap-4 mt-4">
