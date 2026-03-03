@@ -244,19 +244,31 @@ export default function CategoryBar() {
   }, []);
 
   // ================= CLICK HANDLER =================
-  const handleClick = (key: string) => {
-    setSelectedItem(key);
+  // const handleClick = (key: string) => {
+  //   setSelectedItem(key);
 
-    if (key === "new") {
-      router.push("/");
-    } else if (key === "brands") {
-      router.push("/brands");
-    } else {
-      // Navigate to brands page with category filter
-      router.push(`/brands?[category=${key}]`);
-    }
-  };
+  //   if (key === "new") {
+  //     router.push("/");
+  //   } else if (key === "brands") {
+  //     router.push("/brands");
+  //   } else {
+  //     // Navigate to brands page with category filter
+  //     router.push(`/brands?category=${key}`);
+  //   }
+  // };
+const handleClick = (key: string) => {
+  setSelectedItem(key);
+  setOpenMenu(null);
 
+  if (key === "new") {
+    router.push("/");
+  } else if (key === "brands") {
+    router.push("/brands");
+  } else {
+    // ✅ Correct format
+    router.push(`/brands?category=${key}`);
+  }
+};
   return (
     <div className="w-full bg-black relative z-10">
       {/* ================= DESKTOP ================= */}
@@ -311,10 +323,15 @@ export default function CategoryBar() {
               {brands.map((brand) => (
                 <div
                   key={brand._id}
+                  // onClick={() => {
+                  //   router.push(`/brands?brand=${brand._id}`);
+                  //   setOpenMenu(null);
+                  // }}
                   onClick={() => {
-                    router.push(`/brands?brand=${brand._id}`);
-                    setOpenMenu(null);
-                  }}
+  setSelectedItem("brands");
+  setOpenMenu(null);
+  router.push(`/brands?brand=${brand._id}`);
+}}
                   className="px-5 py-3 hover:bg-[#2a2a2a] cursor-pointer text-sm border-b border-gray-700 last:border-b-0 transition"
                 >
                   {isRTL ? brand.nameArabic : brand.nameEnglish}

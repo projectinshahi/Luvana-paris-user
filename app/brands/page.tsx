@@ -289,7 +289,19 @@ const handleAddToCart = async (product: Product) => {
     toast.error(error?.response?.data?.message || "Failed to add to cart");
   }
 };
+const updateURL = (newCategories: string[], newBrands: string[]) => {
+  const params = new URLSearchParams();
 
+  if (newCategories.length > 0) {
+    params.set("category", newCategories.join(","));
+  }
+
+  if (newBrands.length > 0) {
+    params.set("brand", newBrands.join(","));
+  }
+
+  router.push(`/brands?${params.toString()}`);
+};
 const handleAddToWishlist = async (product: Product) => {
   try {
     const token = localStorage.getItem("token");
@@ -423,13 +435,20 @@ const sortedProducts = useMemo(() => {
     <input
       type="checkbox"
       checked={selectedCategories.includes(cat._id)}
-      onChange={() =>
-        setSelectedCategories((prev) =>
-          prev.includes(cat._id)
-            ? prev.filter((c) => c !== cat._id)
-            : [...prev, cat._id]
-        )
-      }
+      // onChange={() =>
+      //   setSelectedCategories((prev) =>
+      //     prev.includes(cat._id)
+      //       ? prev.filter((c) => c !== cat._id)
+      //       : [...prev, cat._id]
+      //   )
+      // }
+      onChange={() => {
+  const updated = selectedCategories.includes(cat._id)
+    ? selectedCategories.filter((c) => c !== cat._id)
+    : [...selectedCategories, cat._id];
+
+  updateURL(updated, selectedBrands);
+}}
       className="w-4 h-4 rounded border-[#2A2A2A] accent-[#C9A24D] cursor-pointer"
     />
     <span className="text-sm text-gray-300 group-hover:text-[#C9A24D] transition-colors">
@@ -466,13 +485,20 @@ const sortedProducts = useMemo(() => {
     <input
       type="checkbox"
       checked={selectedBrands.includes(brand._id)}
-      onChange={() =>
-        setSelectedBrands((prev) =>
-          prev.includes(brand._id)
-            ? prev.filter((b) => b !== brand._id)
-            : [...prev, brand._id]
-        )
-      }
+      // onChange={() =>
+      //   setSelectedBrands((prev) =>
+      //     prev.includes(brand._id)
+      //       ? prev.filter((b) => b !== brand._id)
+      //       : [...prev, brand._id]
+      //   )
+      // }
+      onChange={() => {
+  const updated = selectedBrands.includes(brand._id)
+    ? selectedBrands.filter((b) => b !== brand._id)
+    : [...selectedBrands, brand._id];
+
+  updateURL(selectedCategories, updated);
+}}
       className="w-4 h-4 rounded border-[#2A2A2A] accent-[#C9A24D] cursor-pointer"
     />
     <span className="text-sm text-gray-300 group-hover:text-[#C9A24D] transition-colors">
@@ -508,11 +534,15 @@ const sortedProducts = useMemo(() => {
                   >
                     <span>{isArabic ? category?.nameArabic : category?.nameEnglish}</span>
                     <button
-                      onClick={() =>
-                        setSelectedCategories((prev) =>
-                          prev.filter((c) => c !== catId)
-                        )
-                      }
+                      // onClick={() =>
+                      //   setSelectedCategories((prev) =>
+                      //     prev.filter((c) => c !== catId)
+                      //   )
+                      // }
+                      onClick={() => {
+  const updated = selectedCategories.filter((c) => c !== catId);
+  updateURL(updated, selectedBrands);
+}}
                       className="hover:text-white transition-colors"
                     >
                       <X size={16} />
@@ -530,11 +560,15 @@ const sortedProducts = useMemo(() => {
                   >
                     <span>{isArabic ? brand?.nameArabic : brand?.nameEnglish}</span>
                     <button
-                      onClick={() =>
-                        setSelectedBrands((prev) =>
-                          prev.filter((b) => b !== brandId)
-                        )
-                      }
+                      // onClick={() =>
+                      //   setSelectedBrands((prev) =>
+                      //     prev.filter((b) => b !== brandId)
+                      //   )
+                      // }
+                      onClick={() => {
+  const updated = selectedBrands.filter((b) => b !== brandId);
+  updateURL(selectedCategories, updated);
+}}
                       className="hover:text-white transition-colors"
                     >
                       <X size={16} />
@@ -545,10 +579,13 @@ const sortedProducts = useMemo(() => {
 
               {(selectedCategories.length > 0 || selectedBrands.length > 0) && (
                 <button
+                  // onClick={() => {
+                  //   setSelectedCategories([]);
+                  //   setSelectedBrands([]);
+                  // }}
                   onClick={() => {
-                    setSelectedCategories([]);
-                    setSelectedBrands([]);
-                  }}
+  router.push("/brands");
+}}
                   className="text-gray-400 hover:text-[#C9A24D] text-sm underline transition-colors"
                 >
                   Clear all
