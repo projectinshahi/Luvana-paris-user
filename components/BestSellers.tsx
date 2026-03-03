@@ -748,7 +748,7 @@ export default function BestSellers() {
                 isRTL ? "font-arabic" : ""
               }`}
             >
-              {isRTL ? "الأكثر مبيعاً" : "Best Sellers"}
+              Best Sellers
             </h2>
             <div className="flex-1 h-px bg-white/30" />
           </div>
