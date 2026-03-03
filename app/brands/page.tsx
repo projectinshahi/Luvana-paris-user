@@ -377,13 +377,29 @@ const handleAddToWishlist = async (product: Product) => {
 
 //   return filtered;
 // }, [products, sortBy, selectedCategories, selectedBrands]);
+// const sortedProducts = useMemo(() => {
+//   let sorted = [...products];
+
+//   if (sortBy === "low") {
+//     sorted.sort((a, b) => (a.minPrice || 0) - (b.minPrice || 0));
+//   } else if (sortBy === "high") {
+//     sorted.sort((a, b) => (b.minPrice || 0) - (a.minPrice || 0));
+//   }
+
+//   return sorted;
+// }, [products, sortBy]);
 const sortedProducts = useMemo(() => {
   let sorted = [...products];
 
+  const getProductPrice = (product: Product) => {
+    const firstVariant = product.variants?.[0];
+    return firstVariant?.price ?? product.minPrice ?? 0;
+  };
+
   if (sortBy === "low") {
-    sorted.sort((a, b) => (a.minPrice || 0) - (b.minPrice || 0));
+    sorted.sort((a, b) => getProductPrice(a) - getProductPrice(b));
   } else if (sortBy === "high") {
-    sorted.sort((a, b) => (b.minPrice || 0) - (a.minPrice || 0));
+    sorted.sort((a, b) => getProductPrice(b) - getProductPrice(a));
   }
 
   return sorted;
