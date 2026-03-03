@@ -235,7 +235,7 @@ export default function InfluencersReelsSection() {
         }
 
         .carousel-track {
-          animation: scroll-left 60s linear infinite;
+          animation: scroll-left 7s linear infinite;
         }
 
         .carousel-track.paused {
@@ -561,9 +561,9 @@ export default function InfluencersReelsSection() {
                           {addingToCart ? "Adding..." : (isRTL ? "أضف إلى السلة" : "Add to Bag")}
                         </button>
 
-                        <p className="text-center text-white/50 text-xs mt-3">
+                        {/* <p className="text-center text-white/50 text-xs mt-3">
                           powered by Tozoh
-                        </p>
+                        </p> */}
                       </div>
                     )}
                   </div>
