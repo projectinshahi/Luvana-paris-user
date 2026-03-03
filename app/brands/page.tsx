@@ -522,36 +522,9 @@ const sortedProducts = useMemo(() => {
             <p className="text-center text-gray-400 text-sm">Discover premium beauty and skincare products curated just for you</p> */}
           </div>
 
-          {/* Applied Filters Display */}
-          {(selectedCategories.length > 0 || selectedBrands.length > 0) && (
-            <div className="mb-6 flex flex-wrap gap-3">
-              {selectedCategories.map((catId) => {
-                const category = homeCategories.find((c) => c._id === catId);
-                return (
-                  <div
-                    key={catId}
-                    className="flex items-center gap-2 bg-[#C9A24D]/20 border border-[#C9A24D] text-[#C9A24D] px-4 py-2 rounded-full text-sm"
-                  >
-                    <span>{isArabic ? category?.nameArabic : category?.nameEnglish}</span>
-                    <button
-                      // onClick={() =>
-                      //   setSelectedCategories((prev) =>
-                      //     prev.filter((c) => c !== catId)
-                      //   )
-                      // }
-                      onClick={() => {
-  const updated = selectedCategories.filter((c) => c !== catId);
-  updateURL(updated, selectedBrands);
-}}
-                      className="hover:text-white transition-colors"
-                    >
-                      <X size={16} />
-                    </button>
-                  </div>
-                );
-              })}
+         
 
-              {selectedBrands.map((brandId) => {
+              {/* {selectedBrands.map((brandId) => {
                 const brand = homeBrands.find((b) => b._id === brandId);
                 return (
                   <div
@@ -589,10 +562,10 @@ const sortedProducts = useMemo(() => {
                   className="text-gray-400 hover:text-[#C9A24D] text-sm underline transition-colors"
                 >
                   Clear all
-                </button>
-              )}
+                </button> */}
+              {/* )}
             </div>
-          )}
+          )} */}
 
           {/* Centered Search Bar */}
           <div className="mb-8 flex justify-center">
