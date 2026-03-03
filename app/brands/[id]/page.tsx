@@ -1181,22 +1181,8 @@ const handleImageMouseMove = useCallback(
     Zoom Preview
   </div>
 )}
-  {/* {isZooming && (
-  <div
-    className="hidden lg:block absolute top-0 left-full ml-8 
-    w-105 h-105 bg-center
-    z-50 rounded-xl overflow-hidden shadow-2xl"
-    style={{
-      backgroundImage: `url(${productImages?.[selectedImage]})`,
-      backgroundRepeat: "no-repeat",
-      backgroundSize: `${ZOOM_FACTOR * 100}%`,
-      backgroundPosition: `${zoomBg.x}% ${zoomBg.y}%`,
-    }}
-  >
-    <div className="absolute inset-0 rounded-xl ring-2 ring-inset ring-[#C9A24D]/40 pointer-events-none" />
-  </div>
-)} */}
-{isZooming && (
+
+{/* {isZooming && (
     <div 
       className="hidden lg:block absolute top-1/2 -translate-y-1/2 left-full ml-100 h-100 rounded-lg overflow-hidden shadow-2xl z-40 border-2 border-[#C9A24D]/50"
       style={{
@@ -1208,7 +1194,22 @@ const handleImageMouseMove = useCallback(
     >
       <div className="absolute inset-0 rounded-lg ring-1 ring-inset ring-[#C9A24D]/30 pointer-events-none" />
     </div>
-  )}
+  )} */}
+  {isZooming && (
+  <div 
+    className="absolute top-1/2 -translate-y-1/2 left-full ml-8 
+    w-105 h-105 
+    bg-center rounded-lg overflow-hidden shadow-2xl z-9999 border-2 border-[#C9A24D]/50"
+    style={{
+      backgroundImage: `url(${productImages?.[selectedImage]})`,
+      backgroundRepeat: "no-repeat",
+      backgroundSize: `${ZOOM_FACTOR * 100}%`,
+      backgroundPosition: `${zoomBg.x}% ${zoomBg.y}%`,
+    }}
+  >
+    <div className="absolute inset-0 rounded-lg ring-1 ring-inset ring-[#C9A24D]/30 pointer-events-none" />
+  </div>
+)}
   {/* LEFT CHEVRON */}
   <button
     onClick={() =>
