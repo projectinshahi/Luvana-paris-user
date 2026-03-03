@@ -774,7 +774,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import {
   ShoppingCart,
   Heart,
@@ -793,6 +793,7 @@ interface LightboxProps {
   initialIndex: number;
   onClose: () => void;
 }
+
 
 function Lightbox({ images, initialIndex, onClose }: LightboxProps) {
   const [activeIndex, setActiveIndex] = useState(initialIndex);
@@ -1015,6 +1016,7 @@ const ZOOM_FACTOR = 3;
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
   const imgRef = useRef<HTMLImageElement>(null);
+  const router = useRouter();
 
   const openLightbox = (idx: number) => {
     setLightboxIndex(idx);
@@ -1426,7 +1428,11 @@ const handleImageMouseMove = useCallback(
               return (
                 <div
                   key={item._id}
-                  className="bg-[#1A1A1A] rounded-lg overflow-hidden"
+                //   className="bg-[#1A1A1A] rounded-lg overflow-hidden"
+                //  key={productId}
+                //       onClick={() => router.push(`/brands/${productId}`)}
+                  className="bg-[#1A1A1A] rounded-lg overflow-hidden cursor-pointer hover:shadow-lg hover:shadow-[#C9A24D]/30 transition"
+                  onClick={() => router.push(`/brands/${item._id}`)}
                 >
                   <img
                     src={simImage}
