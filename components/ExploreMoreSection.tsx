@@ -250,6 +250,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { useRouter } from "next/navigation";
 
 type CategoryFromBackend = {
   _id: string;
@@ -267,6 +268,7 @@ export default function ExploreMoreSection() {
   const isRTL = i18n.language === "ar";
 
   const [categories, setCategories] = useState<any[]>([]);
+  const router = useRouter();
 
   // ✅ FETCH FROM BACKEND (ONLY CHANGE)
   useEffect(() => {
@@ -369,6 +371,7 @@ export default function ExploreMoreSection() {
               {[...categories, ...categories].map((item, i) => (
                 <div
                   key={item._id + i}
+                   onClick={() => router.push(`/brands?category=${item._id}`)}
                   className="w-65 sm:w-75 lg:w-[320px] shrink-0 group"
                 >
                   <div className="relative w-full h-80 overflow-hidden border-2 border-[#C5A059]/60 hover:border-[#D4AF37] transition-all duration-300 cursor-pointer">
