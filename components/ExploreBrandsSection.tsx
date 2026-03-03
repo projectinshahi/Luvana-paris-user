@@ -184,6 +184,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { Charm } from "next/font/google";
 import { useTranslation } from "react-i18next";
 import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const charm = Charm({ subsets: ["latin"], weight: "400" });
 
@@ -197,6 +198,8 @@ type BrandFromBackend = {
 type Slide = {
   _id: string;
   src: string;
+  nameEnglish: string;
+  nameArabic: string;
 };
 
 export default function ExploreBrandsSection() {
@@ -210,7 +213,7 @@ export default function ExploreBrandsSection() {
   const [progress, setProgress] = useState(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
-
+const router = useRouter();
   const SLIDE_DURATION = 5000;
   const PROGRESS_UPDATE_INTERVAL = 50;
 
@@ -225,12 +228,14 @@ export default function ExploreBrandsSection() {
         if (data?.brands) {
           const activeBrands = data.brands
             .filter((brand: BrandFromBackend) => brand.status === "active")
-            .map((brand: BrandFromBackend) => ({
+            .map((brand: any) => ({
               _id: brand._id,
               src:
                 i18n.language === "ar"
                   ? brand.brandImageArabic
                   : brand.brandImageEnglish,
+                   nameEnglish: brand.nameEnglish,
+                   nameArabic: brand.nameArabic,
             }));
 
           setSlides(activeBrands);
@@ -332,8 +337,8 @@ export default function ExploreBrandsSection() {
           src={currentSlide.src}
           alt="Brand"
           fill
-          className={`object-cover transition-all duration-700 ease-in-out ${
-            isTransitioning ? "opacity-0 scale-105" : "opacity-100 scale-100"
+          className={`object-cover transition-opacity duration-800 ease-out ${
+            isTransitioning ? "opacity-0" : "opacity-100"
           }`}
           priority={current === 0}
           unoptimized
@@ -345,23 +350,23 @@ export default function ExploreBrandsSection() {
 
       {/* TOP TEXT WITH FADE-IN ANIMATION */}
       <div
-        className={`absolute top-10 z-20 transition-all duration-700 ${
+        className={`absolute top-10 z-20 transition-all duration-800 ease-out ${
           isRTL ? "left-10 text-left" : "right-10 text-right"
-        } ${isTransitioning ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"}`}
+        } ${isTransitioning ? "opacity-0 translate-y-6" : "opacity-100 translate-y-0"}`}
         style={{ maxWidth: "475px" }}
       >
         <h2
-          className={`font-normal text-[#C5A059] text-[50px] leading-none mb-2 ${
+          className={`font-normal text-[#C5A059] text-[50px] leading-none mb-2 transition-all duration-900 ease-out ${
             isRTL ? "font-arabic" : ""
-          }`}
+          } ${isTransitioning ? "translate-y-4 opacity-0" : "translate-y-0 opacity-100"}`}
         >
           {t("exploreBrands")}
         </h2>
 
         <p
-          className={`${charm.className} font-normal text-[#C5A059] text-[32px] ${
+          className={`${charm.className} font-normal text-[#C5A059] text-[32px] transition-all duration-1000 ease-out ${
             isRTL ? "font-arabic" : ""
-          }`}
+          } ${isTransitioning ? "translate-y-4 opacity-0" : "translate-y-0 opacity-100"}`}
         >
           {t("brands.luxuryFavorites")}
         </p>
@@ -372,14 +377,14 @@ export default function ExploreBrandsSection() {
         <>
           <button
             onClick={goPrev}
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-[#C9A24D] hover:border-[#C9A24D] transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-110 active:scale-95"
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-[#C9A24D] hover:border-[#C9A24D] transition-all duration-400 ease-out opacity-0 group-hover:opacity-100 hover:scale-110 active:scale-95"
             aria-label="Previous slide"
           >
             <ChevronLeft size={24} />
           </button>
           <button
             onClick={goNext}
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-[#C9A24D] hover:border-[#C9A24D] transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-110 active:scale-95"
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-[#C9A24D] hover:border-[#C9A24D] transition-all duration-400 ease-out opacity-0 group-hover:opacity-100 hover:scale-110 active:scale-95"
             aria-label="Next slide"
           >
             <ChevronRight size={24} />
@@ -388,7 +393,7 @@ export default function ExploreBrandsSection() {
       )}
 
       {/* PLAY/PAUSE BUTTON */}
-      {slides.length > 1 && (
+      {/* {slides.length > 1 && (
         <button
           onClick={() => setIsPlaying(!isPlaying)}
           className="absolute top-4 left-1/2 -translate-x-1/2 z-30 w-10 h-10 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-[#C9A24D] hover:border-[#C9A24D] transition-all duration-300 opacity-0 group-hover:opacity-100"
@@ -396,16 +401,19 @@ export default function ExploreBrandsSection() {
         >
           {isPlaying ? <Pause size={18} /> : <Play size={18} className="ml-0.5" />}
         </button>
-      )}
+      )} */}
 
       {/* SHOP NOW BUTTON WITH ANIMATION */}
       <div
-        className={`absolute bottom-10 z-20 transition-all duration-700 ${
+        className={`absolute bottom-10 z-20 transition-all duration-800 ease-out ${
           isRTL ? "left-10" : "right-10"
-        } ${isTransitioning ? "opacity-0 translate-y-4" : "opacity-100 translate-y-0"}`}
+        } ${isTransitioning ? "opacity-0 translate-y-6" : "opacity-100 translate-y-0"}`}
       >
         <button
-          className={`rounded-[25px] bg-linear-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] text-black font-semibold hover:shadow-[0_0_30px_rgba(212,175,55,0.5)] hover:scale-105 transition-all duration-300 active:scale-95 ${
+          onClick={() => {
+            router.push(`/brands?brand=${currentSlide._id}`);
+          }}
+          className={`rounded-[25px] bg-linear-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] text-black font-semibold hover:shadow-[0_0_30px_rgba(212,175,55,0.5)] hover:scale-105 transition-all duration-500 ease-out active:scale-95 ${
             isRTL ? "font-arabic" : ""
           }`}
           style={{ width: "185px", height: "69px" }}
@@ -421,26 +429,27 @@ export default function ExploreBrandsSection() {
             <button
               key={index}
               onClick={() => goToSlide(index)}
-              className="relative group/dot"
+              className="relative group/dot transition-transform duration-300 ease-out hover:scale-110"
               aria-label={`Go to slide ${index + 1}`}
             >
               {/* Progress bar background */}
-              <div className={`w-12 h-1 rounded-full bg-white/30 overflow-hidden transition-all duration-300 ${
-                current === index ? "w-16" : "group-hover/dot:bg-white/50"
+              <div className={`rounded-full overflow-hidden transition-all duration-400 ease-out bg-white/30 group-hover/dot:bg-white/50 ${
+                current === index ? "w-16 h-1.5" : "w-12 h-1"
               }`}>
                 {/* Active progress fill */}
                 {current === index && isPlaying && (
                   <div
-                    className="h-full bg-white rounded-full transition-all"
+                    className="h-full bg-white rounded-full transition-[width]"
                     style={{
                       width: `${progress}%`,
-                      transition: "width 50ms linear"
+                      transitionDuration: "75ms",
+                      transitionTimingFunction: "cubic-bezier(0.25, 0.46, 0.45, 0.94)"
                     }}
                   />
                 )}
                 {/* Static fill for current slide when paused */}
                 {current === index && !isPlaying && (
-                  <div className="h-full bg-white rounded-full w-full" />
+                  <div className="h-full bg-white rounded-full w-full transition-all duration-300" />
                 )}
               </div>
             </button>
@@ -449,7 +458,7 @@ export default function ExploreBrandsSection() {
       )}
 
       {/* SLIDE COUNTER */}
-      <div className="absolute top-4 right-4 z-20 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 text-white text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+      <div className="absolute top-4 right-4 z-20 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 text-white text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-400 ease-out">
         {current + 1} / {slides.length}
       </div>
     </section>
