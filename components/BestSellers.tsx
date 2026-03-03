@@ -592,6 +592,7 @@ import { useCurrency } from "@/contexts/CurrencyContext";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import api from "@/lib/axios";
+import { useRouter } from "next/navigation";
 
 interface Product {
   _id: string;
@@ -609,6 +610,7 @@ export default function BestSellers() {
   const { formatPrice } = useCurrency();
 
   const [products, setProducts] = useState<Product[]>([]);
+  const router = useRouter();
 
   // ✅ Fetch featuredProducts from home API
   useEffect(() => {
@@ -770,6 +772,7 @@ export default function BestSellers() {
                   <div
                     key={`${product._id}-${index}`}
                     className="shrink-0 w-65 flex"
+                    onClick={() => router.push(`/brands/${product._id}`)}
                   >
                     <div className="bg-[#111] rounded-lg overflow-hidden hover:scale-[1.02] transition-transform duration-300 flex flex-col w-full">
 
