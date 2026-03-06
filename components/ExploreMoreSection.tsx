@@ -315,13 +315,18 @@ export default function ExploreMoreSection() {
           font-family: 'Cactus Classical Serif', serif;
         }
         @keyframes exploreScroll {
-          from { transform: translateX(0); }
-          to { transform: translateX(-50%); }
+         from {
+            transform: translateX(0);
+          }
+          to {
+            transform: translateX(-50%);
+          }
         }
 
         .explore-scroll-track {
-          display: inline-flex;
-          animation: exploreScroll 30s linear infinite;
+         display: flex;
+          width: max-content;
+          animation: scroll-left 10s linear infinite;
           will-change: transform;
         }
 

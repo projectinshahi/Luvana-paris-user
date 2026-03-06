@@ -263,7 +263,26 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
           </svg>
           Sign up with google
         </button>
+         <div className="flex items-center gap-4 my-2">
+         
+        </div>
+       <button
+  type="button"
+  onClick={() => toast.info("Apple Sign Up coming soon!")}
+  className="w-full py-3 bg-black hover:bg-gray-900 border border-gray-700 text-white rounded-lg transition duration-300 flex items-center justify-center gap-3"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width="18"
+    height="18"
+    fill="white"
+  >
+    <path d="M16.365 1.43c0 1.14-.46 2.24-1.22 3.05-.78.82-2.06 1.45-3.19 1.36-.15-1.08.39-2.23 1.14-3.02.82-.86 2.16-1.48 3.27-1.39zM21.4 17.13c-.6 1.36-.89 1.97-1.69 3.18-1.11 1.66-2.67 3.73-4.63 3.75-1.73.02-2.18-1.13-4.52-1.12-2.34.01-2.83 1.14-4.56 1.12-1.96-.02-3.45-1.88-4.57-3.55C.6 17.34-.7 12.52 1.21 9.47c1.36-2.15 3.51-3.41 5.53-3.41 2.05 0 3.34 1.15 5.03 1.15 1.64 0 2.65-1.15 5-1.15 1.8 0 3.7.98 5.05 2.68-4.46 2.46-3.75 8.83.22 10.39z"/>
+  </svg>
 
+  Continue with Apple
+</button>
         {/* Social Media Icons */}
         {/* <div className="flex items-center justify-center gap-4 mt-6"> */}
           {/* Facebook */}

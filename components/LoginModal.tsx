@@ -321,6 +321,10 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
   const [showSignup, setShowSignup] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [justLoggedIn, setJustLoggedIn] = useState(false);
+  const [errors, setErrors] = useState({
+  email: "",
+  password: "",
+});
 
   const { t } = useTranslation("common");
   const { isRTL } = useLanguage();
@@ -336,28 +340,74 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
   }, [isAuthenticated, justLoggedIn, onClose]);
 
   if (!isOpen && !showSignup) return null;
+  const validateForm = () => {
+  let valid = true;
+  const newErrors = { email: "", password: "" };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // Email validation
+  if (!email.trim()) {
+    newErrors.email = "Email is required";
+    valid = false;
+  } else if (
+    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email)
+  ) {
+    newErrors.email = "Invalid email address";
+    valid = false;
+  }
 
-    if (!email || !password) {
-      toast.error("Please enter email and password");
-      return;
-    }
+  // Password validation
+  if (!password.trim()) {
+    newErrors.password = "Password is required";
+    valid = false;
+  } else if (password.length < 6) {
+    newErrors.password = "Password must be at least 6 characters";
+    valid = false;
+  }
 
-    const resultAction = await dispatch(
-      loginUser({ email, password })
+  setErrors(newErrors);
+  return valid;
+};
+
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+
+  //   if (!email || !password) {
+  //     toast.error("Please enter email and password");
+  //     return;
+  //   }
+
+  //   const resultAction = await dispatch(
+  //     loginUser({ email, password })
+  //   );
+
+  //   if (loginUser.fulfilled.match(resultAction)) {
+  //     setJustLoggedIn(true);
+  //   } else if (loginUser.rejected.match(resultAction)) {
+  //     toast.error(
+  //       (resultAction.payload as string) || "Login failed"
+  //     );
+  //   }
+  // };
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  if (!validateForm()) return;
+
+  const resultAction = await dispatch(
+    loginUser({
+      email: email.trim(),
+      password: password.trim(),
+    })
+  );
+
+  if (loginUser.fulfilled.match(resultAction)) {
+    setJustLoggedIn(true);
+  } else if (loginUser.rejected.match(resultAction)) {
+    toast.error(
+      (resultAction.payload as string) || "Login failed"
     );
-
-    if (loginUser.fulfilled.match(resultAction)) {
-      setJustLoggedIn(true);
-    } else if (loginUser.rejected.match(resultAction)) {
-      toast.error(
-        (resultAction.payload as string) || "Login failed"
-      );
-    }
-  };
-
+  }
+};
   const handleSwitchToSignup = () => {
     setShowSignup(true);
   };
@@ -407,7 +457,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
+            {/* <div>
               <input
                 type="email"
                 placeholder="Email address"
@@ -420,10 +470,29 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                 style={{ fontSize: "16px" }}
                 required
               />
-            </div>
+            </div> */}
+<div>
+  <input
+    type="email"
+    placeholder="Email address"
+    value={email}
+    onChange={(e) => {
+      setEmail(e.target.value);
+      setErrors((prev) => ({ ...prev, email: "" }));
+    }}
+    className={`w-full px-4 py-3 bg-gray-800/50 border ${
+      errors.email ? "border-red-500" : "border-gray-700"
+    } rounded-lg text-white placeholder-gray-500 focus:outline-none`}
+  />
 
+  {errors.email && (
+    <p className="text-red-500 text-sm mt-1">
+      {errors.email}
+    </p>
+  )}
+</div>
             <div className="relative">
-              <input
+              {/* <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 value={password}
@@ -434,7 +503,25 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                 dir={isRTL ? "rtl" : "ltr"}
                 style={{ fontSize: "16px" }}
                 required
-              />
+              /> */}
+              <input
+    type={showPassword ? "text" : "password"}
+    placeholder="Password"
+    value={password}
+    onChange={(e) => {
+      setPassword(e.target.value);
+      setErrors((prev) => ({ ...prev, password: "" }));
+    }}
+    className={`w-full px-4 py-3 bg-gray-800/50 border ${
+      errors.password ? "border-red-500" : "border-gray-700"
+    } rounded-lg text-white placeholder-gray-500 focus:outline-none`}
+  />
+
+  {errors.password && (
+    <p className="text-red-500 text-sm mt-1">
+      {errors.password}
+    </p>
+  )}
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
@@ -469,6 +556,26 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
             <path d="M8.99976 3.57955C10.3211 3.57955 11.5075 4.03364 12.4402 4.92545L15.0216 2.34409C13.4629 0.891818 11.4257 0 8.99976 0C5.48158 0 2.43794 2.01682 0.957031 4.95818L3.96385 7.29C4.67158 5.16273 6.65567 3.57955 8.99976 3.57955Z" fill="#EA4335"/>
           </svg>
           Sign up with google
+        </button>
+         <div className="flex items-center gap-4 my-2">
+                 
+                </div>
+               <button
+          type="button"
+          onClick={() => toast.info("Apple Sign Up coming soon!")}
+          className="w-full py-3 bg-black hover:bg-gray-900 border border-gray-700 text-white rounded-lg transition duration-300 flex items-center justify-center gap-3"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            width="18"
+            height="18"
+            fill="white"
+          >
+            <path d="M16.365 1.43c0 1.14-.46 2.24-1.22 3.05-.78.82-2.06 1.45-3.19 1.36-.15-1.08.39-2.23 1.14-3.02.82-.86 2.16-1.48 3.27-1.39zM21.4 17.13c-.6 1.36-.89 1.97-1.69 3.18-1.11 1.66-2.67 3.73-4.63 3.75-1.73.02-2.18-1.13-4.52-1.12-2.34.01-2.83 1.14-4.56 1.12-1.96-.02-3.45-1.88-4.57-3.55C.6 17.34-.7 12.52 1.21 9.47c1.36-2.15 3.51-3.41 5.53-3.41 2.05 0 3.34 1.15 5.03 1.15 1.64 0 2.65-1.15 5-1.15 1.8 0 3.7.98 5.05 2.68-4.46 2.46-3.75 8.83.22 10.39z"/>
+          </svg>
+        
+          Continue with Apple
         </button>
           </form>
 

@@ -55,21 +55,6 @@ const isArabic = currentLanguage === "ar";
     const [homeCategories, setHomeCategories] = useState<any[]>([]);
 const [homeBrands, setHomeBrands] = useState<any[]>([]);
 
-    /* ================= LOAD BRAND FROM URL PARAMETER ================= */
-  //   useEffect(() => {
-  //   const brandParam = searchParams.get("brand");
-  //   if (brandParam) {
-  //     setSelectedBrands([brandParam]);
-  //   }
-  // }, [searchParams]);
-
-    /* ================= LOAD CATEGORY FROM URL PARAMETER ================= */
-  //   useEffect(() => {
-  //   const categoryParam = searchParams.get("category");
-  //   if (categoryParam) {
-  //     setSelectedCategories([categoryParam]);
-  //   }
-  // }, [searchParams]);
   useEffect(() => {
   const categoryParam = searchParams.get("category");
   const brandParam = searchParams.get("brand");
@@ -111,110 +96,6 @@ const [homeBrands, setHomeBrands] = useState<any[]>([]);
 
   fetchHomeData();
 }, []);
-//     useEffect(() => {
-//       const fetchProducts = async () => {
-//         try {
-//           setLoading(true);
-
-    
-// const params: any = {
-//   page: 1,
-//   limit: 50,
-//   search: searchQuery,
-// };
-
-// // if (selectedCategories.length > 0) {
-// //   params.category = selectedCategories.join(",");
-// // }
-
-// // if (selectedBrands.length > 0) {
-// //   params.brand = selectedBrands.join(",");
-// // }
-// // if (selectedCategories.length > 0) {
-// //   params.category = selectedCategories;
-// // }
-
-// // if (selectedBrands.length > 0) {
-// //   params.brand = selectedBrands;
-// // }
-// if (selectedCategories.length > 0) {
-//   params.category = selectedCategories.join(",");
-// }
-
-// if (selectedBrands.length > 0) {
-//   params.brand = selectedBrands.join(",");
-// }
-// // Only apply price filter if user actually changed it
-// if (priceRange < 5000) {
-//   params.maxPrice = priceRange;
-// }
-//           const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-//           const res = await axios.get(
-//             `${API_URL}/user/product`,
-//             { params }
-//           );
-
-//           console.log("API Response:", res.data); // Debug log
-//           const items = res.data.items || [];
-//           console.log("Products count:", items.length); // Debug log
-//           console.log("Sample product:", items[0]); // Debug log
-          
-//           setProducts(items);
-//         } catch (error) {
-//           console.error("Error fetching products:", error);
-//           setProducts([]);
-//         } finally {
-//           setLoading(false);
-//         }
-//       };
-
-//       fetchProducts();
-//     }, [priceRange, selectedCategories, selectedBrands, searchQuery]);
-// useEffect(() => {
-//   const fetchProducts = async () => {
-//     try {
-//       setLoading(true);
-
-//       const params: any = {
-//         page: 1,
-//         limit: 50,
-//         search: searchQuery,
-//       };
-
-//       // ✅ FIXED CATEGORY FILTER
-//       if (selectedCategories.length > 0) {
-//         params.category = selectedCategories.join(",");
-//       }
-
-//       // ✅ FIXED BRAND FILTER
-//       if (selectedBrands.length > 0) {
-//         params.brand = selectedBrands.join(",");
-//       }
-
-//       // ✅ Apply price only if changed
-//       if (priceRange < 5000) {
-//         params.maxPrice = priceRange;
-//       }
-
-//       const API_URL =
-//         process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-
-//       const res = await axios.get(`${API_URL}/user/product`, {
-//         params,
-//       });
-
-//       const items = res.data.items || [];
-//       setProducts(items);
-//     } catch (error) {
-//       console.error("Error fetching products:", error);
-//       setProducts([]);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   fetchProducts();
-// }, [priceRange, selectedCategories, selectedBrands, searchQuery]);
   useEffect(() => {
   const fetchProducts = async () => {
     try {
@@ -331,63 +212,7 @@ const handleAddToWishlist = async (product: Product) => {
   }
 };
 
-    /* ================= SORT PRODUCTS ================= */
-    // const sortedProducts = useMemo(() => {
-    //   let sorted = [...products];
 
-    //   if (sortBy === "low") {
-    //     sorted.sort((a, b) => {
-    //       const priceA = a.minPrice || 0;
-    //       const priceB = b.minPrice || 0;
-    //       return priceA - priceB;
-    //     });
-    //   } else if (sortBy === "high") {
-    //     sorted.sort((a, b) => {
-    //       const priceA = a.minPrice || 0;
-    //       const priceB = b.minPrice || 0;
-    //       return priceB - priceA;
-    //     });
-    //   }
-
-    //   return sorted;
-    // }, [products, sortBy]);
-// const sortedProducts = useMemo(() => {
-//   let filtered = [...products];
-
-//   // ✅ Filter by category (frontend filtering)
-//   if (selectedCategories.length > 0) {
-//     filtered = filtered.filter((product) =>
-//       selectedCategories.includes(product.category?._id)
-//     );
-//   }
-
-//   // ✅ Filter by brand (frontend filtering)
-//   if (selectedBrands.length > 0) {
-//     filtered = filtered.filter((product) =>
-//       selectedBrands.includes(product.brand?._id)
-//     );
-//   }
-
-//   // ✅ Sort
-//   if (sortBy === "low") {
-//     filtered.sort((a, b) => (a.minPrice || 0) - (b.minPrice || 0));
-//   } else if (sortBy === "high") {
-//     filtered.sort((a, b) => (b.minPrice || 0) - (a.minPrice || 0));
-//   }
-
-//   return filtered;
-// }, [products, sortBy, selectedCategories, selectedBrands]);
-// const sortedProducts = useMemo(() => {
-//   let sorted = [...products];
-
-//   if (sortBy === "low") {
-//     sorted.sort((a, b) => (a.minPrice || 0) - (b.minPrice || 0));
-//   } else if (sortBy === "high") {
-//     sorted.sort((a, b) => (b.minPrice || 0) - (a.minPrice || 0));
-//   }
-
-//   return sorted;
-// }, [products, sortBy]);
 const sortedProducts = useMemo(() => {
   let sorted = [...products];
 
@@ -529,7 +354,7 @@ const sortedProducts = useMemo(() => {
 
     /* ================= UI ================= */
     return (
-      <div dir="ltr" className="pt-16 pb-16 min-h-screen bg-linear-to-b from-[#0D0D0D] to-[#1A1A1A] text-white">
+      <div dir="ltr" className="pt-17 pb-16 min-h-screen bg-linear-to-b from-[#0D0D0D] to-[#1A1A1A] text-white">
         <div className="max-w-7xl mx-auto px-4">
 
           {/* Header Section */}
