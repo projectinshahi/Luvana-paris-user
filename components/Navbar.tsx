@@ -764,13 +764,13 @@ import {
   Search,
   Settings,
   Home,
+  ChevronDown,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { logoutUser, selectIsAuthenticated } from "@/app/features/auth";
 import { toast } from "react-toastify";
-
 import SettingsOverlay from "@/components/SettingsOverlay";
 import LoginModal from "@/components/LoginModal";
 import CartSidebar from "./CartSidebar";
@@ -778,13 +778,16 @@ import WishlistSidebar from "./WishlistSidebar";
 import SearchSidebar from "./SearchSidebar";
 import MobileMenu from "./MobileMenu";
 import { useLanguage } from "@/lib/useLanguage";
+import { useCurrency } from "@/contexts/CurrencyContext";
+import { COUNTRIES } from "@/lib/countries";
 
 export default function Navbar() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const { t, ready } = useTranslation("common");
-  const { isRTL } = useLanguage();
+  const { isRTL, languages, changeLanguage, currentLang } = useLanguage();
+  const { selectedCountry, setSelectedCountry } = useCurrency();
 
   const [mounted, setMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -794,14 +797,17 @@ export default function Navbar() {
   const [showSearch, setShowSearch] = useState(false);
   const [showWishlist, setShowWishlist] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [showCountryDropdown, setShowCountryDropdown] = useState(false);
+  const [showLanguageDropdown, setShowLanguageDropdown] = useState(false);
 
-  // Ref for dropdown to detect outside clicks
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  // Refs for dropdowns to detect outside clicks
+  const userDropdownRef = useRef<HTMLDivElement>(null);
+  const countryDropdownRef = useRef<HTMLDivElement>(null);
+  const languageDropdownRef = useRef<HTMLDivElement>(null);
 
   // ✅ NEW PROMOTION STATES
   const [offers, setOffers] = useState<string[]>([]);
   const [offerIndex, setOfferIndex] = useState(0);
-
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -848,24 +854,32 @@ export default function Navbar() {
   // ✅ CLOSE DROPDOWN ON OUTSIDE CLICK
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (userDropdownRef.current && !userDropdownRef.current.contains(event.target as Node)) {
         setShowUserDropdown(false);
+      }
+      if (countryDropdownRef.current && !countryDropdownRef.current.contains(event.target as Node)) {
+        setShowCountryDropdown(false);
+      }
+      if (languageDropdownRef.current && !languageDropdownRef.current.contains(event.target as Node)) {
+        setShowLanguageDropdown(false);
       }
     };
 
-    if (showUserDropdown) {
+    if (showUserDropdown || showCountryDropdown || showLanguageDropdown) {
       document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [showUserDropdown]);
+  }, [showUserDropdown, showCountryDropdown, showLanguageDropdown]);
 
   // ✅ CLOSE DROPDOWN WHEN SIDEBARS OPEN
   useEffect(() => {
     if (showWishlist || showCart || showSearch || showSettings) {
       setShowUserDropdown(false);
+      setShowCountryDropdown(false);
+      setShowLanguageDropdown(false);
     }
   }, [showWishlist, showCart, showSearch, showSettings]);
 
@@ -888,11 +902,16 @@ export default function Navbar() {
       <div className="fixed top-0 left-0 right-0 z-50">
         
         {/* 🔥 PROMOTION BAR */}
-        <div className="bg-[#0D0D0D] text-white text-center text-xs sm:text-sm py-2">
+        {/* <div className="bg-[#0A0A0A] text-white text-center text-xs sm:text-sm py-4">
           <span className="block text-[10px] sm:text-xs">
             {offers.length > 0 ? offers[offerIndex] : "Loading..."}
           </span>
-        </div>
+        </div>     */}
+        <div className="bg-[#0A0A0A] text-white text-center py-3">
+  <span className="block text-sm sm:text-base font-medium tracking-wide">
+    {offers.length > 0 ? offers[offerIndex] : "Loading..."}
+  </span>
+</div>
 
         {/* DESKTOP NAVBAR */}
         <nav
@@ -911,7 +930,7 @@ export default function Navbar() {
             <Search size={18} onClick={() => setShowSearch(true)} className="cursor-pointer hover:text-gray-300 transition" />
             <Heart size={18} onClick={() => setShowWishlist(true)} className="cursor-pointer hover:text-red-500 transition" />
 
-            <div className="relative" ref={dropdownRef}>
+            <div className="relative" ref={userDropdownRef}>
               <User
                 size={18}
                 className="cursor-pointer hover:text-gray-300 transition"
@@ -922,7 +941,7 @@ export default function Navbar() {
               />
 
               {isAuthenticated && showUserDropdown && (
-                <div className="absolute right-0 mt-2 w-40 bg-[#1a1a1a] border border-gray-700 rounded-lg shadow-lg z-[100]">
+                <div className="absolute right-0 mt-2 w-40 bg-[#1a1a1a] border border-gray-700 rounded-lg shadow-lg z-100">
                   <button
                     className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition rounded-t-lg"
                     onClick={() => {
@@ -931,6 +950,15 @@ export default function Navbar() {
                     }}
                   >
                     Your Profile
+                  </button>
+                  <button
+                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition rounded-t-lg"
+                    onClick={() => {
+                      setShowUserDropdown(false);
+                      router.push("/myorders");
+                    }}
+                  >
+                    Your Orders
                   </button>
 
                   <button
@@ -944,7 +972,90 @@ export default function Navbar() {
             </div>
 
             <ShoppingCart size={18} onClick={() => setShowCart(true)} className="cursor-pointer hover:text-gray-300 transition" />
-            <Settings size={18} onClick={() => setShowSettings(true)} className="cursor-pointer hover:text-gray-300 transition hidden sm:block" />
+
+            {/* COUNTRY & LANGUAGE GROUP */}
+            <div className="flex items-center gap-1.5">
+              
+              {/* COUNTRY SELECTOR */}
+              <div className="relative" ref={countryDropdownRef}>
+                <button
+                  onClick={() => setShowCountryDropdown(!showCountryDropdown)}
+                  className="flex items-center justify-center p-1.5 hover:bg-gray-700 rounded-lg transition-colors"
+                  title={selectedCountry.name}
+                >
+                  <img
+                    src={selectedCountry.flag}
+                    alt={selectedCountry.name}
+                    className="w-5 h-5 rounded-full object-cover"
+                  />
+                </button>
+
+                {showCountryDropdown && (
+                  <div className="absolute right-0 mt-2 bg-[#1a1a1a] rounded-lg shadow-lg z-50 min-w-max border border-gray-700 max-h-64 overflow-y-auto">
+                    {COUNTRIES.map((country) => (
+                      <button
+                        key={country.code}
+                        onClick={() => {
+                          setSelectedCountry(country);
+                          setShowCountryDropdown(false);
+                        }}
+                        className={`w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-gray-700 first:rounded-t-lg last:rounded-b-lg transition-colors ${
+                          selectedCountry.code === country.code ? 'bg-gray-700 text-yellow-400' : 'text-gray-200'
+                        }`}
+                      >
+                        <img
+                          src={country.flag}
+                          alt={country.name}
+                          className="w-5 h-5 rounded-full object-cover"
+                        />
+                        <div className="flex flex-col">
+                          <span className="text-sm font-medium">{country.name}</span>
+                          <span className="text-xs text-gray-400">{country.currency} ({country.currencySymbol})</span>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* LANGUAGE SELECTOR */}
+              <div className="relative" ref={languageDropdownRef}>
+                <button
+                  onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
+                  className="flex items-center justify-center p-1.5 hover:text-gray-300 hover:bg-gray-700 rounded-lg transition-colors text-sm cursor-pointer"
+                  title={currentLang.name}
+                >
+                  <span className="text-xs font-bold uppercase">{currentLang.name}</span>
+                </button>
+
+                {showLanguageDropdown && (
+                  <div className="absolute right-0 mt-2 bg-[#1a1a1a] rounded-lg shadow-lg z-50 min-w-max border border-gray-700 max-h-64 overflow-y-auto">
+                    {languages.map((lang) => (
+                      <button
+                        key={lang.code}
+                        onClick={() => {
+                          changeLanguage(lang.code);
+                          setShowLanguageDropdown(false);
+                        }}
+                        className={`w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-gray-700 first:rounded-t-lg last:rounded-b-lg transition-colors ${
+                          currentLang.code === lang.code ? 'bg-gray-700 text-yellow-400' : 'text-gray-200'
+                        }`}
+                      >
+                        <img
+                          src={lang.flag}
+                          alt={lang.name}
+                          className="w-5 h-5 rounded-full object-cover"
+                        />
+                        <span className="text-sm font-medium">{lang.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+            </div>
+
+            {/* <Settings size={18} onClick={() => setShowSettings(true)} className="cursor-pointer hover:text-gray-300 transition hidden sm:block" /> */}
           </div>
         </nav>
 

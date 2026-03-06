@@ -219,23 +219,26 @@ export default function InfluencersReelsSection() {
   // ============= RENDER =============
   if (loading || !influencers.length) return null;
 
-  // Duplicate influencers for infinite loop - same for all languages
-  const duplicatedInfluencers = [...influencers, ...influencers, ...influencers];
+  // Duplicate influencers for infinite loop - exactly 2x for seamless -50% animation
+  const duplicatedInfluencers = [...influencers, ...influencers];
 
   return (
     <>
       <style jsx>{`
         @keyframes scroll-left {
-          0% {
+          from {
             transform: translateX(0);
           }
-          100% {
-            transform: translateX(calc(-33.333% - 1rem));
+          to {
+            transform: translateX(-50%);
           }
         }
 
         .carousel-track {
-          animation: scroll-left 7s linear infinite;
+          display: flex;
+          width: max-content;
+          animation: scroll-left 15s linear infinite;
+          will-change: transform;
         }
 
         .carousel-track.paused {
@@ -243,9 +246,9 @@ export default function InfluencersReelsSection() {
         }
       `}</style>
 
-      <section className="relative w-full py-20 bg-black overflow-hidden" dir="ltr">
+      <section className="relative w-full py-10 bg-black overflow-hidden" dir="ltr">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-center gap-6 mb-16">
+          <div className="flex items-center justify-center gap-6 mb-6">
             <div className="flex-1 h-px bg-linear-to-r from-transparent via-[#C9A24D]/50 to-[#C9A24D]" />
             <div className="flex flex-col items-center text-center">
               <h2 className="text-[#C9A24D] text-2xl md:text-3xl font-light tracking-widest uppercase whitespace-nowrap">
@@ -263,7 +266,7 @@ export default function InfluencersReelsSection() {
             onMouseEnter={() => setIsCarouselHovered(true)}
             onMouseLeave={() => setIsCarouselHovered(false)}
           >
-            <div className={`flex gap-6 carousel-track ${isCarouselHovered ? "paused" : ""}`}>
+            <div className={`flex gap-6 carousel-track mt-5 mb-10 ${isCarouselHovered ? "paused" : ""}`}>
               {duplicatedInfluencers.map((influencer, index) => {
                 const uniqueId = `${influencer._id}-${index}`;
                 const isYouTube = influencer.videoUrl?.includes("youtube.com") || influencer.videoUrl?.includes("youtu.be");
@@ -347,8 +350,17 @@ export default function InfluencersReelsSection() {
 
                       <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black via-black/80 to-transparent p-6">
                         {influencer.product && influencer.variant && (
-                          <div className="space-y-3">
-                            <h3 className="text-white text-sm font-medium line-clamp-2">
+                          // <div className="space-y-3 text-left" dir="ltr">
+                          <div
+  className={`space-y-3 ${isRTL ? "text-right" : "text-left"}`}
+  dir={isRTL ? "rtl" : "ltr"}
+>
+                            {/* <h3 className="text-white text-sm font-medium line-clamp-2 text-left"> */}
+                            <h3
+  className={`text-white text-sm font-medium line-clamp-2 ${
+    isRTL ? "text-right" : "text-left"
+  }`}
+>
                               {getProductName(influencer)}
                             </h3>
 
@@ -389,6 +401,7 @@ export default function InfluencersReelsSection() {
         <div
           className="fixed inset-0 z-100 bg-black flex items-center justify-center"
           onClick={handleCloseModal}
+         dir="ltr" 
         >
           <button
             onClick={handleCloseModal}
