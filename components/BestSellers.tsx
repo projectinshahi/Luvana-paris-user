@@ -1112,13 +1112,13 @@ if (!isPaused.current) {
                 return (
                   <div
                     key={`${product._id}-${index}`}
-                    className="flex-shrink-0 w-[260px] mr-6 flex cursor-pointer"
+                    className="shrink-0 w-65 mr-6 flex cursor-pointer"
                     onClick={() => router.push(`/brands/${product._id}`)}
                   >
                     <div className="bg-[#111] rounded-lg overflow-hidden hover:scale-[1.02] transition-transform duration-300 flex flex-col w-full">
 
                       {/* IMAGE */}
-                      <div className="group relative w-full aspect-[3/4] bg-gradient-to-b from-[#E3C6A8] to-[#5F4D2B] p-1">
+                      <div className="group relative w-full aspect-3/4 bg-linear-to-b from-[#E3C6A8] to-[#5F4D2B] p-1">
                         <div className="relative w-full h-full bg-[#D9D9D9] rounded-sm overflow-hidden">
 
                           {/* Wishlist */}
@@ -1126,7 +1126,7 @@ if (!isPaused.current) {
                             onClick={(e) => handleAddToWishlist(product, e)}
                             className={`absolute top-3 ${
                               isRTL ? "left-3" : "right-3"
-                            } z-10 w-8 h-8 rounded-full bg-gradient-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] flex items-center justify-center opacity-0 group-hover:opacity-100 transition`}
+                            } z-10 w-8 h-8 rounded-full bg-linear-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] flex items-center justify-center opacity-0 group-hover:opacity-100 transition`}
                           >
                             <Heart className="w-4 h-4 text-black" />
                           </button>
@@ -1143,7 +1143,7 @@ if (!isPaused.current) {
                           {/* Add to Cart */}
                           <button
                             onClick={(e) => handleAddToCart(product, e)}
-                            className={`absolute bottom-3 left-1/2 -translate-x-1/2 w-[85%] h-9 rounded-lg bg-gradient-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] text-black text-xs opacity-0 group-hover:opacity-100 transition ${
+                            className={`absolute bottom-3 left-1/2 -translate-x-1/2 w-[85%] h-9 rounded-lg bg-linear-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] text-black text-xs opacity-0 group-hover:opacity-100 transition ${
                               isRTL ? "font-arabic" : ""
                             }`}
                           >
