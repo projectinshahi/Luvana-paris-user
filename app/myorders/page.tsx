@@ -259,10 +259,301 @@
 //     </>
 //   );
 // }
+// "use client";
+
+// import { useState, useEffect } from "react";
+// import { Package, ChevronRight, Search, Filter } from "lucide-react";
+// import { useTranslation } from "react-i18next";
+// import { useLanguage } from "@/lib/useLanguage";
+// import ResponsiveLayout from "@/components/ResponsiveLayout";
+// import api from "@/lib/axios";
+
+// interface OrderItem {
+//   name: string;
+//   image: string;
+//   quantity: number;
+//   price: number;
+// }
+
+// interface Order {
+//   id: string;
+//   date: string;
+//   status: "delivered" | "shipped" | "processing" | "cancelled" | "pending";
+//   total: number;
+//   items: OrderItem[];
+// }
+
+// export default function YourOrdersPage() {
+//   const { t } = useTranslation("common");
+//   const { isRTL } = useLanguage();
+
+//   const [orders, setOrders] = useState<Order[]>([]);
+//   const [loading, setLoading] = useState(true);
+
+//   const [searchQuery, setSearchQuery] = useState("");
+//   const [filterStatus, setFilterStatus] = useState<string>("all");
+
+//   /* ================= FETCH ORDERS ================= */
+
+//   useEffect(() => {
+//     const fetchOrders = async () => {
+//       try {
+//         const token = localStorage.getItem("token");
+
+//         const res = await api.get("/user/order", {
+//           headers: {
+//             Authorization: `Bearer ${token}`,
+//           },
+//         });
+
+//         const backendOrders = res.data.orders || [];
+
+//         const formattedOrders = backendOrders.map((order: any) => ({
+//           id: order.orderId,
+//           date: order.createdAt,
+//           status: order.status,
+//           total: order.price - order.discount,
+
+//           items: order.orderItem.map((item: any) => ({
+//             name: isRTL
+//               ? item.productNameArabic || item.product?.nameArabic
+//               : item.productNameEnglish || item.product?.nameEnglish,
+
+//             image: isRTL
+//               ? item.productImageArabic
+//               : item.productImageEnglish,
+
+//             quantity: item.quantity,
+//             price: item.price,
+//           })),
+//         }));
+
+//         setOrders(formattedOrders);
+//       } catch (error) {
+//         console.error("Failed to fetch orders:", error);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchOrders();
+//   }, [isRTL]);
+
+//   /* ================= STATUS COLORS ================= */
+
+//   const statusColors: any = {
+//     delivered: "bg-green-500/20 text-green-400 border-green-500/30",
+//     shipped: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+//     processing: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
+//     cancelled: "bg-red-500/20 text-red-400 border-red-500/30",
+//     pending: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
+//   };
+
+//   /* ================= FILTER ================= */
+
+//   const filteredOrders = orders.filter((order) => {
+//     const matchesSearch =
+//       order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+//       order.items.some((item) =>
+//         item.name.toLowerCase().includes(searchQuery.toLowerCase())
+//       );
+
+//     const matchesFilter =
+//       filterStatus === "all" || order.status === filterStatus;
+
+//     return matchesSearch && matchesFilter;
+//   });
+
+//   /* ================= LOADING ================= */
+
+//   if (loading) {
+//     return (
+//       <ResponsiveLayout>
+//         <div className="min-h-screen flex items-center justify-center text-white">
+//           Loading Orders...
+//         </div>
+//       </ResponsiveLayout>
+//     );
+//   }
+
+//   return (
+//     <ResponsiveLayout>
+//       <div className="min-h-screen bg-[#0D0D0D] text-white pt-20">
+//         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+//           {/* HEADER */}
+
+//           <div className="mb-8">
+           
+//           </div>
+//           <div className="mb-8">
+//             <h1 className={`text-3xl sm:text-4xl font-bold mb-2 ${isRTL ? "text-right" : "text-left"}`}>
+//               Your Orders
+//             </h1>
+//             <p className={`text-gray-400 ${isRTL ? "text-right" : "text-left"}`}>
+//               Track and manage your orders
+//             </p>
+//           </div>
+
+//           {/* SEARCH + FILTER */}
+
+//           <div className="mb-6 flex flex-col sm:flex-row gap-4">
+
+//             <div className="flex-1 relative">
+//               <Search size={18} className={`absolute top-1/2 -translate-y-1/2 text-gray-400 ${isRTL ? "right-4" : "left-4"}`} />
+
+//               <input
+//                 type="text"
+//                 placeholder="Search orders..."
+//                 value={searchQuery}
+//                 onChange={(e) => setSearchQuery(e.target.value)}
+//                 className={`w-full bg-[#1A1A1A] border border-[#2A2A2A] rounded-lg py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A24D] transition ${
+//                   isRTL ? "pr-12 pl-4 text-right" : "pl-12 pr-4 text-left"
+//                 }`}
+//               />
+//             </div>
+
+//             <div className="relative">
+//               <Filter size={18} className={`absolute top-1/2 -translate-y-1/2 text-gray-400 ${isRTL ? "right-4" : "left-4"}`} />
+
+//               <select
+//                 value={filterStatus}
+//                 onChange={(e) => setFilterStatus(e.target.value)}
+//                 className={`bg-[#1A1A1A] border border-[#2A2A2A] rounded-lg py-3 text-white focus:outline-none focus:border-[#C9A24D] appearance-none ${
+//                   isRTL ? "pr-4 pl-12 text-right" : "pl-12 pr-10 text-left"
+//                 }`}
+//               >
+//                 <option value="all">All Orders</option>
+//                 <option value="pending">Pending</option>
+//                 <option value="delivered">Delivered</option>
+//                 <option value="shipped">Shipped</option>
+//                 <option value="processing">Processing</option>
+//                 <option value="cancelled">Cancelled</option>
+//               </select>
+//             </div>
+//           </div>
+
+//           {/* ORDERS LIST */}
+
+//           {filteredOrders.length === 0 ? (
+//             <div className="text-center py-16">
+//               <Package size={64} className="mx-auto mb-4 text-gray-600" />
+//               <h3 className="text-xl font-semibold mb-2">No orders found</h3>
+//               <p className="text-gray-400">Try adjusting your search</p>
+//             </div>
+//           ) : (
+//             <div className="space-y-4">
+
+//               {filteredOrders.map((order) => (
+
+//                 <div
+//                   key={order.id}
+//                   className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-xl overflow-hidden hover:border-[#C9A24D]/30 transition"
+//                 >
+
+//                   {/* ORDER HEADER */}
+
+//                   <div className="p-4 sm:p-6 border-b border-[#2A2A2A]">
+
+//                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+
+//                       <div className={`flex-1 ${isRTL ? "text-right" : "text-left"}`}>
+
+//                         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-2">
+
+//                           <h3 className="text-lg font-semibold">
+//                             {order.id}
+//                           </h3>
+
+//                           <span
+//                             className={`inline-block px-3 py-1 rounded-full text-xs border ${
+//                               statusColors[order.status]
+//                             }`}
+//                           >
+//                             {order.status}
+//                           </span>
+
+//                         </div>
+
+//                         <p className="text-sm text-gray-400">
+//                           Ordered on {new Date(order.date).toLocaleDateString()}
+//                         </p>
+
+//                       </div>
+
+//                       <div className="text-[#C9A24D] font-bold text-xl">
+//                         ₹{order.total.toLocaleString()}
+//                       </div>
+
+//                     </div>
+
+//                   </div>
+
+//                   {/* ORDER ITEMS */}
+
+//                   <div className="p-4 sm:p-6 space-y-4">
+
+//                     {order.items.map((item, idx) => (
+
+//                       <div
+//                         key={idx}
+//                         className={`flex gap-4 ${isRTL ? "flex-row-reverse" : ""}`}
+//                       >
+
+//                         <div className="w-20 h-20 rounded-lg overflow-hidden bg-[#0D0D0D]">
+
+//                           <img
+//                             src={item.image}
+//                             alt={item.name}
+//                             className="w-full h-full object-cover"
+//                           />
+
+//                         </div>
+
+//                         <div className={`flex-1 ${isRTL ? "text-right" : ""}`}>
+
+//                           <h4 className="font-medium mb-1">
+//                             {item.name}
+//                           </h4>
+
+//                           <p className="text-sm text-gray-400">
+//                             Qty: {item.quantity}
+//                           </p>
+
+//                           <p className="text-[#C9A24D] font-semibold">
+//                             ₹{item.price}
+//                           </p>
+
+//                         </div>
+
+//                         <button className="hidden sm:flex items-center gap-2 px-4 py-2 bg-[#C9A24D] text-black rounded-lg">
+//                           View Details
+//                           <ChevronRight size={16} />
+//                         </button>
+
+//                       </div>
+
+//                     ))}
+
+//                   </div>
+
+//                 </div>
+
+//               ))}
+
+//             </div>
+//           )}
+
+//         </div>
+//       </div>
+//     </ResponsiveLayout>
+//   );
+// }
+
 "use client";
 
 import { useState, useEffect } from "react";
-import { Package, ChevronRight, Search, Filter } from "lucide-react";
+import { Package, ChevronRight, Search, SlidersHorizontal, Clock, CheckCircle2, Truck, XCircle, Loader2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/lib/useLanguage";
 import ResponsiveLayout from "@/components/ResponsiveLayout";
@@ -283,94 +574,75 @@ interface Order {
   items: OrderItem[];
 }
 
+const statusConfig: Record<string, { label: string; icon: any; classes: string; dot: string }> = {
+  delivered:  { label: "Delivered",  icon: CheckCircle2, classes: "text-emerald-400 bg-emerald-400/10 border-emerald-400/25", dot: "bg-emerald-400" },
+  shipped:    { label: "Shipped",    icon: Truck,         classes: "text-sky-400   bg-sky-400/10   border-sky-400/25",     dot: "bg-sky-400"     },
+  processing: { label: "Processing", icon: Loader2,       classes: "text-amber-400 bg-amber-400/10 border-amber-400/25",   dot: "bg-amber-400"   },
+  pending:    { label: "Pending",    icon: Clock,         classes: "text-amber-400 bg-amber-400/10 border-amber-400/25",   dot: "bg-amber-400"   },
+  cancelled:  { label: "Cancelled",  icon: XCircle,       classes: "text-red-400   bg-red-400/10   border-red-400/25",     dot: "bg-red-400"     },
+};
+
 export default function YourOrdersPage() {
   const { t } = useTranslation("common");
   const { isRTL } = useLanguage();
 
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
-
+  const [orders, setOrders]           = useState<Order[]>([]);
+  const [loading, setLoading]         = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [expanded, setExpanded]       = useState<string | null>(null);
 
-  /* ================= FETCH ORDERS ================= */
-
+  /* ─── fetch ─── */
   useEffect(() => {
     const fetchOrders = async () => {
       try {
         const token = localStorage.getItem("token");
+        const res   = await api.get("/user/order", { headers: { Authorization: `Bearer ${token}` } });
+        const raw   = res.data.orders || [];
 
-        const res = await api.get("/user/order", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const backendOrders = res.data.orders || [];
-
-        const formattedOrders = backendOrders.map((order: any) => ({
-          id: order.orderId,
-          date: order.createdAt,
-          status: order.status,
-          total: order.price - order.discount,
-
-          items: order.orderItem.map((item: any) => ({
-            name: isRTL
-              ? item.productNameArabic || item.product?.nameArabic
-              : item.productNameEnglish || item.product?.nameEnglish,
-
-            image: isRTL
-              ? item.productImageArabic
-              : item.productImageEnglish,
-
-            quantity: item.quantity,
-            price: item.price,
-          })),
-        }));
-
-        setOrders(formattedOrders);
-      } catch (error) {
-        console.error("Failed to fetch orders:", error);
+        setOrders(
+          raw.map((order: any) => ({
+            id:     order.orderId,
+            date:   order.createdAt,
+            status: order.status,
+            total:  order.price - order.discount,
+            items:  order.orderItem.map((item: any) => ({
+              name:     isRTL ? item.productNameArabic  || item.product?.nameArabic  : item.productNameEnglish || item.product?.nameEnglish,
+              image:    isRTL ? item.productImageArabic : item.productImageEnglish,
+              quantity: item.quantity,
+              price:    item.price,
+            })),
+          }))
+        );
+      } catch (err) {
+        console.error("Failed to fetch orders:", err);
       } finally {
         setLoading(false);
       }
     };
-
     fetchOrders();
   }, [isRTL]);
 
-  /* ================= STATUS COLORS ================= */
-
-  const statusColors: any = {
-    delivered: "bg-green-500/20 text-green-400 border-green-500/30",
-    shipped: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-    processing: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
-    cancelled: "bg-red-500/20 text-red-400 border-red-500/30",
-    pending: "bg-yellow-500/20 text-yellow-400 border-yellow-500/30",
-  };
-
-  /* ================= FILTER ================= */
-
-  const filteredOrders = orders.filter((order) => {
-    const matchesSearch =
-      order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.items.some((item) =>
-        item.name.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-
-    const matchesFilter =
-      filterStatus === "all" || order.status === filterStatus;
-
-    return matchesSearch && matchesFilter;
+  /* ─── filter ─── */
+  const filtered = orders.filter((o) => {
+    const q = searchQuery.toLowerCase();
+    const matchSearch = o.id.toLowerCase().includes(q) || o.items.some((i) => i.name?.toLowerCase().includes(q));
+    const matchStatus = filterStatus === "all" || o.status === filterStatus;
+    return matchSearch && matchStatus;
   });
 
-  /* ================= LOADING ================= */
-
+  /* ─── loading skeleton ─── */
   if (loading) {
     return (
       <ResponsiveLayout>
-        <div className="min-h-screen flex items-center justify-center text-white">
-          Loading Orders...
+        <div className="min-h-screen bg-[#080808] flex items-center justify-center">
+          <div className="flex flex-col items-center gap-4">
+            <div className="relative w-14 h-14">
+              <div className="absolute inset-0 rounded-full border-2 border-[#C9A24D]/20" />
+              <div className="absolute inset-0 rounded-full border-t-2 border-[#C9A24D] animate-spin" />
+            </div>
+            <p className="text-[#C9A24D]/60 text-sm tracking-[0.2em] uppercase font-light">Loading Orders</p>
+          </div>
         </div>
       </ResponsiveLayout>
     );
@@ -378,166 +650,244 @@ export default function YourOrdersPage() {
 
   return (
     <ResponsiveLayout>
-      <div className="min-h-screen bg-[#0D0D0D] text-white pt-20">
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* ── global styles injected inline ── */}
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Montserrat:wght@300;400;500;600&display=swap');
 
-          {/* HEADER */}
+        .orders-root { font-family: 'Montserrat', sans-serif; }
+        .display-font { font-family: 'Cormorant Garamond', serif; }
 
-          <div className="mb-8">
-            <h1 className={`text-3xl sm:text-4xl font-bold mb-2 ${isRTL ? "text-right" : "text-left"}`}>
-              Your Orders
+        .gold-shimmer {
+          background: linear-gradient(105deg, #C9A24D 0%, #F0D080 45%, #C9A24D 55%, #9A7535 100%);
+          background-size: 200% auto;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          animation: shimmer 4s linear infinite;
+        }
+        @keyframes shimmer { to { background-position: 200% center; } }
+
+        .card-hover {
+          transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+        }
+        .card-hover:hover {
+          border-color: rgba(201,162,77,0.35) !important;
+          box-shadow: 0 0 0 1px rgba(201,162,77,0.12), 0 8px 40px rgba(0,0,0,0.5);
+          transform: translateY(-1px);
+        }
+
+        .status-badge { transition: opacity 0.2s; }
+
+        .filter-select option { background: #111; color: #e5e5e5; }
+
+        .btn-gold {
+          background: linear-gradient(135deg, #C9A24D 0%, #F0D080 50%, #9A7535 100%);
+          background-size: 200% auto;
+          transition: background-position 0.4s ease, box-shadow 0.3s ease;
+          color: #000;
+        }
+        .btn-gold:hover {
+          background-position: right center;
+          box-shadow: 0 4px 20px rgba(201,162,77,0.35);
+        }
+
+        .divider-gold {
+          height: 1px;
+          background: linear-gradient(to right, transparent, rgba(201,162,77,0.3), transparent);
+        }
+
+        .input-focus:focus {
+          border-color: rgba(201,162,77,0.6) !important;
+          box-shadow: 0 0 0 3px rgba(201,162,77,0.08);
+        }
+
+        .order-row-enter {
+          animation: rowIn 0.35s ease forwards;
+        }
+        @keyframes rowIn {
+          from { opacity: 0; transform: translateY(12px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
+
+      <div className="orders-root min-h-screen bg-[#080808] text-white pt-20 pb-24">
+
+        {/* ── background texture ── */}
+        <div className="fixed inset-0 pointer-events-none" style={{
+          backgroundImage: "radial-gradient(circle at 20% 20%, rgba(201,162,77,0.04) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(201,162,77,0.03) 0%, transparent 50%)",
+        }} />
+
+        <div className={`relative w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 ${isRTL ? "rtl" : "ltr"}`}>
+
+          {/* ══ HEADER ══ */}
+          <div className="mb-12">
+            <p className="text-[#C9A24D]/50 text-[10px] tracking-[0.35em] uppercase mb-3 font-light">Account / History</p>
+            <h1 className={`display-font text-5xl sm:text-6xl font-light leading-none mb-3 ${isRTL ? "text-right" : "text-left"}`}>
+              <span className="gold-shimmer">Your Orders</span>
             </h1>
-            <p className={`text-gray-400 ${isRTL ? "text-right" : "text-left"}`}>
-              Track and manage your orders
+            <p className={`text-gray-500 text-sm tracking-wide font-light ${isRTL ? "text-right" : "text-left"}`}>
+              {orders.length} order{orders.length !== 1 ? "s" : ""} in your history
             </p>
+            <div className="mt-6 divider-gold" />
           </div>
 
-          {/* SEARCH + FILTER */}
+          {/* ══ SEARCH + FILTER ══ */}
+          <div className={`mb-8 flex flex-col sm:flex-row gap-3 ${isRTL ? "sm:flex-row-reverse" : ""}`}>
 
-          <div className="mb-6 flex flex-col sm:flex-row gap-4">
-
-            <div className="flex-1 relative">
-              <Search size={18} className={`absolute top-1/2 -translate-y-1/2 text-gray-400 ${isRTL ? "right-4" : "left-4"}`} />
-
+            {/* search */}
+            <div className="flex-1 relative group">
+              <Search
+                size={15}
+                className={`absolute top-1/2 -translate-y-1/2 text-[#C9A24D]/40 group-focus-within:text-[#C9A24D]/80 transition-colors ${isRTL ? "right-4" : "left-4"}`}
+              />
               <input
                 type="text"
-                placeholder="Search orders..."
+                placeholder="Search by order ID or product…"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className={`w-full bg-[#1A1A1A] border border-[#2A2A2A] rounded-lg py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#C9A24D] transition ${
-                  isRTL ? "pr-12 pl-4 text-right" : "pl-12 pr-4 text-left"
+                className={`input-focus w-full bg-[#111] border border-white/8 rounded-lg py-3 text-sm text-white placeholder-gray-600 focus:outline-none transition-all ${
+                  isRTL ? "pr-11 pl-4 text-right" : "pl-11 pr-4 text-left"
                 }`}
               />
             </div>
 
-            <div className="relative">
-              <Filter size={18} className={`absolute top-1/2 -translate-y-1/2 text-gray-400 ${isRTL ? "right-4" : "left-4"}`} />
-
+            {/* filter */}
+            <div className="relative group">
+              <SlidersHorizontal
+                size={14}
+                className={`absolute top-1/2 -translate-y-1/2 text-[#C9A24D]/40 group-focus-within:text-[#C9A24D]/80 transition-colors z-10 ${isRTL ? "right-4" : "left-4"}`}
+              />
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
-                className={`bg-[#1A1A1A] border border-[#2A2A2A] rounded-lg py-3 text-white focus:outline-none focus:border-[#C9A24D] appearance-none ${
-                  isRTL ? "pr-4 pl-12 text-right" : "pl-12 pr-10 text-left"
+                className={`input-focus filter-select bg-[#111] border border-white/8 rounded-lg py-3 text-sm text-gray-300 focus:outline-none appearance-none cursor-pointer transition-all ${
+                  isRTL ? "pr-4 pl-10 text-right" : "pl-10 pr-8 text-left"
                 }`}
               >
                 <option value="all">All Orders</option>
                 <option value="pending">Pending</option>
-                <option value="delivered">Delivered</option>
-                <option value="shipped">Shipped</option>
                 <option value="processing">Processing</option>
+                <option value="shipped">Shipped</option>
+                <option value="delivered">Delivered</option>
                 <option value="cancelled">Cancelled</option>
               </select>
+              <ChevronRight size={12} className={`absolute top-1/2 -translate-y-1/2 text-gray-500 rotate-90 pointer-events-none ${isRTL ? "left-3" : "right-3"}`} />
             </div>
           </div>
 
-          {/* ORDERS LIST */}
-
-          {filteredOrders.length === 0 ? (
-            <div className="text-center py-16">
-              <Package size={64} className="mx-auto mb-4 text-gray-600" />
-              <h3 className="text-xl font-semibold mb-2">No orders found</h3>
-              <p className="text-gray-400">Try adjusting your search</p>
+          {/* ══ EMPTY STATE ══ */}
+          {filtered.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-32 text-center">
+              <div className="w-20 h-20 rounded-full bg-[#C9A24D]/8 border border-[#C9A24D]/15 flex items-center justify-center mb-6">
+                <Package size={32} className="text-[#C9A24D]/40" />
+              </div>
+              <h3 className="display-font text-2xl font-light text-gray-300 mb-2">No orders found</h3>
+              <p className="text-gray-600 text-sm">Try adjusting your search or filter</p>
             </div>
           ) : (
-            <div className="space-y-4">
 
-              {filteredOrders.map((order) => (
+            /* ══ ORDERS LIST ══ */
+            <div className="space-y-3">
+              {filtered.map((order, idx) => {
+                const cfg       = statusConfig[order.status] ?? statusConfig.pending;
+                const StatusIcon = cfg.icon;
+                const isOpen    = expanded === order.id;
 
-                <div
-                  key={order.id}
-                  className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-xl overflow-hidden hover:border-[#C9A24D]/30 transition"
-                >
+                return (
+                  <div
+                    key={order.id}
+                    className="card-hover bg-[#0F0F0F] border border-white/6 rounded-2xl overflow-hidden order-row-enter"
+                    style={{ animationDelay: `${idx * 60}ms` }}
+                  >
+                    {/* ── order header (always visible) ── */}
+                    <button
+                      className={`w-full p-5 sm:p-6 flex items-center gap-5 text-left transition-colors hover:bg-white/2 ${isRTL ? "flex-row-reverse" : ""}`}
+                      onClick={() => setExpanded(isOpen ? null : order.id)}
+                    >
+                      {/* status indicator */}
+                      <div className={`hidden sm:flex w-10 h-10 rounded-xl items-center justify-center shrink-0 border ${cfg.classes}`}>
+                        <StatusIcon size={16} className={order.status === "processing" ? "animate-spin" : ""} />
+                      </div>
 
-                  {/* ORDER HEADER */}
-
-                  <div className="p-4 sm:p-6 border-b border-[#2A2A2A]">
-
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-
-                      <div className={`flex-1 ${isRTL ? "text-right" : "text-left"}`}>
-
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-2">
-
-                          <h3 className="text-lg font-semibold">
-                            {order.id}
-                          </h3>
-
-                          <span
-                            className={`inline-block px-3 py-1 rounded-full text-xs border ${
-                              statusColors[order.status]
-                            }`}
-                          >
-                            {order.status}
+                      {/* order info */}
+                      <div className={`flex-1 min-w-0 ${isRTL ? "text-right" : "text-left"}`}>
+                        <div className={`flex items-center gap-3 mb-1 flex-wrap ${isRTL ? "flex-row-reverse" : ""}`}>
+                          <span className="font-medium text-sm text-white truncate">{order.id}</span>
+                          <span className={`status-badge inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium border ${cfg.classes}`}>
+                            <span className={`w-1.5 h-1.5 rounded-full ${cfg.dot}`} />
+                            {cfg.label}
                           </span>
-
                         </div>
-
-                        <p className="text-sm text-gray-400">
-                          Ordered on {new Date(order.date).toLocaleDateString()}
+                        <p className="text-[11px] text-gray-600 font-light">
+                          {new Date(order.date).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}
+                          {" · "}
+                          {order.items.length} item{order.items.length !== 1 ? "s" : ""}
                         </p>
-
                       </div>
 
-                      <div className="text-[#C9A24D] font-bold text-xl">
-                        ₹{order.total.toLocaleString()}
+                      {/* total + chevron */}
+                      <div className={`flex items-center gap-4 shrink-0 ${isRTL ? "flex-row-reverse" : ""}`}>
+                        <span className="display-font text-xl font-medium" style={{ color: "#C9A24D" }}>
+                          ₹{order.total.toLocaleString()}
+                        </span>
+                        <ChevronRight
+                          size={16}
+                          className="text-gray-600 transition-transform duration-300"
+                          style={{ transform: isOpen ? "rotate(90deg)" : "rotate(0deg)" }}
+                        />
                       </div>
+                    </button>
 
+                    {/* ── expandable items ── */}
+                    <div
+                      style={{
+                        maxHeight: isOpen ? "1000px" : "0px",
+                        overflow: "hidden",
+                        transition: "max-height 0.4s cubic-bezier(0.4,0,0.2,1)",
+                      }}
+                    >
+                      <div className="divider-gold mx-5" />
+
+                      <div className="p-5 sm:p-6 space-y-4">
+                        {order.items.map((item, i) => (
+                          <div
+                            key={i}
+                            className={`flex gap-4 items-center ${isRTL ? "flex-row-reverse" : ""}`}
+                          >
+                            {/* image */}
+                            <div className="w-16 h-16 sm:w-18 sm:h-18 shrink-0 rounded-xl overflow-hidden bg-[#1A1A1A] border border-white/6">
+                              {item.image
+                                ? <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                : <div className="w-full h-full flex items-center justify-center"><Package size={20} className="text-gray-700" /></div>
+                              }
+                            </div>
+
+                            {/* details */}
+                            <div className={`flex-1 min-w-0 ${isRTL ? "text-right" : ""}`}>
+                              <p className="text-sm font-medium text-white truncate mb-0.5">{item.name}</p>
+                              <p className="text-[11px] text-gray-600">Qty: {item.quantity}</p>
+                              <p className="text-sm font-semibold mt-1" style={{ color: "#C9A24D" }}>₹{item.price.toLocaleString()}</p>
+                            </div>
+
+                            {/* CTA */}
+                            <button className="btn-gold hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold tracking-wide shrink-0">
+                              View Details
+                              <ChevronRight size={13} />
+                            </button>
+                          </div>
+                        ))}
+
+                        {/* mobile CTA */}
+                        <button className="btn-gold sm:hidden w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold tracking-wide mt-2">
+                          View Full Order
+                          <ChevronRight size={14} />
+                        </button>
+                      </div>
                     </div>
 
                   </div>
-
-                  {/* ORDER ITEMS */}
-
-                  <div className="p-4 sm:p-6 space-y-4">
-
-                    {order.items.map((item, idx) => (
-
-                      <div
-                        key={idx}
-                        className={`flex gap-4 ${isRTL ? "flex-row-reverse" : ""}`}
-                      >
-
-                        <div className="w-20 h-20 rounded-lg overflow-hidden bg-[#0D0D0D]">
-
-                          <img
-                            src={item.image}
-                            alt={item.name}
-                            className="w-full h-full object-cover"
-                          />
-
-                        </div>
-
-                        <div className={`flex-1 ${isRTL ? "text-right" : ""}`}>
-
-                          <h4 className="font-medium mb-1">
-                            {item.name}
-                          </h4>
-
-                          <p className="text-sm text-gray-400">
-                            Qty: {item.quantity}
-                          </p>
-
-                          <p className="text-[#C9A24D] font-semibold">
-                            ₹{item.price}
-                          </p>
-
-                        </div>
-
-                        <button className="hidden sm:flex items-center gap-2 px-4 py-2 bg-[#C9A24D] text-black rounded-lg">
-                          View Details
-                          <ChevronRight size={16} />
-                        </button>
-
-                      </div>
-
-                    ))}
-
-                  </div>
-
-                </div>
-
-              ))}
-
+                );
+              })}
             </div>
           )}
 
