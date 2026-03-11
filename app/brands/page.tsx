@@ -14,6 +14,9 @@ interface Variant {
   _id: string;
   price: number;
   mrp: number;
+    // imageUrl?: string;
+     imageUrlEnglish?: { imageUrl: string }[];
+  imageUrlArabic?: { imageUrl: string }[];
 }
 
 interface Product {
@@ -41,10 +44,12 @@ interface Product {
     const { t, currentLanguage } = useLanguage();
 const isArabic = currentLanguage === "ar";
 
+
     const [products, setProducts] = useState<Product[]>([]);
     const [selectedVariants, setSelectedVariants] = useState<{
   [key: string]: string;
 }>({});
+
     const [priceRange, setPriceRange] = useState(5000);
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
@@ -96,6 +101,7 @@ const [homeBrands, setHomeBrands] = useState<any[]>([]);
 
   fetchHomeData();
 }, []);
+
   useEffect(() => {
   const fetchProducts = async () => {
     try {
@@ -503,14 +509,56 @@ const sortedProducts = useMemo(() => {
                     >
                       {/* Image Container */}
                       <div className="relative w-full h-64 overflow-hidden bg-[#0D0D0D]">
-                        <img
+                        {/* <img
                           src={
                             product.imageUrlEnglish?.[0]?.imageUrl ||
                             "/placeholder.png"
                           }
                           alt={product.nameEnglish}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                        />
+                        /> */}
+                        {/* {(() => {
+  const selectedVariantId = selectedVariants[product._id];
+
+  const selectedVariant =
+    product.variants?.find((v) => v._id === selectedVariantId) ||
+    product.variants?.[0];
+
+  const image =
+    selectedVariant?.imageUrl ||
+    product.imageUrlEnglish?.[0]?.imageUrl ||
+    "/placeholder.png";
+
+  return (
+    <img
+      src={image}
+      alt={product.nameEnglish}
+      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+    />
+  );
+})()} */}
+{(() => {
+  const selectedVariantId = selectedVariants[product._id];
+
+  const selectedVariant =
+    product.variants?.find((v) => v._id === selectedVariantId) ||
+    product.variants?.[0];
+
+  const image =
+    (isArabic
+      ? selectedVariant?.imageUrlArabic?.[0]?.imageUrl
+      : selectedVariant?.imageUrlEnglish?.[0]?.imageUrl) ||
+   
+    "/placeholder.png";
+
+  return (
+    <img
+      src={image}
+      alt={product.nameEnglish}
+      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+    />
+  );
+})()}
                         {/* Gradient Overlay */}
                         <div className="absolute inset-0 bg-linear-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
@@ -575,10 +623,18 @@ const sortedProducts = useMemo(() => {
                           ₹{product.minPrice ? product.minPrice.toLocaleString("en-IN") : "0"}
                         </p> */}
                         {(() => {
-  const firstVariant = product.variants?.[0];
+  // const firstVariant = product.variants?.[0];
 
-  const price = firstVariant?.price ?? product.minPrice ?? 0;
-  const mrp = firstVariant?.mrp ?? null;
+  // const price = firstVariant?.price ?? product.minPrice ?? 0;
+  // const mrp = firstVariant?.mrp ?? null;
+  const selectedVariantId = selectedVariants[product._id];
+
+const selectedVariant =
+  product.variants?.find((v) => v._id === selectedVariantId) ||
+  product.variants?.[0];
+
+const price = selectedVariant?.price ?? product.minPrice ?? 0;
+const mrp = selectedVariant?.mrp ?? null;
 
   return (
     <div className="flex items-center gap-2 mb-4">

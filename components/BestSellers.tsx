@@ -905,7 +905,7 @@ interface Product {
 }
 
 export default function BestSellers() {
-  const { i18n } = useTranslation("common");
+  const { t, i18n } = useTranslation("common");
   const isRTL = i18n.language === "ar";
   const { formatPrice } = useCurrency();
 
@@ -926,7 +926,7 @@ const animationRef = useRef<number | null>(null);
         const data = await res.json();
 
         if (res.ok) {
-          setProducts(data.featuredProducts || []);
+          setProducts(data.featuredProducts.variants || []);
         }
       } catch (error) {
         console.error("Failed to fetch featured products:", error);
@@ -944,10 +944,10 @@ useEffect(() => {
   let animationId: number;
 
   const scroll = () => {
-   const speed = 3;
+   const speed = 1;
 
 if (!isPaused.current) {
-  track.scrollLeft += isRTL ? -speed : speed;
+  track.scrollLeft += speed;
 }
   
 
@@ -965,7 +965,7 @@ if (!isPaused.current) {
   animationId = requestAnimationFrame(scroll);
 
   return () => cancelAnimationFrame(animationId);
-}, [products]);
+}, [products, i18n.language]);
   /* ================= ADD TO CART ================= */
   const handleAddToCart = async (product: Product, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -1053,6 +1053,15 @@ if (!isPaused.current) {
             transform: translateX(-50%);
           }
         }
+          /* Hide scrollbar */
+.hide-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE & Edge */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
 
         .scroll-track {
           display: flex;
@@ -1090,14 +1099,14 @@ if (!isPaused.current) {
                 isRTL ? "font-arabic" : ""
               }`}
             >
-              Best Sellers
+             {t("bestSellers")}
             </h2>
             <div className="flex-1 h-px bg-white/30" />
           </div>
 
           {/* CAROUSEL */}
           <div className="slider-wrapper pause-on-hover">
-            <div ref={trackRef} className="flex overflow-x-hidden whitespace-nowrap"  onMouseEnter={() => (isPaused.current = true)}
+            <div ref={trackRef} className="flex overflow-x-hidden whitespace-nowrap hide-scrollbar"  onMouseEnter={() => (isPaused.current = true)}
   onMouseLeave={() => (isPaused.current = false)} >
 
               {[...products, ...products].map((product, index) => {

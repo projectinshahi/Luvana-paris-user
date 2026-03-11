@@ -281,13 +281,20 @@ const handleClick = (key: string) => {
         <div>
           <button
             onClick={() => handleClick("new")}
-            className={`px-6 py-2 rounded-full text-sm font-medium transition duration-300 border-2
-              ${
-                selectedItem === "new"
-                  ? "text-[#C9A24D] border-[#C9A24D] bg-[#1a1a1a]"
-                  : "text-white border-transparent hover:text-[#C9A24D]"
-              }
-            `}
+            // className={`px-6 py-2 rounded-full text-sm font-medium transition duration-300 border
+            //   ${
+            //     selectedItem === "new"
+            //       ? "text-[#C9A24D] border-[#C9A24D] bg-[#1a1a1a]"
+            //       : "text-white border-transparent hover:text-[#C9A24D]"
+            //   }
+            // `}
+            className={`px-6 py-2 rounded-full text-sm font-medium transition duration-300 border focus:outline-none focus:ring-0
+  ${
+    selectedItem === "new"
+      ? "text-[#C9A24D] border-[#C9A24D] bg-[#1a1a1a]"
+      : "text-white border-transparent hover:text-[#C9A24D]"
+  }
+`}
           >
             {isRTL ? "جديد" : "New"}
           </button>
@@ -300,7 +307,7 @@ const handleClick = (key: string) => {
               setSelectedItem("brands");
               setOpenMenu(openMenu === "brands" ? null : "brands");
             }}
-            className={`px-6 py-2 rounded-full text-sm font-medium transition duration-300 border-2
+            className={`px-6 py-2 rounded-full text-sm font-medium transition duration-300 border
               ${
                 selectedItem === "brands"
                   ? "text-[#C9A24D] border-[#C9A24D] bg-[#1a1a1a]"
@@ -346,7 +353,7 @@ const handleClick = (key: string) => {
           <div key={cat._id}>
             <button
               onClick={() => handleClick(cat._id)}
-              className={`px-6 py-2 rounded-full text-sm font-medium transition duration-300 border-2
+              className={`px-6 py-2 rounded-full text-sm font-medium transition duration-300 border
                 ${
                   selectedItem === cat._id
                     ? "text-[#C9A24D] border-[#C9A24D] bg-[#1a1a1a]"
