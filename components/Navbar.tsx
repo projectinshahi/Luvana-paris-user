@@ -780,6 +780,13 @@ import MobileMenu from "./MobileMenu";
 import { useLanguage } from "@/lib/useLanguage";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { COUNTRIES } from "@/lib/countries";
+type CountryFromBackend = {
+  _id: string;
+  nameEnglish: string;
+  nameArabic: string;
+  flagUrl: string;
+  currencyValue: string;
+};
 
 export default function Navbar() {
   const router = useRouter();
@@ -788,7 +795,7 @@ export default function Navbar() {
   const { t, ready } = useTranslation("common");
   const { isRTL, languages, changeLanguage, currentLang } = useLanguage();
   const { selectedCountry, setSelectedCountry } = useCurrency();
-
+const [countries, setCountries] = useState<any[]>([]);
   const [mounted, setMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -839,7 +846,39 @@ export default function Navbar() {
 
     fetchPromotions();
   }, [isRTL]);
+useEffect(() => {
+  const fetchCountries = async () => {
+    try {
+      const API_URL =
+        process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
+      const res = await fetch(`${API_URL}/user/country`, {
+        cache: "no-store",
+      });
+
+      const data = await res.json();
+
+      if (data?.countries) {
+        const formattedCountries = data.countries.map(
+          (country: CountryFromBackend) => ({
+            code: country._id,
+            name: isRTL ? country.nameArabic : country.nameEnglish,
+            flag: country.flagUrl,
+            currency: "SAR",
+            currencySymbol: "﷼",
+            currencyValue: country.currencyValue,
+          })
+        );
+
+        setCountries(formattedCountries);
+      }
+    } catch (error) {
+      console.error("Country fetch error:", error);
+    }
+  };
+
+  fetchCountries();
+}, [isRTL]);
   // ✅ AUTO ROTATION
   useEffect(() => {
     if (!offers.length) return;
@@ -992,13 +1031,14 @@ export default function Navbar() {
 
                 {showCountryDropdown && (
                   <div className="absolute right-0 mt-2 bg-[#1a1a1a] rounded-lg shadow-lg z-50 min-w-max border border-gray-700 max-h-64 overflow-y-auto">
-                    {COUNTRIES.map((country) => (
+                    {countries.map((country) => (
                       <button
                         key={country.code}
-                        onClick={() => {
-                          setSelectedCountry(country);
-                          setShowCountryDropdown(false);
-                        }}
+                      onClick={() => {
+  setSelectedCountry(country);
+  localStorage.setItem("selectedCountry", JSON.stringify(country));
+  setShowCountryDropdown(false);
+}}
                         className={`w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-gray-700 first:rounded-t-lg last:rounded-b-lg transition-colors ${
                           selectedCountry.code === country.code ? 'bg-gray-700 text-yellow-400' : 'text-gray-200'
                         }`}
