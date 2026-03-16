@@ -786,6 +786,7 @@ import {
   Search,
 } from "lucide-react";
 import { useLanguage } from "@/lib/useLanguage";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 // ================= LIGHTBOX COMPONENT =================
 interface LightboxProps {
@@ -850,6 +851,7 @@ function Lightbox({ images, initialIndex, onClose }: LightboxProps) {
       resetZoom();
     }
   };
+  
 
   const handleWheel = (e: React.WheelEvent) => {
     e.preventDefault();
@@ -997,6 +999,7 @@ function Lightbox({ images, initialIndex, onClose }: LightboxProps) {
 export default function ProductDetailPage() {
   const params = useParams();
   const { currentLanguage, isRTL } = useLanguage();
+  const { formatPrice } = useCurrency();
 
   const productId = params?.id as string;
 
@@ -1175,12 +1178,12 @@ const handleImageMouseMove = useCallback(
 
 
 {/* Zoom Preview Label */}
-{!isZooming && (
+{/* {!isZooming && (
   <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 bg-black/60 backdrop-blur-sm text-white/80 text-xs font-medium px-3 py-1.5 rounded-full pointer-events-none">
     <Search size={12} />
     Zoom Preview
   </div>
-)}
+)} */}
 
 {/* {isZooming && (
     <div 
@@ -1240,14 +1243,14 @@ const handleImageMouseMove = useCallback(
   </button>
 
   {/* Maximize */}
-  <button
+  {/* <button
     onClick={() => openLightbox(selectedImage)}
     className="absolute top-4 right-4 
     bg-black/60 hover:bg-[#C9A24D] 
     p-2.5 rounded-full transition z-30"
   >
     <Maximize2 size={18} />
-  </button>
+  </button> */}
 
 </div>
 
@@ -1297,10 +1300,10 @@ const handleImageMouseMove = useCallback(
             {/* Price */}
             <div className="flex items-center gap-4 mb-6">
               <span className="text-3xl font-bold text-[#C9A24D]">
-                KWD{selectedVariantData?.price || product.minPrice}
+                {formatPrice(selectedVariantData?.price || product.minPrice)}
               </span>
               <span className="line-through text-gray-500">
-                KWD{selectedVariantData?.mrp || product.maxPrice}
+                {product.maxPrice ? formatPrice(selectedVariantData?.mrp || product.maxPrice) : ""}
               </span>
             </div>
 
@@ -1446,7 +1449,7 @@ const handleImageMouseMove = useCallback(
                         : item.nameEnglish}
                     </h3>
                     <p className="text-[#C9A24D] font-bold">
-                      KWD{item.minPrice}
+                      {formatPrice(item.minPrice)}
                     </p>
                   </div>
                 </div>

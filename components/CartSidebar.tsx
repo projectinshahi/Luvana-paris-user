@@ -240,12 +240,12 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                       </h3>
                       <div className="flex items-center gap-2 mb-2">
                         <span className="text-sm font-bold text-white">
-                          KWD {item.variant?.price.toFixed(2)}
+                          {formatPrice(item.variant?.price)}
                         </span>
                         {discount > 0 && (
                           <>
                             <span className="text-xs text-gray-500 line-through">
-                              {item.variant?.mrp.toFixed(2)}
+                              {formatPrice(item.variant?.mrp)}
                             </span>
                             <span className="text-xs text-green-500 font-semibold">
                               {discount}% {t("cart.off")}
@@ -307,14 +307,14 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-400">{t("cart.total")}</span>
                 <span className="text-white font-medium">
-                  KWD {summary.subtotal.toFixed(2)}
+                  {formatPrice(summary.subtotal)}
                 </span>
               </div>
 
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-400">{t("cart.discount")}</span>
                 <span className="text-green-500 font-medium">
-                  KWD {summary.discount.toFixed(2)}
+                  {formatPrice(summary.discount)}
                 </span>
               </div>
 
@@ -329,7 +329,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-400">Tax</span>
                   <span className="text-white font-medium">
-                    KWD {summary.tax.toFixed(2)}
+                    {formatPrice(summary.tax)}
                   </span>
                 </div>
               )}
@@ -337,7 +337,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
               {/* Final Total */}
               <div className="flex items-center justify-between pt-3 border-t border-[#2A2A2A]">
                 <span className="text-2xl font-bold text-white">
-                  KWD {summary.total.toFixed(2)}
+                  {formatPrice(summary.total)}
                 </span>
                 <button
                   className="bg-[#C9A24D] hover:bg-[#B8934C] text-black px-8 py-3 rounded-lg font-semibold transition"

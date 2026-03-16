@@ -8,6 +8,7 @@
   import { toast } from "react-toastify";
   import api from "@/lib/axios";
   import axios from "axios";
+  import { useCurrency } from "@/contexts/CurrencyContext";
 
  
 interface Variant {
@@ -17,6 +18,11 @@ interface Variant {
     // imageUrl?: string;
      imageUrlEnglish?: { imageUrl: string }[];
   imageUrlArabic?: { imageUrl: string }[];
+    currency?: {
+    country: string;
+    price: number;
+    mrp: number;
+  }[];
 }
 
 interface Product {
@@ -59,6 +65,7 @@ const isArabic = currentLanguage === "ar";
     const [loading, setLoading] = useState(false);
     const [homeCategories, setHomeCategories] = useState<any[]>([]);
 const [homeBrands, setHomeBrands] = useState<any[]>([]);
+const { formatPrice } = useCurrency();
 
   useEffect(() => {
   const categoryParam = searchParams.get("category");
@@ -371,49 +378,7 @@ const sortedProducts = useMemo(() => {
 
          
 
-              {/* {selectedBrands.map((brandId) => {
-                const brand = homeBrands.find((b) => b._id === brandId);
-                return (
-                  <div
-                    key={brandId}
-                    className="flex items-center gap-2 bg-[#C9A24D]/20 border border-[#C9A24D] text-[#C9A24D] px-4 py-2 rounded-full text-sm"
-                  >
-                    <span>{isArabic ? brand?.nameArabic : brand?.nameEnglish}</span>
-                    <button
-                      // onClick={() =>
-                      //   setSelectedBrands((prev) =>
-                      //     prev.filter((b) => b !== brandId)
-                      //   )
-                      // }
-                      onClick={() => {
-  const updated = selectedBrands.filter((b) => b !== brandId);
-  updateURL(selectedCategories, updated);
-}}
-                      className="hover:text-white transition-colors"
-                    >
-                      <X size={16} />
-                    </button>
-                  </div>
-                );
-              })}
-
-              {(selectedCategories.length > 0 || selectedBrands.length > 0) && (
-                <button
-                  // onClick={() => {
-                  //   setSelectedCategories([]);
-                  //   setSelectedBrands([]);
-                  // }}
-                  onClick={() => {
-  router.push("/brands");
-}}
-                  className="text-gray-400 hover:text-[#C9A24D] text-sm underline transition-colors"
-                >
-                  Clear all
-                </button> */}
-              {/* )}
-            </div>
-          )} */}
-
+              
           {/* Centered Search Bar */}
           <div className="mb-8 flex justify-center">
             <div className="w-full max-w-2xl flex gap-3 items-center">
@@ -509,34 +474,7 @@ const sortedProducts = useMemo(() => {
                     >
                       {/* Image Container */}
                       <div className="relative w-full h-64 overflow-hidden bg-[#0D0D0D]">
-                        {/* <img
-                          src={
-                            product.imageUrlEnglish?.[0]?.imageUrl ||
-                            "/placeholder.png"
-                          }
-                          alt={product.nameEnglish}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                        /> */}
-                        {/* {(() => {
-  const selectedVariantId = selectedVariants[product._id];
-
-  const selectedVariant =
-    product.variants?.find((v) => v._id === selectedVariantId) ||
-    product.variants?.[0];
-
-  const image =
-    selectedVariant?.imageUrl ||
-    product.imageUrlEnglish?.[0]?.imageUrl ||
-    "/placeholder.png";
-
-  return (
-    <img
-      src={image}
-      alt={product.nameEnglish}
-      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-    />
-  );
-})()} */}
+                        
 {(() => {
   const selectedVariantId = selectedVariants[product._id];
 
@@ -544,12 +482,15 @@ const sortedProducts = useMemo(() => {
     product.variants?.find((v) => v._id === selectedVariantId) ||
     product.variants?.[0];
 
-  const image =
-    (isArabic
-      ? selectedVariant?.imageUrlArabic?.[0]?.imageUrl
-      : selectedVariant?.imageUrlEnglish?.[0]?.imageUrl) ||
-   
-    "/placeholder.png";
+  const variantImage = isArabic
+    ? selectedVariant?.imageUrlArabic?.[0]?.imageUrl
+    : selectedVariant?.imageUrlEnglish?.[0]?.imageUrl;
+
+  const productImage = product.imageUrlEnglish?.[0]?.imageUrl;
+// isArabic
+//     ? product.imageUrlArabic?.[0]?.imageUrl
+//     : 
+  const image = variantImage || productImage || "/placeholder.png";
 
   return (
     <img
@@ -633,18 +574,18 @@ const selectedVariant =
   product.variants?.find((v) => v._id === selectedVariantId) ||
   product.variants?.[0];
 
-const price = selectedVariant?.price ?? product.minPrice ?? 0;
-const mrp = selectedVariant?.mrp ?? null;
+let price = selectedVariant?.price ?? product.minPrice ?? 0;
+let mrp = selectedVariant?.mrp ?? null;
 
   return (
     <div className="flex items-center gap-2 mb-4">
       <span className="text-[#C9A24D] font-bold text-lg">
-        KWD {price.toLocaleString("en-IN")}
+       {formatPrice(price)}
       </span>
 
       {mrp && mrp > price && (
         <span className="text-gray-500 line-through text-sm">
-          KWD {mrp.toLocaleString("en-IN")}
+          {formatPrice(mrp)}
         </span>
       )}
     </div>

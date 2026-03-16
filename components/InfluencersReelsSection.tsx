@@ -7,6 +7,7 @@ import axios from "axios";
 import { X, ShoppingCart } from "lucide-react";
 import { toast } from "react-toastify";
 import api from "@/lib/axios";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 // ============= INTERFACES =============
 interface Variant {
@@ -41,6 +42,7 @@ export default function InfluencersReelsSection() {
   const { i18n } = useTranslation("common");
   const isRTL = i18n.language === "ar";
   const router = useRouter();
+  const { formatPrice } = useCurrency();
 
   // State
   const [influencers, setInfluencers] = useState<Influencer[]>([]);
@@ -123,12 +125,16 @@ export default function InfluencersReelsSection() {
     }
   };
 
-  const handleCardClick = (influencer: Influencer) => {
-    const index = influencers.findIndex(inf => inf._id === influencer._id);
-    if (index !== -1 && influencer.product && influencer.variant) {
-      setSelectedIndex(index);
-    }
-  };
+  // const handleCardClick = (influencer: Influencer) => {
+  //   const index = influencers.findIndex(inf => inf._id === influencer._id);
+  //   if (index !== -1 && influencer.product && influencer.variant) {
+  //     setSelectedIndex(index);
+  //   }
+  // };
+  const handleCardClick = (index: number) => {
+  const realIndex = index % influencers.length;
+  setSelectedIndex(realIndex);
+};
 
   const handleCloseModal = () => {
     setSelectedIndex(null);
@@ -204,18 +210,57 @@ export default function InfluencersReelsSection() {
       : inf.titleEnglish || inf.titleArabic;
   };
 
+  // const getProductImage = (inf: Influencer) => {
+  //   return isRTL
+  //     ? inf.variant?.imageUrlArabic?.[0]?.imageUrl ||
+  //         inf.variant?.imageUrlEnglish?.[0]?.imageUrl ||
+  //         inf.product?.imageUrlArabic?.[0]?.imageUrl ||
+  //         inf.product?.imageUrlEnglish?.[0]?.imageUrl
+  //     : inf.variant?.imageUrlEnglish?.[0]?.imageUrl ||
+  //         inf.variant?.imageUrlArabic?.[0]?.imageUrl ||
+  //         inf.product?.imageUrlEnglish?.[0]?.imageUrl ||
+  //         inf.product?.imageUrlArabic?.[0]?.imageUrl;
+  // };
   const getProductImage = (inf: Influencer) => {
-    return isRTL
-      ? inf.variant?.imageUrlArabic?.[0]?.imageUrl ||
-          inf.variant?.imageUrlEnglish?.[0]?.imageUrl ||
-          inf.product?.imageUrlArabic?.[0]?.imageUrl ||
-          inf.product?.imageUrlEnglish?.[0]?.imageUrl
-      : inf.variant?.imageUrlEnglish?.[0]?.imageUrl ||
-          inf.variant?.imageUrlArabic?.[0]?.imageUrl ||
-          inf.product?.imageUrlEnglish?.[0]?.imageUrl ||
-          inf.product?.imageUrlArabic?.[0]?.imageUrl;
-  };
+  if (!inf) return "";
 
+  const variantImage = isRTL
+    ? inf.variant?.imageUrlArabic?.[0]?.imageUrl ||
+      inf.variant?.imageUrlEnglish?.[0]?.imageUrl
+    : inf.variant?.imageUrlEnglish?.[0]?.imageUrl ||
+      inf.variant?.imageUrlArabic?.[0]?.imageUrl;
+
+  if (variantImage) return variantImage;
+
+  const productImage = isRTL
+    ? inf.product?.imageUrlArabic?.[0]?.imageUrl ||
+      inf.product?.imageUrlEnglish?.[0]?.imageUrl
+    : inf.product?.imageUrlEnglish?.[0]?.imageUrl ||
+      inf.product?.imageUrlArabic?.[0]?.imageUrl;
+
+  return productImage || "/placeholder.png";
+};
+  // ============= INSTAGRAM HELPER =============
+// const getInstagramId = (url?: string) => {
+//   if (!url) return "";
+//   if (url.includes("instagram.com/reel/")) {
+//     return url.split("instagram.com/reel/")[1]?.split("/")[0];
+//   }
+//   return "";
+// };
+const getInstagramId = (url?: string) => {
+  if (!url) return "";
+
+  if (url.includes("instagram.com/reel/")) {
+    return url.split("instagram.com/reel/")[1]?.split("/")[0];
+  }
+
+  if (url.includes("instagram.com/reels/")) {
+    return url.split("instagram.com/reels/")[1]?.split("/")[0];
+  }
+
+  return "";
+};
   // ============= RENDER =============
   if (loading || !influencers.length) return null;
 
@@ -269,13 +314,22 @@ export default function InfluencersReelsSection() {
             <div className={`flex gap-6 carousel-track mt-5 mb-10 ${isCarouselHovered ? "paused" : ""}`}>
               {duplicatedInfluencers.map((influencer, index) => {
                 const uniqueId = `${influencer._id}-${index}`;
-                const isYouTube = influencer.videoUrl?.includes("youtube.com") || influencer.videoUrl?.includes("youtu.be");
+                // const isYouTube = influencer.videoUrl?.includes("youtube.com") || influencer.videoUrl?.includes("youtu.be");
+                const isYouTube =
+  influencer.videoUrl?.includes("youtube.com") ||
+  influencer.videoUrl?.includes("youtu.be");
+
+// const isInstagram =
+//   influencer.videoUrl?.includes("instagram.com/reel/");
+const isInstagram =
+  influencer.videoUrl?.includes("instagram.com/reel") ||
+  influencer.videoUrl?.includes("instagram.com/reels");
 
                 return (
                   <div
                     key={uniqueId}
                     className="shrink-0 w-75 group"
-                    onClick={() => handleCardClick(influencer)}
+                    onClick={() => handleCardClick(index)}
                   >
                     <div className="relative w-75 h-133.25 rounded-xl overflow-hidden shadow-2xl border border-[rgba(197,160,89,0.3)] hover:border-[#C5A059] transition-all duration-500 cursor-pointer hover:scale-105 hover:shadow-[0_0_30px_rgba(197,160,89,0.4)]">
                       {isYouTube ? (
@@ -316,9 +370,34 @@ export default function InfluencersReelsSection() {
                               </div>
                             );
                           }
-                          return null;
-                        })()
-                      ) : (
+                      //     return null;
+                      //   })()
+                      // ) : (
+                      return null;
+})()
+) : isInstagram ? (
+  (() => {
+    const reelId = getInstagramId(influencer.videoUrl);
+
+    if (reelId) {
+      return (
+        <iframe
+          // src={`https://www.instagram.com/reel/${reelId}/embed`}
+          src={`https://www.instagram.com/reel/${reelId}/embed`}
+          className="absolute inset-0 w-full h-full"
+          style={{
+            border: "none",
+            width: "100%",
+            height: "100%",
+            transform: "scale(1.2)",
+            pointerEvents: "none"
+          }}
+        />
+      );
+    }
+    return null;
+  })()
+) : (
                         <video
                           ref={(el) => setVideoRef(uniqueId, el)}
                           src={influencer.videoUrl}
@@ -366,11 +445,11 @@ export default function InfluencersReelsSection() {
 
                             <div className="flex items-center gap-2">
                               <span className="text-[#C5A059] text-xl font-bold">
-                                KWD {influencer.variant.price.toFixed(2)}
+                                {formatPrice(influencer.variant.price)}
                               </span>
                               {influencer.variant.mrp > influencer.variant.price && (
                                 <span className="text-gray-400 text-sm line-through">
-                                  KWD {influencer.variant.mrp.toFixed(2)}
+                                  {formatPrice(influencer.variant.mrp)}
                                 </span>
                               )}
                             </div>
@@ -541,12 +620,12 @@ export default function InfluencersReelsSection() {
                               
                               <div className="flex items-center gap-2 mt-2">
                                 <span className="text-lg font-bold text-gray-900">
-                                  KWD {currentInfluencer.variant.price.toFixed(2)}
+                                  {formatPrice(currentInfluencer.variant.price)}
                                 </span>
                                 {currentInfluencer.variant.mrp > currentInfluencer.variant.price && (
                                   <>
                                     <span className="text-sm text-gray-500 line-through">
-                                      KWD {currentInfluencer.variant.mrp.toFixed(2)}
+                                      {formatPrice(currentInfluencer.variant.mrp)}
                                     </span>
                                     <span className="text-xs font-semibold text-green-600">
                                       {Math.round(
