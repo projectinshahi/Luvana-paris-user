@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/lib/useLanguage";
 import { useEffect, useState } from "react";
 import api from "@/lib/axios";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 interface WishlistItem {
   _id: string;
@@ -39,6 +40,7 @@ export default function WishlistSidebar({
 }: WishlistSidebarProps) {
   const { t } = useTranslation("common");
   const { isRTL } = useLanguage();
+  const { formatPrice } = useCurrency();
 
   const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -197,12 +199,12 @@ export default function WishlistSidebar({
                     {item.variant && (
                       <div className="flex items-center gap-2 mb-2">
                         <span className="font-bold text-white">
-                          KWD {price.toFixed(2)}
+                          {formatPrice(price)}
                         </span>
                         {mrp > price && (
                           <>
                             <span className="text-xs line-through text-gray-500">
-                              {mrp.toFixed(2)}
+                              {formatPrice(mrp)}
                             </span>
                             <span className="text-xs text-green-500 font-semibold">
                               {discount}% {t("cart.off")}
@@ -253,7 +255,7 @@ export default function WishlistSidebar({
               <div className="flex justify-between text-sm">
                 <span className="text-gray-400">{t("Total Savings")}</span>
                 <span className="text-green-500 font-medium">
-                  KWD {totalSavings.toFixed(2)}
+                  {formatPrice(totalSavings)}
                 </span>
               </div>
             )}

@@ -786,6 +786,7 @@ type CountryFromBackend = {
   nameArabic: string;
   flagUrl: string;
   currencyValue: string;
+  abbreviation: string;
 };
 
 export default function Navbar() {
@@ -794,8 +795,7 @@ export default function Navbar() {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const { t, ready } = useTranslation("common");
   const { isRTL, languages, changeLanguage, currentLang } = useLanguage();
-  const { selectedCountry, setSelectedCountry } = useCurrency();
-const [countries, setCountries] = useState<any[]>([]);
+  const { selectedCountry, setSelectedCountry, countries } = useCurrency();
   const [mounted, setMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -846,39 +846,71 @@ const [countries, setCountries] = useState<any[]>([]);
 
     fetchPromotions();
   }, [isRTL]);
-useEffect(() => {
-  const fetchCountries = async () => {
-    try {
-      const API_URL =
-        process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
-      const res = await fetch(`${API_URL}/user/country`, {
-        cache: "no-store",
-      });
+// useEffect(() => {
+//   const fetchCountries = async () => {
+//     try {
+//       const API_URL =
+//         process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
-      const data = await res.json();
+//       const res = await fetch(`${API_URL}/user/country`, {
+//         cache: "no-store",
+//       });
 
-      if (data?.countries) {
-        const formattedCountries = data.countries.map(
-          (country: CountryFromBackend) => ({
-            code: country._id,
-            name: isRTL ? country.nameArabic : country.nameEnglish,
-            flag: country.flagUrl,
-            currency: "SAR",
-            currencySymbol: "﷼",
-            currencyValue: country.currencyValue,
-          })
-        );
+//       const data = await res.json();
 
-        setCountries(formattedCountries);
-      }
-    } catch (error) {
-      console.error("Country fetch error:", error);
-    }
-  };
+//       if (data?.countries) {
+//         const formattedCountries = data.countries.map(
+//           (country: CountryFromBackend) => ({
+//             code: country._id,
+//             name: isRTL ? country.nameArabic : country.nameEnglish,
+//             flag: country.flagUrl,
+//             currency: country.abbreviation,
+//             currencySymbol: country.abbreviation,
+//             currencyValue: country.currencyValue,
+//           })
+//         );
 
-  fetchCountries();
-}, [isRTL]);
+//         setCountries(formattedCountries);
+        
+
+//         // ✅ Default Kuwait
+//         // const kuwait = formattedCountries.find(
+//         //   (country) => country.name === "Kuwait"
+//         // );
+
+//         // if (kuwait) {
+//         //   setSelectedCountry(kuwait);
+//         //   localStorage.setItem("selectedCountry", JSON.stringify(kuwait));
+//         // }
+//         // check if already saved
+// const saved = localStorage.getItem("selectedCountry");
+
+// if (saved) {
+//   const parsed = JSON.parse(saved);
+//   setSelectedCountry(parsed);
+// } else {
+//   // const kuwait = formattedCountries.find(
+//   //   (country) => country.name === "Kuwait"
+//   // );
+//   const kuwait = formattedCountries.find(
+//   (country:any) => country.currency === "KWD"
+// );
+
+//   if (kuwait) {
+//     setSelectedCountry(kuwait);
+//     localStorage.setItem("selectedCountry", JSON.stringify(kuwait));
+//   }
+// }
+//       }
+//     } catch (error) {
+//       console.error("Country fetch error:", error);
+//     }
+//   };
+
+//   fetchCountries();
+// }, [isRTL]);
+// Removed redundant country fetching, now handled by CurrencyContext
   // ✅ AUTO ROTATION
   useEffect(() => {
     if (!offers.length) return;
@@ -1019,38 +1051,48 @@ useEffect(() => {
               <div className="relative" ref={countryDropdownRef}>
                 <button
                   onClick={() => setShowCountryDropdown(!showCountryDropdown)}
-                  className="flex items-center justify-center p-1.5 hover:bg-gray-700 rounded-lg transition-colors"
-                  title={selectedCountry.name}
+                  className="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-700 rounded-lg transition-colors"
+                  title={isRTL ? selectedCountry?.nameArabic : selectedCountry?.nameEnglish}
                 >
-                  <img
-                    src={selectedCountry.flag}
-                    alt={selectedCountry.name}
-                    className="w-5 h-5 rounded-full object-cover"
-                  />
+                  {selectedCountry?.flagUrl && (
+                    <img
+                      src={selectedCountry.flagUrl}
+                      alt={selectedCountry.nameEnglish}
+                      className="w-5 h-5 rounded-full object-cover border border-gray-600"
+                    />
+                  )}
+                  <div className="hidden sm:flex flex-col items-start leading-none gap-0.5">
+                    <span className="text-[10px] text-gray-400 font-semibold tracking-wider">
+                      {selectedCountry?.abbreviation}
+                    </span>
+                  </div>
                 </button>
 
                 {showCountryDropdown && (
-                  <div className="absolute right-0 mt-2 bg-[#1a1a1a] rounded-lg shadow-lg z-50 min-w-max border border-gray-700 max-h-64 overflow-y-auto">
-                    {countries.map((country) => (
+                  <div className="absolute right-0 mt-2 bg-[#1a1a1a] rounded-lg shadow-lg z-50 min-w-50 border border-gray-700 max-h-64 overflow-y-auto">
+                    {countries.map((country: any) => (
                       <button
-                        key={country.code}
-                      onClick={() => {
-  setSelectedCountry(country);
-  localStorage.setItem("selectedCountry", JSON.stringify(country));
-  setShowCountryDropdown(false);
-}}
+                        key={country._id}
+                        onClick={() => {
+                          setSelectedCountry(country);
+                          setShowCountryDropdown(false);
+                        }}
                         className={`w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-gray-700 first:rounded-t-lg last:rounded-b-lg transition-colors ${
-                          selectedCountry.code === country.code ? 'bg-gray-700 text-yellow-400' : 'text-gray-200'
+                          selectedCountry?._id === country._id ? 'bg-gray-700 text-yellow-400' : 'text-gray-200'
                         }`}
                       >
                         <img
-                          src={country.flag}
-                          alt={country.name}
-                          className="w-5 h-5 rounded-full object-cover"
+                          src={country.flagUrl}
+                          alt={country.nameEnglish}
+                          className="w-5 h-5 rounded-full object-cover border border-gray-600"
                         />
                         <div className="flex flex-col">
-                          <span className="text-sm font-medium">{country.name}</span>
-                          <span className="text-xs text-gray-400">{country.currency} ({country.currencySymbol})</span>
+                          <span className="text-sm font-medium">
+                            {isRTL ? country.nameArabic : country.nameEnglish}
+                          </span>
+                          <span className="text-xs text-gray-400">
+                            {country.abbreviation}
+                          </span>
                         </div>
                       </button>
                     ))}

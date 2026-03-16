@@ -1,887 +1,4 @@
-// "use client";
 
-// import Image from "next/image";
-// import { Heart } from "lucide-react";
-// import { useTranslation } from "react-i18next";
-
-
-// type Product = {
-//   id: number;
-//   nameKey: string;
-//   image: string;
-//   price: string;
-// };
-
-// export default function BestSellers() {
-//   const { t, i18n } = useTranslation('common');
-//   const isRTL = i18n.language === 'ar';
-
-//   const products: Product[] = [
-//     {
-//       id: 1,
-//       nameKey: "products.niacinamideSerum",
-//       image: "/images/1.jpg",
-//       price: "KWD 4.92  €13.79",
-//     },
-//     {
-//       id: 2,
-//       nameKey: "products.wildCherry",
-//       image: "/images/2.jpg",
-//       price: "KWD 3.66  €9.97",
-//     },
-//     {
-//       id: 3,
-//       nameKey: "products.cherryBomb",
-//       image: "/images/3.jpg",
-//       price: "KWD 5.26  €14.54",
-//     },
-//     {
-//       id: 4,
-//       nameKey: "products.confidence",
-//       image: "/images/4.jpg",
-//       price: "KWD 4.92  €13.79",
-//     },
-//   ];
-
-//   return (
-//     <section className="w-full bg-black text-white py-8 sm:py-12 lg:py-16">
-//       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-//         {/* HEADER */}
-//         <div className={`flex items-center justify-center gap-4 sm:gap-6 mb-8 sm:mb-12 ${isRTL ? 'flex-row-reverse' : ''}`}>
-//           <div className="flex-1 h-px bg-white/30" />
-
-//           <div className="px-4">
-//             <h2 className={`text-[#C5A059] text-[20px] sm:text-[24px] lg:text-[28px] leading-none text-center whitespace-nowrap ${isRTL ? 'font-arabic' : ''}`}>
-//               {t('bestSellers')}
-//             </h2>
-//           </div>
-
-//           <div className="flex-1 h-px bg-white/30" />
-//         </div>
-
-//         {/* PRODUCTS - Responsive grid */}
-//         <div className="w-full grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
-//           {products.map((product) => (
-//             <div
-//               key={product.id}
-//               className="w-full bg-[#111] rounded-lg overflow-hidden hover:scale-[1.02] transition-transform duration-300"
-//             >
-       
-//               <div className="group relative w-full aspect-3/4 bg-linear-to-b from-[#E3C6A8] to-[#5F4D2B] p-0.5 sm:p-1">
-
-//                 <div className="relative w-full h-full bg-[#D9D9D9] overflow-hidden rounded-sm">
-//                   <button className={`absolute top-2 sm:top-3 ${isRTL ? 'left-2 sm:left-3' : 'right-2 sm:right-3'} z-10 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-linear-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] border border-[#8C6B1F] flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-all duration-300 ease-out scale-90 group-hover:scale-100`}>
-//                     <Heart className="w-3 h-3 sm:w-4 sm:h-4 text-black" />
-//                   </button>
-
-//                   <Image
-//                     src={product.image}
-//                     alt={t(product.nameKey)}
-//                     fill
-//                     className="object-cover"
-//                     sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
-//                   />
-
-//                   {/* Add to cart button - Mobile optimized */}
-//                   <button className={`absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 w-[90%] sm:w-full max-w-60 h-8 sm:h-10 md:h-12 rounded-lg sm:rounded-xl bg-linear-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] text-black text-[10px] sm:text-xs md:text-sm font-medium border border-[#8C6B1F] opacity-0 group-hover:opacity-100 transition-all duration-300 ease-out translate-y-2 group-hover:translate-y-0 shadow-[inset_0_1px_0_#ffffff80] ${isRTL ? 'font-arabic' : ''}`}>
-//                     {t('products.addToCart')}
-//                   </button>
-
-//                 </div>
-//               </div>
-
-//               {/* TEXT - Mobile optimized */}
-//               <div className="p-2 sm:p-3 md:p-4">
-//                 <h3 className={`text-[10px] sm:text-xs md:text-sm line-clamp-2 mb-1 sm:mb-2 leading-tight ${isRTL ? 'text-right font-arabic' : 'text-left'}`}>
-//                   {t(product.nameKey)}
-//                 </h3>
-//                 <p className={`text-[#C9A24D] text-[10px] sm:text-xs md:text-sm ${isRTL ? 'text-right' : 'text-left'}`}>
-//                   {product.price}
-//                 </p>
-//               </div>
-//             </div>
-//           ))}
-//         </div>
-//       </div>
-//     </section>
-//   );
-// }
-
-// "use client";
-
-// import Image from "next/image";
-// import { Heart } from "lucide-react";
-// import { useTranslation } from "react-i18next";
-
-// type Product = {
-//   id: number;
-//   nameKey: string;
-//   image: string;
-//   price: string;
-// };
-
-// export default function BestSellers() {
-//   const { t, i18n } = useTranslation("common");
-//   const isRTL = i18n.language === "ar";
-
-//   const products: Product[] = [
-//     {
-//       id: 1,
-//       nameKey: "products.niacinamideSerum",
-//       image: "/images/1.jpg",
-//       price: "KWD 4.92  €13.79",
-//     },
-//     {
-//       id: 2,
-//       nameKey: "products.wildCherry",
-//       image: "/images/2.jpg",
-//       price: "KWD 3.66  €9.97",
-//     },
-//     {
-//       id: 3,
-//       nameKey: "products.cherryBomb",
-//       image: "/images/3.jpg",
-//       price: "KWD 5.26  €14.54",
-//     },
-//     {
-//       id: 4,
-//       nameKey: "products.confidence",
-//       image: "/images/4.jpg",
-//       price: "KWD 4.92  €13.79",
-//     },
-//   ];
-
-//   return (
-//     <section className="w-full bg-black text-white py-8 sm:py-12 lg:py-16">
-//       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-//         {/* HEADER */}
-//         <div
-//           className={`flex items-center justify-center gap-4 sm:gap-6 mb-8 sm:mb-12 ${
-//             isRTL ? "flex-row-reverse" : ""
-//           }`}
-//         >
-//           <div className="flex-1 h-px bg-white/30" />
-
-//           <div className="px-4">
-//             <h2
-//               className={`text-[#C5A059] text-[20px] sm:text-[24px] lg:text-[28px] leading-none text-center whitespace-nowrap ${
-//                 isRTL ? "font-arabic" : ""
-//               }`}
-//             >
-//               {t("bestSellers")}
-//             </h2>
-//           </div>
-
-//           <div className="flex-1 h-px bg-white/30" />
-//         </div>
-
-//         {/* AUTO MOVING CAROUSEL */}
-//         <div className="relative w-full overflow-hidden pause-on-hover">
-//           <div
-//             className={`flex w-max gap-3 sm:gap-4 md:gap-6 lg:gap-8 ${
-//               isRTL ? "animate-scroll-reverse" : "animate-scroll"
-//             }`}
-//           >
-//             {[...products, ...products].map((product, index) => (
-//               <div
-//                 key={`${product.id}-${index}`}
-//                 className="w-40 sm:w-50 md:w-55 lg:w-65 bg-[#111] rounded-lg overflow-hidden hover:scale-[1.02] transition-transform duration-300"
-//               >
-//                 {/* IMAGE */}
-//                 <div className="group relative w-full aspect-3/4 bg-linear-to-b from-[#E3C6A8] to-[#5F4D2B] p-0.5 sm:p-1">
-//                   <div className="relative w-full h-full bg-[#D9D9D9] overflow-hidden rounded-sm">
-
-//                     {/* WISHLIST */}
-//                     <button
-//                       className={`absolute top-2 sm:top-3 ${
-//                         isRTL ? "left-2 sm:left-3" : "right-2 sm:right-3"
-//                       } z-10 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-linear-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] border border-[#8C6B1F] flex items-center justify-center shadow-md opacity-0 group-hover:opacity-100 transition-all duration-300 ease-out scale-90 group-hover:scale-100`}
-//                     >
-//                       <Heart className="w-3 h-3 sm:w-4 sm:h-4 text-black" />
-//                     </button>
-
-//                     <Image
-//                       src={product.image}
-//                       alt={t(product.nameKey)}
-//                       fill
-//                       className="object-cover"
-//                       sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
-//                     />
-
-//                     {/* ADD TO CART */}
-//                     <button
-//                       className={`absolute bottom-2 sm:bottom-4 left-1/2 -translate-x-1/2 w-[90%] sm:w-full max-w-60 h-8 sm:h-10 md:h-12 rounded-lg sm:rounded-xl bg-linear-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] text-black text-[10px] sm:text-xs md:text-sm font-medium border border-[#8C6B1F] opacity-0 group-hover:opacity-100 transition-all duration-300 ease-out translate-y-2 group-hover:translate-y-0 shadow-[inset_0_1px_0_#ffffff80] ${
-//                         isRTL ? "font-arabic" : ""
-//                       }`}
-//                     >
-//                       {t("products.addToCart")}
-//                     </button>
-//                   </div>
-//                 </div>
-
-//                 {/* TEXT */}
-//                 <div className="p-2 sm:p-3 md:p-4">
-//                   <h3
-//                     className={`text-[10px] sm:text-xs md:text-sm line-clamp-2 mb-1 sm:mb-2 leading-tight ${
-//                       isRTL ? "text-right font-arabic" : "text-left"
-//                     }`}
-//                   >
-//                     {t(product.nameKey)}
-//                   </h3>
-//                   <p
-//                     className={`text-[#C9A24D] text-[10px] sm:text-xs md:text-sm ${
-//                       isRTL ? "text-right" : "text-left"
-//                     }`}
-//                   >
-//                     {product.price}
-//                   </p>
-//                 </div>
-//               </div>
-//             ))}
-//           </div>
-//         </div>
-
-//       </div>
-//     </section>
-//   );
-// }
-
-// "use client";
-
-// import Image from "next/image";
-// import { Heart } from "lucide-react";
-// import { useTranslation } from "react-i18next";
-
-// type Product = {
-//   id: number;
-//   nameKey: string;
-//   image: string;
-//   price: string;
-// };
-
-// export default function BestSellers() {
-//   const { t, i18n } = useTranslation("common");
-//   const isRTL = i18n.language === "ar";
-
-//   const products: Product[] = [
-//     { id: 1, nameKey: "products.niacinamideSerum", image: "/images/1.jpg", price: "KWD 4.92  €13.79" },
-//     { id: 2, nameKey: "products.wildCherry", image: "/images/2.jpg", price: "KWD 3.66  €9.97" },
-//     { id: 3, nameKey: "products.cherryBomb", image: "/images/3.jpg", price: "KWD 5.26  €14.54" },
-//     { id: 4, nameKey: "products.confidence", image: "/images/4.jpg", price: "KWD 4.92  €13.79" },
-//   ];
-
-//   return (
-//     <>
-//       {/* ✅ INLINE CSS — GUARANTEED ANIMATION */}
-//       {/* <style>{`
-//         @keyframes bestseller-scroll {
-//           0% { transform: translateX(0); }
-//           100% { transform: translateX(-50%); }
-//         }
-
-//         @keyframes bestseller-scroll-reverse {
-//           0% { transform: translateX(-50%); }
-//           100% { transform: translateX(0); }
-//         }
-
-//         .bestseller-scroll {
-//           animation: bestseller-scroll 30s linear infinite;
-//         }
-
-//         .bestseller-scroll-reverse {
-//           animation: bestseller-scroll-reverse 30s linear infinite;
-//         }
-
-//         .pause-on-hover:hover .bestseller-scroll,
-//         .pause-on-hover:hover .bestseller-scroll-reverse {
-//           animation-play-state: paused;
-//         }
-//       `}</style> */}
-//       {/* <style>{`
-//   @keyframes infiniteScroll {
-//     from {
-//       transform: translateX(0);
-//     }
-//     to {
-//       transform: translateX(-50%);
-//     }
-//   }
-
-//   .scroll-track {
-//     animation: infiniteScroll 25s linear infinite;
-//     will-change: transform;
-//   }
-
-//   .pause-on-hover:hover .scroll-track {
-//     animation-play-state: paused;
-//   }
-
-//   .rtl-slider {
-//     direction: ltr;
-//     text-align: left;
-//   }
-// `}</style> */}
-// <style>{`
-//   @keyframes infiniteScroll {
-//     from {
-//       transform: translateX(0);
-//     }
-//     to {
-//       transform: translateX(-50%);
-//     }
-//   }
-
-//   .scroll-track {
-//     display: inline-flex;
-//     animation: infiniteScroll 25s linear infinite;
-//     will-change: transform;
-//   }
-
-//   .pause-on-hover:hover .scroll-track {
-//     animation-play-state: paused;
-//   }
-
-//   .slider-wrapper {
-//     direction: ltr;
-//     overflow: hidden;
-//     width: 100%;
-//   }
-// `}</style>
-
-//       <section className="w-full bg-black text-white py-8 sm:py-12 lg:py-16 overflow-hidden">
-//         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-//           {/* HEADER */}
-//           <div className={`flex items-center justify-center gap-4 sm:gap-6 mb-8 sm:mb-12 ${isRTL ? "flex-row-reverse" : ""}`}>
-//             <div className="flex-1 h-px bg-white/30" />
-//             <h2 className={`text-[#C5A059] text-[20px] sm:text-[24px] lg:text-[28px] whitespace-nowrap ${isRTL ? "font-arabic" : ""}`}>
-//               {t("bestSellers")}
-//             </h2>
-//             <div className="flex-1 h-px bg-white/30" />
-//           </div>
-
-//           {/* ✅ AUTO MOVING CAROUSEL */}
-//          {/* CAROUSEL */}
-// <div className="slider-wrapper pause-on-hover">
-//   <div className="scroll-track gap-6">
-
-//     {[...products, ...products].map((product, index) => (
-//       <div
-//         key={`${product.id}-${index}`}
-//         className="shrink-0 w-[260px]"
-//       >
-//         <div className="bg-[#111] rounded-lg overflow-hidden hover:scale-[1.02] transition-transform duration-300">
-
-//           {/* IMAGE */}
-//           <div className="group relative w-full aspect-[3/4] bg-gradient-to-b from-[#E3C6A8] to-[#5F4D2B] p-1">
-//             <div className="relative w-full h-full bg-[#D9D9D9] rounded-sm overflow-hidden">
-
-//               <button
-//                 className={`absolute top-3 ${
-//                   isRTL ? "left-3" : "right-3"
-//                 } z-10 w-8 h-8 rounded-full bg-gradient-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] flex items-center justify-center opacity-0 group-hover:opacity-100 transition`}
-//               >
-//                 <Heart className="w-4 h-4 text-black" />
-//               </button>
-
-//               <Image
-//                 src={product.image}
-//                 alt={t(product.nameKey)}
-//                 fill
-//                 className="object-cover"
-//               />
-
-//               <button
-//                 className={`absolute bottom-3 left-1/2 -translate-x-1/2 w-[85%] h-9 rounded-lg bg-gradient-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] text-black text-xs opacity-0 group-hover:opacity-100 transition ${
-//                   isRTL ? "font-arabic" : ""
-//                 }`}
-//               >
-//                 {t("products.addToCart")}
-//               </button>
-
-//             </div>
-//           </div>
-
-//           {/* TEXT */}
-//           <div className="p-3">
-//             <h3
-//               className={`text-sm mb-1 ${
-//                 isRTL ? "text-right font-arabic" : "text-left"
-//               }`}
-//             >
-//               {t(product.nameKey)}
-//             </h3>
-//             <p
-//               className={`text-[#C9A24D] text-sm ${
-//                 isRTL ? "text-right" : "text-left"
-//               }`}
-//             >
-//               {product.price}
-//             </p>
-//           </div>
-
-//         </div>
-//       </div>
-//     ))}
-
-//   </div>
-// </div>
-//         </div>
-//       </section>
-//     </>
-//   );
-// }
-
-// "use client";
-
-// import Image from "next/image";
-// import { Heart } from "lucide-react";
-// import { useTranslation } from "react-i18next";
-// import { useCurrency } from "@/contexts/CurrencyContext";
-
-// type Product = {
-//   id: number;
-//   nameKey: string;
-//   image: string;
-//   price: number;
-// };
-
-// export default function BestSellers() {
-//   const { t, i18n } = useTranslation("common");
-//   const isRTL = i18n.language === "ar";
-//   const { formatPrice } = useCurrency();
-
-//   const products: Product[] = [
-//     { id: 1, nameKey: "products.niacinamideSerum", image: "/images/1.jpg", price: 13.79 },
-//     { id: 2, nameKey: "products.wildCherry", image: "/images/2.jpg", price: 9.97 },
-//     { id: 3, nameKey: "products.cherryBomb", image: "/images/3.jpg", price: 14.54 },
-//     { id: 4, nameKey: "products.confidence", image: "/images/4.jpg", price: 13.79 },
-//   ];
-
-//   return (
-//     <>
-//       {/* 🔥 Animation + RTL Safe Styling */}
-//       <style>{`
-//         @keyframes infiniteScroll {
-//           from { transform: translateX(0); }
-//           to { transform: translateX(-50%); }
-//         }
-
-//         .scroll-track {
-//           display: inline-flex;
-//           animation: infiniteScroll 25s linear infinite;
-//           will-change: transform;
-//         }
-
-//         .pause-on-hover:hover .scroll-track {
-//           animation-play-state: paused;
-//         }
-
-//         .slider-wrapper {
-//           direction: ltr;
-//           overflow: hidden;
-//           width: 100%;
-//         }
-//       `}</style>
-
-//       <section
-//         key={i18n.language}
-//         className="w-full bg-black text-white py-12 overflow-hidden"
-//       >
-//         <div className="max-w-7xl mx-auto px-6">
-
-//           {/* HEADER */}
-//           <div
-//             className={`flex items-center justify-center gap-6 mb-12 ${
-//               isRTL ? "flex-row-reverse" : ""
-//             }`}
-//           >
-//             <div className="flex-1 h-px bg-white/30" />
-//             <h2
-//               className={`text-[#C5A059] text-2xl lg:text-3xl whitespace-nowrap ${
-//                 isRTL ? "font-arabic" : ""
-//               }`}
-//             >
-//               {t("bestSellers")}
-//             </h2>
-//             <div className="flex-1 h-px bg-white/30" />
-//           </div>
-
-//           {/* CAROUSEL */}
-//           <div className="slider-wrapper pause-on-hover">
-//             <div className="scroll-track gap-6">
-
-//               {[...products, ...products].map((product, index) => (
-//                 <div
-//                   key={`${product.id}-${index}`}
-//                   className="shrink-0 w-65 flex"
-//                 >
-//                   <div className="bg-[#111] rounded-lg overflow-hidden hover:scale-[1.02] transition-transform duration-300 flex flex-col w-full">
-
-//                     {/* IMAGE */}
-//                     <div className="group relative w-full aspect-3/4 bg-linear-to-b from-[#E3C6A8] to-[#5F4D2B] p-1">
-//                       <div className="relative w-full h-full bg-[#D9D9D9] rounded-sm overflow-hidden">
-
-//                         {/* Wishlist */}
-//                         <button
-//                           className={`absolute top-3 ${
-//                             isRTL ? "left-3" : "right-3"
-//                           } z-10 w-8 h-8 rounded-full bg-linear-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] flex items-center justify-center opacity-0 group-hover:opacity-100 transition`}
-//                         >
-//                           <Heart className="w-4 h-4 text-black" />
-//                         </button>
-
-//                         <Image
-//                           src={product.image}
-//                           alt={t(product.nameKey)}
-//                           fill
-//                           className="object-cover"
-//                         />
-
-//                         {/* Add to Cart */}
-//                         <button
-//                           className={`absolute bottom-3 left-1/2 -translate-x-1/2 w-[85%] h-9 rounded-lg bg-linear-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] text-black text-xs opacity-0 group-hover:opacity-100 transition ${
-//                             isRTL ? "font-arabic" : ""
-//                           }`}
-//                         >
-//                           {t("products.addToCart")}
-//                         </button>
-
-//                       </div>
-//                     </div>
-
-//                     {/* TEXT */}
-//                     <div className="p-3 flex flex-col justify-between grow">
-//                       <h3
-//                         className={`text-sm mb-2 ${
-//                           isRTL ? "text-right font-arabic" : "text-left"
-//                         }`}
-//                       >
-//                         {t(product.nameKey)}
-//                       </h3>
-
-//                       <p
-//                         className={`text-[#C9A24D] text-sm ${
-//                           isRTL ? "text-right" : "text-left"
-//                         }`}
-//                       >
-//                         {formatPrice(product.price)}
-//                       </p>
-//                     </div>
-
-//                   </div>
-//                 </div>
-//               ))}
-
-//             </div>
-//           </div>
-
-//         </div>
-//       </section>
-//     </>
-//   );
-// }
-// "use client";
-
-// import Image from "next/image";
-// import { Heart } from "lucide-react";
-// import { useTranslation } from "react-i18next";
-// import { useCurrency } from "@/contexts/CurrencyContext";
-// import { useEffect, useState } from "react";
-// import { toast } from "react-toastify";
-// import api from "@/lib/axios";
-// import { useRouter } from "next/navigation";
-// import { useRef } from "react";
-
-// interface Product {
-//   _id: string;
-//   nameEnglish: string;
-//   nameArabic: string;
-//   imageUrlEnglish: { imageUrl: string }[];
-//   imageUrlArabic: { imageUrl: string }[];
-//   minPrice: number | null;
-//   variants?: { _id: string }[];
-// }
-
-// export default function BestSellers() {
-//   const { i18n } = useTranslation("common");
-//   const isRTL = i18n.language === "ar";
-//   const { formatPrice } = useCurrency();
-
-// const [scrollWidth, setScrollWidth] = useState(0);
-//   const [products, setProducts] = useState<Product[]>([]);
-//   const trackRef = useRef<HTMLDivElement>(null);
-// const animationRef = useRef<number | null>(null);
-//   const router = useRouter();
-  
-
-//   // ✅ Fetch featuredProducts from home API
-//   useEffect(() => {
-//     const fetchHome = async () => {
-//       try {
-//         const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-//         const res = await fetch(`${API_URL}/user/home`);
-//         const data = await res.json();
-
-//         if (res.ok) {
-//           setProducts(data.featuredProducts || []);
-//         }
-//       } catch (error) {
-//         console.error("Failed to fetch featured products:", error);
-//       }
-//     };
-
-//     fetchHome();
-//   }, []);
-// useEffect(() => {
-//   const track = trackRef.current;
-//   if (!track) return;
-
-//   let position = 0;
-//   const speed = 0.5; // adjust speed
-
-//   const scroll = () => {
-//     position += speed;
-
-//     if (position >= track.scrollWidth / 2) {
-//       position = 0;
-//     }
-
-//     track.style.transform = `translateX(-${position}px)`;
-
-//     animationRef.current = requestAnimationFrame(scroll);
-//   };
-
-//   animationRef.current = requestAnimationFrame(scroll);
-
-//   return () => {
-//     if (animationRef.current) {
-//       cancelAnimationFrame(animationRef.current);
-//     }
-//   };
-// }, [products]);
-//   /* ================= ADD TO CART ================= */
-//   const handleAddToCart = async (product: Product, e: React.MouseEvent) => {
-//     e.stopPropagation();
-//     try {
-//       const token = localStorage.getItem("token");
-//       if (!token) {
-//         toast.error("Please login first");
-//         return;
-//       }
-
-//       const variantId = product.variants?.[0]?._id;
-//       if (!variantId) {
-//         toast.error("No variant available");
-//         return;
-//       }
-
-//       const response = await api.post("/user/cart", {
-//         variant: variantId,
-//         quantity: 1,
-//       });
-
-//       console.log("✅ Cart Response:", response.data);
-//       toast.success("✅ Added to cart!");
-//     } catch (error: any) {
-//       console.error("❌ Cart error:", error?.response?.data || error.message);
-//       toast.error(error?.response?.data?.message || "Failed to add to cart");
-//     }
-//   };
-
-//   /* ================= ADD TO WISHLIST ================= */
-//   const handleAddToWishlist = async (product: Product, e: React.MouseEvent) => {
-//     e.stopPropagation();
-//     try {
-//       const token = localStorage.getItem("token");
-//       if (!token) {
-//         toast.error("Please login first");
-//         return;
-//       }
-
-//       const variantId = product.variants?.[0]?._id;
-//       if (!variantId) {
-//         toast.error("No variant available");
-//         return;
-//       }
-
-//       const response = await api.post("/user/wishlist", {
-//         variant: variantId,
-//       });
-
-//       console.log("✅ Wishlist Response:", response.data);
-//       toast.success("❤️ Added to wishlist!");
-//     } catch (error: any) {
-//       console.error("❌ Wishlist error:", error?.response?.data || error.message);
-//       toast.error(error?.response?.data?.message || "Failed to add to wishlist");
-//     }
-//   };
-//   useEffect(() => {
-//     const fetchHome = async () => {
-//       try {
-//         const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-//         const res = await fetch(`${API_URL}/user/home`);
-//         const data = await res.json();
-
-//         if (res.ok) {
-//           setProducts(data.featuredProducts || []);
-//         }
-//       } catch (error) {
-//         console.error("Failed to fetch featured products:", error);
-//       }
-//     };
-
-//     fetchHome();
-//   }, []);
-
-//   if (!products.length) return null;
-
-//   return (
-//     <>
-//       <style>{`
-//         @keyframes infiniteScroll {
-//           from {
-//             transform: translateX(0);
-//           }
-//           to {
-//             transform: translateX(-50%);
-//           }
-//         }
-
-//         .scroll-track {
-//           display: flex;
-//           width: max-content;
-//           animation: infiniteScroll 4s linear infinite;
-//           will-change: transform;
-//         }
-
-        // .pause-on-hover:hover .scroll-track {
-        //   animation-play-state: paused;
-        // }
-
-//         .slider-wrapper {
-//           direction: ltr;
-//           overflow: hidden;
-//           width: 100%;
-//         }
-//       `}</style>
-
-//       <section
-//         key={i18n.language}
-//         className="w-full bg-black text-white py-12 overflow-hidden"
-//       >
-//         <div className="max-w-7xl mx-auto px-6">
-
-//           {/* HEADER */}
-//           <div
-//             className={`flex items-center justify-center gap-6 mb-12 ${
-//               isRTL ? "flex-row-reverse" : ""
-//             }`}
-//           >
-//             <div className="flex-1 h-px bg-white/30" />
-//             <h2
-//               className={`text-[#C5A059] text-2xl lg:text-3xl whitespace-nowrap ${
-//                 isRTL ? "font-arabic" : ""
-//               }`}
-//             >
-//               Best Sellers
-//             </h2>
-//             <div className="flex-1 h-px bg-white/30" />
-//           </div>
-
-//           {/* CAROUSEL */}
-//           <div className="slider-wrapper pause-on-hover">
-//             <div className="scroll-track" ref={trackRef}>
-
-//               {[...products, ...products].map((product, index) => {
-//                 const image =
-//                   isRTL
-//                     ? product.imageUrlArabic?.[0]?.imageUrl
-//                     : product.imageUrlEnglish?.[0]?.imageUrl;
-
-//                 const name =
-//                   isRTL ? product.nameArabic : product.nameEnglish;
-
-//                 return (
-//                   <div
-//                     key={`${product._id}-${index}`}
-//                     className="flex-shrink-0 w-[260px] mr-6 flex cursor-pointer"
-//                     onClick={() => router.push(`/brands/${product._id}`)}
-//                   >
-//                     <div className="bg-[#111] rounded-lg overflow-hidden hover:scale-[1.02] transition-transform duration-300 flex flex-col w-full">
-
-//                       {/* IMAGE */}
-//                       <div className="group relative w-full aspect-[3/4] bg-gradient-to-b from-[#E3C6A8] to-[#5F4D2B] p-1">
-//                         <div className="relative w-full h-full bg-[#D9D9D9] rounded-sm overflow-hidden">
-
-//                           {/* Wishlist */}
-//                           <button
-//                             onClick={(e) => handleAddToWishlist(product, e)}
-//                             className={`absolute top-3 ${
-//                               isRTL ? "left-3" : "right-3"
-//                             } z-10 w-8 h-8 rounded-full bg-gradient-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] flex items-center justify-center opacity-0 group-hover:opacity-100 transition`}
-//                           >
-//                             <Heart className="w-4 h-4 text-black" />
-//                           </button>
-
-//                           {image && (
-//                             <Image
-//                               src={image}
-//                               alt={name}
-//                               fill
-//                               className="object-cover"
-//                             />
-//                           )}
-
-//                           {/* Add to Cart */}
-//                           <button
-//                             onClick={(e) => handleAddToCart(product, e)}
-//                             className={`absolute bottom-3 left-1/2 -translate-x-1/2 w-[85%] h-9 rounded-lg bg-gradient-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] text-black text-xs opacity-0 group-hover:opacity-100 transition ${
-//                               isRTL ? "font-arabic" : ""
-//                             }`}
-//                           >
-//                             Add to Cart
-//                           </button>
-
-//                         </div>
-//                       </div>
-
-//                       {/* TEXT */}
-//                       <div className="p-3 flex flex-col justify-between grow">
-//                         <h3
-//                           className={`text-sm mb-2 ${
-//                             isRTL ? "text-right font-arabic" : "text-left"
-//                           }`}
-//                         >
-//                           {name}
-//                         </h3>
-
-//                         <p
-//                           className={`text-[#C9A24D] text-sm ${
-//                             isRTL ? "text-right" : "text-left"
-//                           }`}
-//                         >
-//                           {product.minPrice
-//                             ? formatPrice(product.minPrice)
-//                             : "—"}
-//                         </p>
-//                       </div>
-
-//                     </div>
-//                   </div>
-//                 );
-//               })}
-
-//             </div>
-//           </div>
-
-//         </div>
-//       </section>
-//     </>
-//   );
-// }
 "use client";
 
 import Image from "next/image";
@@ -894,6 +11,27 @@ import api from "@/lib/axios";
 import { useRouter } from "next/navigation";
 import { useRef } from "react";
 
+// interface Product {
+//   _id: string;
+//   nameEnglish: string;
+//   nameArabic: string;
+//   imageUrlEnglish: { imageUrl: string }[];
+//   imageUrlArabic: { imageUrl: string }[];
+//   minPrice: number | null;
+//   variants?: { _id: string }[];
+// }
+interface Variant {
+  _id: string;
+  price?: number;
+  mrp?: number;
+  imageUrlEnglish?: { imageUrl: string }[];
+  currency?: {
+    country: string;
+    price: number;
+    mrp: number;
+  }[];
+}
+
 interface Product {
   _id: string;
   nameEnglish: string;
@@ -901,71 +39,90 @@ interface Product {
   imageUrlEnglish: { imageUrl: string }[];
   imageUrlArabic: { imageUrl: string }[];
   minPrice: number | null;
-  variants?: { _id: string }[];
+  maxPrice?: number | null;
+  variants?: Variant[];
 }
 
 export default function BestSellers() {
   const { t, i18n } = useTranslation("common");
   const isRTL = i18n.language === "ar";
-  const { formatPrice } = useCurrency();
+  const { formatPrice, selectedCountry } = useCurrency();
 
-const [scrollWidth, setScrollWidth] = useState(0);
+  const [scrollWidth, setScrollWidth] = useState(0);
   const [products, setProducts] = useState<Product[]>([]);
   const trackRef = useRef<HTMLDivElement>(null);
   const isPaused = useRef(false);
-const animationRef = useRef<number | null>(null);
+  const animationRef = useRef<number | null>(null);
   const router = useRouter();
-  
+  // const [country, setCountry] = useState<string>(() => {
+  //   if (typeof window === "undefined") return "UAE";
 
-  // ✅ Fetch featuredProducts from home API
+  //   try {
+  //     const saved = localStorage.getItem("selectedCountry");
+
+  //     if (!saved) return "UAE";
+
+  //     const parsed = JSON.parse(saved);
+
+  //     return parsed?.name || "UAE";
+  //   } catch (error) {
+  //     console.error("Invalid country in localStorage:", error);
+  //     return "UAE";
+  //   }
+  // });
+
+  // useEffect(() => {
+  //   const savedCountry = localStorage.getItem("selectedCountry");
+
+  //   if (savedCountry) {
+  //     const parsedCountry = JSON.parse(savedCountry);
+  //     setCountry(parsedCountry.name); // Kuwait / UAE / KSA
+  //   }
+  // }, []);
+// useEffect(() => {
+//   const savedCountry = localStorage.getItem("selectedCountry");
+
+//   if (!savedCountry) return;
+
+//   try {
+//     const parsedCountry = JSON.parse(savedCountry);
+//     setCountry(parsedCountry?.name || "UAE");
+//   } catch (error) {
+//     console.error("Invalid country JSON:", savedCountry);
+//     setCountry(savedCountry); // fallback if it was stored as plain string
+//   }
+// }, []);
+
+
   useEffect(() => {
-    const fetchHome = async () => {
-      try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-        const res = await fetch(`${API_URL}/user/home`);
-        const data = await res.json();
 
-        if (res.ok) {
-          setProducts(data.featuredProducts.variants || []);
-        }
-      } catch (error) {
-        console.error("Failed to fetch featured products:", error);
+    const track = trackRef.current;
+    if (!track) return;
+
+    let animationId: number;
+
+    const scroll = () => {
+      const speed = 1;
+
+      if (!isPaused.current) {
+        track.scrollLeft += speed;
       }
+
+
+      const firstCard = track.children[0] as HTMLElement;
+
+      if (firstCard && track.scrollLeft >= firstCard.offsetWidth + 24) {
+        track.appendChild(firstCard);
+        track.scrollLeft -= firstCard.offsetWidth + 24;
+      }
+
+      animationId = requestAnimationFrame(scroll);
     };
 
-    fetchHome();
-  }, []);
-
-useEffect(() => {
-
-  const track = trackRef.current;
-  if (!track) return;
-
-  let animationId: number;
-
-  const scroll = () => {
-   const speed = 1;
-
-if (!isPaused.current) {
-  track.scrollLeft += speed;
-}
-  
-
-    const firstCard = track.children[0] as HTMLElement;
-
-    if (firstCard && track.scrollLeft >= firstCard.offsetWidth + 24) 
-      {
-      track.appendChild(firstCard);
-      track.scrollLeft -= firstCard.offsetWidth + 24;
-    }
-
     animationId = requestAnimationFrame(scroll);
-  };
 
-  animationId = requestAnimationFrame(scroll);
-
-  return () => cancelAnimationFrame(animationId);
-}, [products, i18n.language]);
+    return () => cancelAnimationFrame(animationId);
+  }, [products, i18n.language]);
   /* ================= ADD TO CART ================= */
   const handleAddToCart = async (product: Product, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -995,6 +152,7 @@ if (!isPaused.current) {
     }
   };
 
+
   /* ================= ADD TO WISHLIST ================= */
   const handleAddToWishlist = async (product: Product, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -1022,6 +180,31 @@ if (!isPaused.current) {
       toast.error(error?.response?.data?.message || "Failed to add to wishlist");
     }
   };
+  // useEffect(() => {
+  //   // const handleCountryChange = () => {
+  //   //   const savedCountry = localStorage.getItem("selectedCountry");
+  //   //   if (savedCountry) {
+  //   //     const parsed = JSON.parse(savedCountry);
+  //   //     setCountry(parsed.name);
+  //   //   }
+  //   // };
+  //   const handleCountryChange = () => {
+  //     const savedCountry = localStorage.getItem("selectedCountry");
+  //     if (!savedCountry) return;
+
+  //     const parsed = JSON.parse(savedCountry);
+
+  //     setCountry((prev) => {
+  //       if (prev === parsed.name) return prev;
+  //       return parsed.name;
+  //     });
+  //   };
+  //   window.addEventListener("countryChanged", handleCountryChange);
+
+  //   return () => {
+  //     window.removeEventListener("countryChanged", handleCountryChange);
+  //   };
+  // }, []);
   useEffect(() => {
     const fetchHome = async () => {
       try {
@@ -1040,8 +223,8 @@ if (!isPaused.current) {
     fetchHome();
   }, []);
 
-  if (!products.length) return null;
 
+  if (!products.length) return null;
   return (
     <>
       <style>{`
@@ -1089,31 +272,48 @@ if (!isPaused.current) {
 
           {/* HEADER */}
           <div
-            className={`flex items-center justify-center gap-6 mb-12 ${
-              isRTL ? "flex-row-reverse" : ""
-            }`}
+            className={`flex items-center justify-center gap-6 mb-12 ${isRTL ? "flex-row-reverse" : ""
+              }`}
           >
             <div className="flex-1 h-px bg-white/30" />
             <h2
-              className={`text-[#C5A059] text-2xl lg:text-3xl whitespace-nowrap ${
-                isRTL ? "font-arabic" : ""
-              }`}
+              className={`text-[#C5A059] text-2xl lg:text-3xl whitespace-nowrap ${isRTL ? "font-arabic" : ""
+                }`}
             >
-             {t("bestSellers")}
+              {t("bestSellers")}
             </h2>
             <div className="flex-1 h-px bg-white/30" />
           </div>
 
           {/* CAROUSEL */}
           <div className="slider-wrapper pause-on-hover">
-            <div ref={trackRef} className="flex overflow-x-hidden whitespace-nowrap hide-scrollbar"  onMouseEnter={() => (isPaused.current = true)}
-  onMouseLeave={() => (isPaused.current = false)} >
+            <div ref={trackRef} className="flex overflow-x-hidden whitespace-nowrap hide-scrollbar" onMouseEnter={() => (isPaused.current = true)}
+              onMouseLeave={() => (isPaused.current = false)} >
 
               {[...products, ...products].map((product, index) => {
+                // const image =
+                //   isRTL
+                //     ? product.imageUrlArabic?.[0]?.imageUrl
+                //               const variant = product.variants?.[0];
+
+                // const countryPrice = variant?.currency?.find(
+                //   (c: any) => c.country === country
+                // );
+
+                // const price = countryPrice?.price || product.minPrice;
+                // const mrp = countryPrice?.mrp || product.minPrice;
+                const variant = product?.variants?.length ? product.variants[0] : null;
+
+                // const countryPrice = variant?.currency?.find(
+                //   (c: any) => c.country?.toLowerCase().trim() === country?.toLowerCase().trim()
+                // );
+                const price = variant?.price ?? product?.minPrice ?? null;
+
+                const mrp = variant?.mrp ?? product?.maxPrice ?? null;
                 const image =
-                  isRTL
-                    ? product.imageUrlArabic?.[0]?.imageUrl
-                    : product.imageUrlEnglish?.[0]?.imageUrl;
+                  product?.variants?.[0]?.imageUrlEnglish?.[0]?.imageUrl ||
+                  product?.imageUrlEnglish?.[0]?.imageUrl ||
+                  "/no-product.png";
 
                 const name =
                   isRTL ? product.nameArabic : product.nameEnglish;
@@ -1133,9 +333,8 @@ if (!isPaused.current) {
                           {/* Wishlist */}
                           <button
                             onClick={(e) => handleAddToWishlist(product, e)}
-                            className={`absolute top-3 ${
-                              isRTL ? "left-3" : "right-3"
-                            } z-10 w-8 h-8 rounded-full bg-linear-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] flex items-center justify-center opacity-0 group-hover:opacity-100 transition`}
+                            className={`absolute top-3 ${isRTL ? "left-3" : "right-3"
+                              } z-10 w-8 h-8 rounded-full bg-linear-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] flex items-center justify-center opacity-0 group-hover:opacity-100 transition`}
                           >
                             <Heart className="w-4 h-4 text-black" />
                           </button>
@@ -1152,9 +351,8 @@ if (!isPaused.current) {
                           {/* Add to Cart */}
                           <button
                             onClick={(e) => handleAddToCart(product, e)}
-                            className={`absolute bottom-3 left-1/2 -translate-x-1/2 w-[85%] h-9 rounded-lg bg-linear-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] text-black text-xs opacity-0 group-hover:opacity-100 transition ${
-                              isRTL ? "font-arabic" : ""
-                            }`}
+                            className={`absolute bottom-3 left-1/2 -translate-x-1/2 w-[85%] h-9 rounded-lg bg-linear-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] text-black text-xs opacity-0 group-hover:opacity-100 transition ${isRTL ? "font-arabic" : ""
+                              }`}
                           >
                             Add to Cart
                           </button>
@@ -1165,14 +363,13 @@ if (!isPaused.current) {
                       {/* TEXT */}
                       <div className="p-3 flex flex-col justify-between grow">
                         <h3
-                          className={`text-sm mb-2 ${
-                            isRTL ? "text-right font-arabic" : "text-left"
-                          }`}
+                          className={`text-sm mb-2 ${isRTL ? "text-right font-arabic" : "text-left"
+                            }`}
                         >
                           {name}
                         </h3>
 
-                        <p
+                        {/* <p
                           className={`text-[#C9A24D] text-sm ${
                             isRTL ? "text-right" : "text-left"
                           }`}
@@ -1180,6 +377,12 @@ if (!isPaused.current) {
                           {product.minPrice
                             ? formatPrice(product.minPrice)
                             : "—"}
+                        </p> */}
+                        <p
+                          className={`text-[#C9A24D] text-sm ${isRTL ? "text-right" : "text-left"
+                            }`}
+                        >
+                          {price ? formatPrice(price) : "—"}
                         </p>
                       </div>
 

@@ -5,6 +5,7 @@ import { Search, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useDebounce } from "@/lib/useDebounce";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 interface SearchSidebarProps {
   isOpen: boolean;
@@ -34,6 +35,7 @@ export default function SearchSidebar({ isOpen, onClose }: SearchSidebarProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  const { formatPrice } = useCurrency();
 
   // Debounce search query to avoid too many API calls
   const debouncedQuery = useDebounce(query, 500);
@@ -239,7 +241,7 @@ export default function SearchSidebar({ isOpen, onClose }: SearchSidebarProps) {
                           )}
                           {product.minPrice && (
                             <p className="text-sm text-[#C9A24D] font-semibold">
-                              KWD {product.minPrice.toFixed(2)}
+                              {formatPrice(product.minPrice)}
                             </p>
                           )}
                         </div>
