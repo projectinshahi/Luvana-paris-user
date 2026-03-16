@@ -787,6 +787,7 @@ import {
 } from "lucide-react";
 import { useLanguage } from "@/lib/useLanguage";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import { toast } from "react-toastify";
 
 // ================= LIGHTBOX COMPONENT =================
 interface LightboxProps {
@@ -1021,6 +1022,80 @@ const ZOOM_FACTOR = 3;
   const imgRef = useRef<HTMLImageElement>(null);
   const router = useRouter();
 
+// const handleAddToCart = async () => {
+//   try {
+//     const token = localStorage.getItem("token");
+
+//     if (!token) {
+//       toast.error("Please login first");
+//       router.push("/login");
+//       return;
+//     }
+
+//     const API_URL =
+//       process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+//     const res = await fetch(`${API_URL}/user/cart`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${token}`,
+//       },
+//       body: JSON.stringify({
+//         variant: product.variants[selectedVariant]._id,
+//         quantity: quantity,
+//       }),
+//     });
+
+//     const data = await res.json();
+
+//     if (!res.ok) {
+//       throw new Error(data.message || "Failed to add to cart");
+//     }
+
+//     toast.success("Product added to cart!");
+//   } catch (error: any) {
+//     console.error("Add to cart error:", error);
+//     toast.error(error.message || "Something went wrong");
+//   }
+// };
+const handleAddToCart = async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    // If user is NOT logged in
+    if (!token) {
+      toast.info(" Please login for add to cart");
+      return; 
+    }
+
+    const API_URL =
+      process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+    const res = await fetch(`${API_URL}/user/cart`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        variant: product.variants[selectedVariant]._id,
+        quantity: quantity,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || "Failed to add to cart");
+    }
+
+    toast.success("Product added to cart!");
+  } catch (error: any) {
+    console.error("Add to cart error:", error);
+    toast.error(error.message || "Something went wrong");
+  }
+};
   const openLightbox = (idx: number) => {
     setLightboxIndex(idx);
     setLightboxOpen(true);
@@ -1386,7 +1461,9 @@ const handleImageMouseMove = useCallback(
                 </button>
               </div>
 
-              <button className="flex-1 bg-[#C9A24D] text-black py-3 rounded-lg flex justify-center items-center gap-2">
+              <button
+               onClick={handleAddToCart}
+              className="flex-1 bg-[#C9A24D] text-black py-3 rounded-lg flex justify-center items-center gap-2">
                 <ShoppingCart size={18} />
                 Add To Cart
               </button>

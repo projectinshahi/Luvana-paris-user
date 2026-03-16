@@ -8,7 +8,7 @@ export const useLanguage = () => {
   const languages = [
     { code: 'en', name: 'English', flag: 'https://flagcdn.com/w40/gb.png' },
     { code: 'ar', name: 'العربية', flag: 'https://flagcdn.com/w40/sa.png' },
-    { code: 'fr', name: 'Français', flag: 'https://flagcdn.com/w40/fr.png' },
+    // { code: 'fr', name: 'Français', flag: 'https://flagcdn.com/w40/fr.png' },
   ];
 
   const changeLanguage = useCallback(async (langCode: string) => {
