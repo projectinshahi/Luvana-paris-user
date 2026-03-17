@@ -50,7 +50,13 @@ useEffect(() => {
   const saved = localStorage.getItem("selectedCountry");
 
   if (saved) {
-    setSelectedCountry(JSON.parse(saved));
+    try {
+      const parsed = JSON.parse(saved);
+      setSelectedCountry(parsed);
+    } catch (error) {
+      console.warn("Invalid selectedCountry in localStorage, clearing...");
+      localStorage.removeItem("selectedCountry");
+    }
   }
 }, []);
 // useEffect(() => {

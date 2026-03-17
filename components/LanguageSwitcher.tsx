@@ -23,11 +23,11 @@ export default function LanguageSwitcher() {
     return (
       <div className="relative">
         <button className="flex items-center gap-2 px-3 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors text-sm">
-          <img
+          {/* <img
             src="https://flagcdn.com/w40/gb.png"
             alt="English"
             className="w-4 h-4 rounded-full object-cover"
-          />
+          /> */}
           <span className="text-white">English</span>
           <ChevronDown size={16} className="text-gray-400" />
         </button>
@@ -42,11 +42,11 @@ export default function LanguageSwitcher() {
         className="flex items-center gap-2 px-3 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors text-sm"
         aria-label="Change language"
       >
-        <img
+        {/* <img
           src={currentLang.flag}
           alt={currentLang.name}
           className="w-4 h-4 rounded-full object-cover"
-        />
+        /> */}
         <span className="text-white">{currentLang.name}</span>
         <ChevronDown 
           size={16} 
@@ -64,11 +64,11 @@ export default function LanguageSwitcher() {
                 currentLang.code === lang.code ? 'bg-gray-800' : ''
               }`}
             >
-              <img
+              {/* <img
                 src={lang.flag}
                 alt={lang.name}
                 className="w-4 h-4 rounded-full object-cover"
-              />
+              /> */}
               <span className="text-sm text-white">{lang.name}</span>
             </button>
           ))}
