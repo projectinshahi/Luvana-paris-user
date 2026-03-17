@@ -243,19 +243,7 @@ export default function CategoryBar() {
     fetchHomeData();
   }, []);
 
-  // ================= CLICK HANDLER =================
-  // const handleClick = (key: string) => {
-  //   setSelectedItem(key);
-
-  //   if (key === "new") {
-  //     router.push("/");
-  //   } else if (key === "brands") {
-  //     router.push("/brands");
-  //   } else {
-  //     // Navigate to brands page with category filter
-  //     router.push(`/brands?category=${key}`);
-  //   }
-  // };
+ 
 const handleClick = (key: string) => {
   setSelectedItem(key);
   setOpenMenu(null);

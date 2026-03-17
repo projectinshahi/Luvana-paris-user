@@ -1,11 +1,14 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@/lib/useLanguage';
-import { useCurrency } from '@/contexts/CurrencyContext';
+import { Country, useCurrency } from '@/contexts/CurrencyContext';
 import { COUNTRIES } from '@/lib/countries';
+import router from 'next/dist/shared/lib/router/router';
+import { useRouter } from 'next/navigation';
+
 
 interface SettingsOverlayProps {
   isOpen: boolean;
@@ -16,15 +19,46 @@ export default function SettingsOverlay({ isOpen, onClose }: SettingsOverlayProp
   const { t } = useTranslation('common');
   const { isRTL, languages, changeLanguage, currentLang } = useLanguage();
   const { selectedCountry, setSelectedCountry } = useCurrency();
-  
+  const [countries, setCountries] = useState<Country[]>([]);
   const [showCountryList, setShowCountryList] = useState(false);
   const [showLanguageList, setShowLanguageList] = useState(false);
+  const router = useRouter();
 
-  const handleCountrySelect = (country: typeof COUNTRIES[0]) => {
+  // const handleCountrySelect = (country: typeof COUNTRIES[0]) => {
+  const handleCountrySelect = (country: Country) => {
     setSelectedCountry(country);
     setShowCountryList(false);
   };
+useEffect(() => {
+  const fetchCountries = async () => {
+    try {
+      const API_URL =
+        process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
+      const res = await fetch(`${API_URL}/user/country`);
+      const data = await res.json();
+
+      setCountries(data.countries || []);
+    } catch (error) {
+      console.error("Error fetching countries:", error);
+    }
+  };
+
+  fetchCountries();
+}, []);
+const handleClick = (key: string) => {
+  setSelectedItem(key);
+  setOpenMenu(null);
+
+  if (key === "new") {
+    router.push("/");
+  } else if (key === "brands") {
+    router.push("/brands");
+  } else {
+    // ✅ Correct format
+    router.push(`/brands?category=${key}`);
+  }
+};
   const handleLanguageSelect = (langCode: string) => {
     changeLanguage(langCode);
     setShowLanguageList(false);
@@ -58,12 +92,13 @@ export default function SettingsOverlay({ isOpen, onClose }: SettingsOverlayProp
           
           {showCountryList && (
             <div className="bg-gray-50 max-h-48 overflow-y-auto">
-              {COUNTRIES.map((country) => (
+              {/* {COUNTRIES.map((country) => ( */}
+              {countries.map((country) => (
                 <button
-                  key={country.code}
+                  key={country._id}
                   onClick={() => handleCountrySelect(country)}
                   className={`w-full p-3 hover:bg-white transition-colors border-b border-gray-100 last:border-b-0 ${
-                    selectedCountry.code === country.code ? 'bg-blue-50 text-blue-600' : 'text-gray-700'
+                    selectedCountry?._id === country._id ? 'bg-blue-50 text-blue-600' : 'text-gray-700'
                   } ${isRTL ? 'text-right' : 'text-left'}`}
                 >
                   {country.name}
