@@ -442,7 +442,7 @@ const handleSubmit = async (e: React.FormEvent) => {
         style={{ zIndex: 45 }}
       >
         <div
-          className="relative bg-[#2423380] rounded-2xl w-full max-w-md mx-4 p-8 shadow-2xl pointer-events-auto animate-slide-in-right"
+          className="relative bg-[#33333a] rounded-2xl w-full max-w-md mx-4 p-8 shadow-2xl pointer-events-auto animate-slide-in-right"
           onClick={(e) => e.stopPropagation()}
         >
           <button

@@ -558,6 +558,7 @@ import { useTranslation } from "react-i18next";
 import { useLanguage } from "@/lib/useLanguage";
 import ResponsiveLayout from "@/components/ResponsiveLayout";
 import api from "@/lib/axios";
+import { useCurrency } from "@/contexts/CurrencyContext";
 
 interface OrderItem {
   name: string;
@@ -585,6 +586,7 @@ const statusConfig: Record<string, { label: string; icon: any; classes: string; 
 export default function YourOrdersPage() {
   const { t } = useTranslation("common");
   const { isRTL } = useLanguage();
+  const { formatPrice } = useCurrency();
 
   const [orders, setOrders]           = useState<Order[]>([]);
   const [loading, setLoading]         = useState(true);
@@ -828,7 +830,8 @@ export default function YourOrdersPage() {
                       {/* total + chevron */}
                       <div className={`flex items-center gap-4 shrink-0 ${isRTL ? "flex-row-reverse" : ""}`}>
                         <span className="display-font text-xl font-medium" style={{ color: "#C9A24D" }}>
-                          ₹{order.total.toLocaleString()}
+                          {/* ₹{order.total.toLocaleString()} */}
+                          {formatPrice(order.total)}
                         </span>
                         <ChevronRight
                           size={16}
@@ -866,14 +869,11 @@ export default function YourOrdersPage() {
                             <div className={`flex-1 min-w-0 ${isRTL ? "text-right" : ""}`}>
                               <p className="text-sm font-medium text-white truncate mb-0.5">{item.name}</p>
                               <p className="text-[11px] text-gray-600">Qty: {item.quantity}</p>
-                              <p className="text-sm font-semibold mt-1" style={{ color: "#C9A24D" }}>₹{item.price.toLocaleString()}</p>
+                              <p className="text-sm font-semibold mt-1" style={{ color: "#C9A24D" }}>{formatPrice(item.price)}</p>
                             </div>
 
                             {/* CTA */}
-                            <button className="btn-gold hidden sm:flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold tracking-wide shrink-0">
-                              View Details
-                              <ChevronRight size={13} />
-                            </button>
+                        
                           </div>
                         ))}
 
