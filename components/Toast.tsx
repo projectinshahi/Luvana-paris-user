@@ -33,16 +33,16 @@ export default function Toast({ message, type, onClose, duration = 3000 }: Toast
 
   return (
     <div
-      className={`fixed top-20 right-4 z-[100] min-w-[320px] max-w-md ${bgColors[type]} border backdrop-blur-lg rounded-xl shadow-2xl animate-slide-in-right`}
+      className={`fixed top-20 right-4 z-100 min-w-[320px] max-w-md ${bgColors[type]} border backdrop-blur-lg rounded-xl shadow-2xl animate-slide-in-right`}
     >
       <div className="flex items-start gap-3 p-4">
-        <div className="flex-shrink-0 mt-0.5">{icons[type]}</div>
+        <div className="shrink-0 mt-0.5">{icons[type]}</div>
         <div className="flex-1">
           <p className="text-white text-sm font-medium leading-relaxed">{message}</p>
         </div>
         <button
           onClick={onClose}
-          className="flex-shrink-0 text-gray-400 hover:text-white transition-colors"
+          className="shrink-0 text-gray-400 hover:text-white transition-colors"
         >
           <X size={18} />
         </button>

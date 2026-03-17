@@ -1366,11 +1366,11 @@ const handleImageMouseMove = useCallback(
             <p className="text-gray-400 mb-4">{shortDescription}</p>
 
             {/* Rating */}
-            <div className="flex gap-1 mb-4">
+            {/* <div className="flex gap-1 mb-4">
               {[...Array(5)].map((_, i) => (
                 <Star key={i} size={18} className="text-[#C9A24D]" />
               ))}
-            </div>
+            </div> */}
 
             {/* Price */}
             <div className="flex items-center gap-4 mb-6">
