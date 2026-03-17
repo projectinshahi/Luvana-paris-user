@@ -326,7 +326,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white py-20 px-4">
+    <div className="min-h-screen bg-black text-white py-27 px-4">
       <div className="max-w-7xl mx-auto">
         <div className="mb-14">
           <h1 className="text-4xl font-bold">My Profile</h1>
