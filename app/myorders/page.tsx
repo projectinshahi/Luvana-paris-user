@@ -607,7 +607,7 @@ export default function YourOrdersPage() {
             id:     order.orderId,
             date:   order.createdAt,
             status: order.status,
-            total:  order.price - order.discount,
+            total:  order.price ,
             items:  order.orderItem.map((item: any) => ({
               name:     isRTL ? item.productNameArabic  || item.product?.nameArabic  : item.productNameEnglish || item.product?.nameEnglish,
               image:    isRTL ? item.productImageArabic : item.productImageEnglish,
