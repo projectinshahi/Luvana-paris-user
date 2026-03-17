@@ -25,21 +25,53 @@ interface Variant {
   }[];
 }
 
+// interface Product {
+//   _id: string;
+//   nameEnglish: string;
+//   shortDescriptionEnglish: string;
+//   minPrice: number | null;
+//   variants?: Variant[];
+//   category: {
+//     _id: string;
+//     nameEnglish: string;
+//   };
+//   brand: {
+//     _id: string;
+//     nameEnglish: string;
+//   };
+//   imageUrlEnglish: {
+//     imageUrl: string;
+//   }[];
+// }
 interface Product {
   _id: string;
   nameEnglish: string;
+  nameArabic: string;
+
   shortDescriptionEnglish: string;
+  shortDescriptionArabic: string;
+
   minPrice: number | null;
+
   variants?: Variant[];
+
   category: {
     _id: string;
     nameEnglish: string;
+    nameArabic: string;
   };
+
   brand: {
     _id: string;
     nameEnglish: string;
+    nameArabic: string;
   };
+
   imageUrlEnglish: {
+    imageUrl: string;
+  }[];
+
+  imageUrlArabic: {
     imageUrl: string;
   }[];
 }
@@ -530,15 +562,20 @@ const sortedProducts = useMemo(() => {
                       {/* Content */}
                       <div className="p-5 flex flex-col flex-1">
                         <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
-                          {product.brand?.nameEnglish || "N/A"} • {product.category?.nameEnglish || "N/A"}
+                          {/* {product.brand?.nameEnglish || "N/A"} • {product.category?.nameEnglish || "N/A"} */}
+                          {isArabic ? product.brand?.nameArabic : product.brand?.nameEnglish}
+•
+{isArabic ? product.category?.nameArabic : product.category?.nameEnglish}
                         </p>
 
                         <h3 className="font-semibold text-base leading-tight mb-2 group-hover:text-[#C9A24D] transition-colors">
-                          {product.nameEnglish || "Product"}
+                          {/* {product.nameEnglish || "Product"} */}
+                          {isArabic ? product.nameArabic : product.nameEnglish}
                         </h3>
 
                         <p className="text-gray-400 text-sm line-clamp-2 mb-3 -grow">
-                          {product.shortDescriptionEnglish || "No description"}
+                          {/* {product.shortDescriptionEnglish || "No description"} */}
+                          {isArabic ? product.shortDescriptionArabic : product.shortDescriptionEnglish}
                         </p>
                         {/* {product.variants && product.variants.length > 0 && (
   <select

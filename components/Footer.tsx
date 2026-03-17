@@ -6,18 +6,19 @@ import { useTranslation } from "react-i18next";
 export default function Footer() {
   const { t, i18n } = useTranslation('common');
   const isRTL = i18n.language === 'ar';
+   const textDir = isRTL ? "rtl" : "ltr";
 
   return (
     // <footer className="w-full bg-[#0a0a0a] text-white">
     <footer
   className="w-full bg-[#0a0a0a] text-white"
-  dir={isRTL ? "rtl" : "ltr"}
+  // dir={isRTL ? "rtl" : "ltr"}
 >
       {/* Main Footer */}
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-16">
-        <div className={`grid grid-cols-1 md:grid-cols-4 gap-8 mb-12 ${isRTL ? 'text-right' : 'text-left'}`}>
+        <div className={`grid grid-cols-1 md:grid-cols-4 gap-8 mb-12 text-left`}>
           {/* Company Info */}
-          <div>
+          <div className={isRTL ? "text-right" : "text-left"}>
             <h3 className={`text-2xl font-bold text-[#C9A24D] mb-4 ${isRTL ? 'font-arabic' : ''}`}>
               {t('footer.companyName')}
             </h3>
@@ -25,15 +26,15 @@ export default function Footer() {
               {t('footer.description')}
             </p>
             <div className="space-y-3">
-              <div className={`flex items-center gap-3 text-gray-400 hover:text-[#C9A24D] transition ${isRTL ? 'flex-row-reverse' : ''}`}>
+              <div className={`flex items-center gap-3 text-gray-400 hover:text-[#C9A24D] transition `}>
                 <Mail size={18} />
                 <span>{t('footer.email')}</span>
               </div>
-              <div className={`flex items-center gap-3 text-gray-400 hover:text-[#C9A24D] transition ${isRTL ? 'flex-row-reverse' : ''}`}>
+              <div className={`flex items-center gap-3 text-gray-400 hover:text-[#C9A24D] transition`}>
                 <Phone size={18} />
                 <span>{t('footer.phone')}</span>
               </div>
-              <div className={`flex items-center gap-3 text-gray-400 hover:text-[#C9A24D] transition ${isRTL ? 'flex-row-reverse' : ''}`}>
+              <div className={`flex items-center gap-3 text-gray-400 hover:text-[#C9A24D] transition`}>
                 <MapPin size={18} />
                 <span>{t('footer.address')}</span>
               </div>
@@ -41,7 +42,7 @@ export default function Footer() {
           </div>
 
           {/* Quick Links */}
-          <div>
+          <div className={isRTL ? "text-right" : "text-left"}>
             <h4 className={`text-lg font-bold text-white mb-4 ${isRTL ? 'font-arabic' : ''}`}>
               {t('footer.quickLinks')}
             </h4>
@@ -75,7 +76,7 @@ export default function Footer() {
           </div>
 
           {/* Customer Care */}
-          <div>
+          <div className={isRTL ? "text-right" : "text-left"}>
             <h4 className={`text-lg font-bold text-white mb-4 ${isRTL ? 'font-arabic' : ''}`}>
               {t('footer.customerCare')}
             </h4>
@@ -109,11 +110,11 @@ export default function Footer() {
           </div>
 
           {/* Social Media */}
-          <div>
+          <div className={isRTL ? "text-right" : "text-left"}>
             <h4 className={`text-lg font-bold text-white mb-4 ${isRTL ? 'font-arabic' : ''}`}>
               {t('footer.followUs')}
             </h4>
-            <div className={`flex gap-4 mb-6 ${isRTL ? 'flex-row-reverse justify-end' : ''}`}>
+            <div className={`flex gap-4 mb-6`}>
               <a
                 href="#"
                 className="bg-[#1a1a1a] p-3 rounded-full hover:bg-[#C9A24D] transition"
@@ -145,7 +146,7 @@ export default function Footer() {
               <p className={`text-sm font-semibold text-gray-400 mb-3 ${isRTL ? 'font-arabic' : ''}`}>
                 {t('footer.weAccept')}
               </p>
-              <div className={`flex flex-wrap gap-2 ${isRTL ? 'flex-row-reverse justify-end' : ''}`}>
+              <div className={`flex flex-wrap gap-2`}>
                 <span className="bg-[#1a1a1a] px-3 py-1 rounded text-xs text-gray-400">
                   {t('footer.visa')}
                 </span>
