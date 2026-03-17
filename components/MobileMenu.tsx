@@ -1,61 +1,103 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { X, ChevronDown, ChevronUp } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@/lib/useLanguage';
+import { useRouter } from "next/navigation";
 
 interface MobileMenuProps {
   isOpen: boolean;
   onClose: () => void;
 }
+type Category = {
+  _id: string;
+  nameEnglish: string;
+  nameArabic: string;
+  status: string;
+};
 
+type Brand = {
+  _id: string;
+  nameEnglish: string;
+  nameArabic: string;
+  status: string;
+};
 export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
   const { t } = useTranslation('common');
   const { isRTL } = useLanguage();
+  const [categories, setCategories] = useState<Category[]>([]);
+const [brands, setBrands] = useState<Brand[]>([]);
   
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
+  const router = useRouter();
 
-  const menuCategories = [
-    {
-      name: t('categories.new'),
-      key: 'new',
-      hasSubItems: false
-    },
-    {
-      name: t('categories.brands'),
-      key: 'brands',
-      hasSubItems: true,
-      subItems: [
-        "L'Oréal",
-        "Estée Lauder", 
-        "MAC",
-        "Maybelline",
-        "Clinique",
-        "Fenty Beauty"
-      ]
-    },
-    {
-      name: t('categories.makeup'),
-      key: 'makeup',
-      hasSubItems: false
-    },
-    {
-      name: t('categories.skincare'),
-      key: 'skincare', 
-      hasSubItems: false
-    },
-    {
-      name: t('categories.fragrance'),
-      key: 'fragrance',
-      hasSubItems: false
-    },
-    {
-      name: t('categories.haircare'),
-      key: 'haircare',
-      hasSubItems: false
+  // const menuCategories = [
+  //   {
+  //     name: t('categories.new'),
+  //     key: 'new',
+  //     hasSubItems: false
+  //   },
+  //   {
+  //     name: t('categories.brands'),
+  //     key: 'brands',
+  //     hasSubItems: true,
+  //     subItems: [
+  //       "L'Oréal",
+  //       "Estée Lauder", 
+  //       "MAC",
+  //       "Maybelline",
+  //       "Clinique",
+  //       "Fenty Beauty"
+  //     ]
+  //   },
+  //   {
+  //     name: t('categories.makeup'),
+  //     key: 'makeup',
+  //     hasSubItems: false
+  //   },
+  //   {
+  //     name: t('categories.skincare'),
+  //     key: 'skincare', 
+  //     hasSubItems: false
+  //   },
+  //   {
+  //     name: t('categories.fragrance'),
+  //     key: 'fragrance',
+  //     hasSubItems: false
+  //   },
+  //   {
+  //     name: t('categories.haircare'),
+  //     key: 'haircare',
+  //     hasSubItems: false
+  //   }
+  // ];
+  useEffect(() => {
+  const fetchHomeData = async () => {
+    try {
+      const API_URL =
+        process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+      const res = await fetch(`${API_URL}/user/home`);
+      const data = await res.json();
+
+      const activeCategories = data.categories.filter(
+        (cat: Category) => cat.status === "active"
+      );
+
+      const activeBrands = data.brands.filter(
+        (brand: Brand) => brand.status === "active"
+      );
+
+      setCategories(activeCategories);
+      setBrands(activeBrands);
+    } catch (error) {
+      console.error("Error fetching home data:", error);
     }
-  ];
+  };
+
+  fetchHomeData();
+}, []);
 
   const handleCategoryClick = (categoryKey: string) => {
     if (expandedCategory === categoryKey) {
@@ -90,39 +132,79 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         </div>
 
         {/* Menu Content */}
-        <div className="flex-1 overflow-y-auto">
-          {menuCategories.map((category) => (
-            <div key={category.key} className="border-b border-gray-800">
-              <button
-                onClick={() => handleCategoryClick(category.key)}
-                className={`w-full flex items-center justify-between p-4 hover:bg-gray-900 transition-colors text-left ${isRTL ? 'flex-row-reverse font-arabic' : ''}`}
-              >
-                <span className={`${category.key === 'brands' ? 'text-[#C9A24D]' : 'text-white'}`}>
-                  {category.name}
-                </span>
-                {category.hasSubItems && (
-                  expandedCategory === category.key ? 
-                    <ChevronUp size={16} className="text-[#C9A24D]" /> : 
-                    <ChevronDown size={16} className="text-gray-400" />
-                )}
-              </button>
-              
-              {/* Sub Items */}
-              {category.hasSubItems && expandedCategory === category.key && (
-                <div className="bg-gray-900">
-                  {category.subItems?.map((subItem) => (
-                    <button
-                      key={subItem}
-                      className={`w-full p-4 pl-8 text-left hover:bg-gray-800 transition-colors text-[#C9A24D] ${isRTL ? 'pr-8 pl-4 text-right font-arabic' : ''}`}
-                    >
-                      {subItem}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
+       <div className="flex-1 overflow-y-auto">
+
+  {/* NEW */}
+  <button
+    onClick={() => {
+      router.push("/");
+      onClose();
+    }}
+    className={`w-full p-4 text-left hover:bg-gray-900 ${
+      isRTL ? "text-right font-arabic" : ""
+    }`}
+  >
+    {t("categories.new")}
+  </button>
+
+
+  {/* BRANDS */}
+  <div className="border-b border-gray-800">
+    <button
+      onClick={() => handleCategoryClick("brands")}
+      className={`w-full flex items-center justify-between p-4 hover:bg-gray-900 ${
+        isRTL ? "flex-row-reverse font-arabic" : ""
+      }`}
+    >
+      <span className="text-[#C9A24D]">
+        {t("categories.brands")}
+      </span>
+
+      {expandedCategory === "brands" ? (
+        <ChevronUp size={16} className="text-[#C9A24D]" />
+      ) : (
+        <ChevronDown size={16} className="text-gray-400" />
+      )}
+    </button>
+
+    {expandedCategory === "brands" && (
+      <div className="bg-gray-900">
+        {brands.map((brand) => (
+          <button
+            key={brand._id}
+            onClick={() => {
+              router.push(`/brands?brand=${brand._id}`);
+              onClose();
+            }}
+            className={`w-full p-4 pl-8 text-left hover:bg-gray-800 text-[#C9A24D] ${
+              isRTL ? "pr-8 pl-4 text-right font-arabic" : ""
+            }`}
+          >
+            {isRTL ? brand.nameArabic : brand.nameEnglish}
+          </button>
+        ))}
+      </div>
+    )}
+  </div>
+
+
+  {/* CATEGORIES */}
+  {categories.map((cat) => (
+    <button
+      key={cat._id}
+      onClick={() => {
+        router.push(`/brands?category=${cat._id}`);
+        onClose();
+      }}
+      className={`w-full p-4 text-left hover:bg-gray-900 ${
+        isRTL ? "text-right font-arabic" : ""
+      }`}
+    >
+      {isRTL ? cat.nameArabic : cat.nameEnglish}
+    </button>
+  ))}
+
+</div>
       </div>
     </>
   );
