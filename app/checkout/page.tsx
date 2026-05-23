@@ -205,7 +205,7 @@ export default function CheckoutPage() {
 
     try {
       const origin =
-        typeof window !== "undefined" ? window.location.origin : "http://localhost:3000";
+        typeof window !== "undefined" ? window.location.origin : "http://luvanaparis.com";
 
       const redirectUrl = `${origin}/payment/callback`;
 

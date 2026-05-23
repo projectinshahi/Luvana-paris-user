@@ -49,7 +49,7 @@ export default function InfluencersSection() {
   useEffect(() => {
     const fetchInfluencers = async () => {
       try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL;
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.luvanaparis.com";
         const res = await axios.get(`${API_URL}/user/home`);
 
         if (res.data?.influencers && res.data.influencers.length > 0) {

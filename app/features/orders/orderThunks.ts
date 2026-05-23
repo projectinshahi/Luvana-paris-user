@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { Order } from "./orderTypes";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.luvanaparis.com";
 
 const getAuthHeader = () => {
   if (typeof window === "undefined") return {};

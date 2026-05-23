@@ -120,7 +120,7 @@ const { formatPrice } = useCurrency();
     useEffect(() => {
   const fetchHomeData = async () => {
     try {
-      const API_URL = process.env.NEXT_PUBLIC_API_URL;
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.luvanaparis.com";
       const res = await axios.get(`${API_URL}/user/home`);
 
       const activeCategories = res.data.categories.filter(
@@ -169,7 +169,7 @@ const { formatPrice } = useCurrency();
       }
 
       const API_URL =
-        process.env.NEXT_PUBLIC_API_URL;
+        process.env.NEXT_PUBLIC_API_URL || "https://api.luvanaparis.com";
 
       const res = await axios.get(`${API_URL}/user/product`, {
         params,
