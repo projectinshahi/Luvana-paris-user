@@ -167,5 +167,24 @@
     "shipping": "الشحن",
     "free": "مجاني",
     "buyNow": "اشتري الآن"
-  }
+  },
+"allOrders": "جميع الطلبات",
+ "pending": "قيد الانتظار",
+  "processing": "قيد المعالجة",
+  "shipped": "تم الشحن",
+  "delivered": "تم التسليم",
+  "cancelled": "تم الإلغاء",
+  "Pending": "قيد الانتظار",
+  "Processing": "قيد المعالجة",
+  "Shipped": "تم الشحن",
+  "Delivered": "تم التسليم",
+  "Cancelled": "تم الإلغاء",
+  "Your Orders":"طلباتك الخاصة",
+  "orders": {
+  "searchPlaceholder": "ابحث باستخدام رقم الطلب أو المنتج…",
+  "noOrders": "لم يتم العثور على طلبات",
+  "tryAdjusting": "حاول تعديل البحث أو الفلتر",
+    "historyCount": "لديك {{count}} طلب في سجلك",
+  "historyCount_plural": "لديك {{count}} طلبات في سجلك"
+}
 }

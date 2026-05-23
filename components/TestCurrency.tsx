@@ -7,7 +7,7 @@ export default function TestCurrency() {
     const { selectedCountry } = useCurrency();
     return (
       <div className="p-4 bg-green-100 text-green-800 rounded">
-        ✅ CurrencyProvider working! Current country: {selectedCountry.name}
+        ✅ CurrencyProvider working! Current country: {selectedCountry?.nameEnglish || 'Not selected'}
       </div>
     );
   } catch (error) {

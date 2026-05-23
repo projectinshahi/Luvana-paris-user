@@ -25,7 +25,7 @@ export default function PriceDisplay({
 
   return (
     <span className={`font-semibold ${className}`}>
-      {formatPrice(price, originalCurrency)}
+      {formatPrice(price)}
     </span>
   );
 }

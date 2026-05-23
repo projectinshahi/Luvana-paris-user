@@ -15,6 +15,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import api from "@/lib/axios";
+import { useLanguage } from "@/lib/useLanguage";
 
 interface Address {
   _id: string;
@@ -69,6 +70,8 @@ export default function ProfilePage() {
     postalCode: "",
     isDefault: false,
   });
+     const { t, currentLanguage } = useLanguage();
+  const isArabic = currentLanguage === "ar";
 
   // ✅ VALIDATE PHONE NUMBER (International)
   const validatePhone = (phone: string): boolean => {
@@ -326,10 +329,10 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white py-27 px-4">
+    <div className="min-h-screen bg-black text-white py-27 px-4"  dir={isArabic ? "rtl" : "ltr"}>
       <div className="max-w-7xl mx-auto">
         <div className="mb-14">
-          <h1 className="text-4xl font-bold">My Profile</h1>
+          <h1 className="text-4xl font-bold">{t("My Profile")}</h1>
           <p className="text-gray-400 mt-2">
             Manage your account settings and addresses
           </p>
@@ -386,6 +389,7 @@ export default function ProfilePage() {
                       name="name"
                       value={user.name}
                       onChange={handleChange}
+                       dir={isArabic ? "rtl" : "ltr"}
                       className="w-full bg-black border border-white/20 rounded-lg p-3 focus:border-[#C9A24D] focus:outline-none transition"
                       placeholder="Enter your name"
                     />
@@ -405,6 +409,7 @@ export default function ProfilePage() {
                       type="email"
                       value={user.email}
                       onChange={handleChange}
+                       dir={isArabic ? "rtl" : "ltr"}
                       className="w-full bg-black border border-white/20 rounded-lg p-3 focus:border-[#C9A24D] focus:outline-none transition"
                       placeholder="Enter your email"
                     />
@@ -422,6 +427,7 @@ export default function ProfilePage() {
                       type="tel"
                       value={user.phone}
                       onChange={handleChange}
+                       dir={isArabic ? "rtl" : "ltr"}
                       className="w-full bg-black border border-white/20 rounded-lg p-3 focus:border-[#C9A24D] focus:outline-none transition"
                       placeholder="+1234567890"
                     />
@@ -596,6 +602,7 @@ export default function ProfilePage() {
                         onChange={(e) =>
                           setAddressForm({ ...addressForm, city: e.target.value })
                         }
+                        dir={isArabic ? "rtl" : "ltr"}
                         className={`w-full bg-[#1A1A1A] border ${
                           errors.city ? "border-red-500" : "border-white/20"
                         } rounded-lg p-3 focus:border-[#C9A24D] focus:outline-none`}

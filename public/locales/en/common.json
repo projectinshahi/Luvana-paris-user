@@ -32,6 +32,7 @@
     "styleBeauty": "Style that speaks beauty"
   },
   
+  
   "categories": {
     "new": "New",
     "brands": "Brands",
@@ -167,5 +168,19 @@
     "shipping": "Shipping",
     "free": "Free",
     "buyNow": "Buy now"
-  }
+  },
+"allOrders": "All Orders",
+"pending": "Pending",
+  "processing": "Processing",
+  "shipped": "Shipped",
+  "delivered": "Delivered",
+  "cancelled": "Cancelled",
+  "Your Orders":"Your Orders",
+  "orders": {
+  "searchPlaceholder": "Search by order ID or product…",
+  "noOrders": "No orders found",
+  "tryAdjusting": "Try adjusting your search or filter",
+   "historyCount": "{{count}} order in your history",
+  "historyCount_plural": "{{count}} orders in your history"
+}
 }
