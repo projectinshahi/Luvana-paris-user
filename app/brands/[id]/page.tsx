@@ -1151,21 +1151,21 @@ const handleImageMouseMove = useCallback(
   // Reset selected image when variant changes
   useEffect(() => {
     setSelectedImage(0);
-    console.log("Variant changed to:", selectedVariant);
-    console.log("Variant data:", product?.variants?.[selectedVariant]);
+    // console.log("Variant changed to:", selectedVariant);
+    // console.log("Variant data:", product?.variants?.[selectedVariant]);
   }, [selectedVariant, product]);
 
   // Log product images when they change
   useEffect(() => {
     if (product) {
       const variantData = product.variants?.[selectedVariant];
-      console.log("Current variant images:", {
-        variantIndex: selectedVariant,
-        variantName: variantData?.nameEnglish || variantData?.nameArabic,
-        englishImages: variantData?.imageUrlEnglish,
-        arabicImages: variantData?.imageUrlArabic,
-        currentLanguage,
-      });
+      // console.log("Current variant images:", {
+      //   variantIndex: selectedVariant,
+      //   variantName: variantData?.nameEnglish || variantData?.nameArabic,
+      //   englishImages: variantData?.imageUrlEnglish,
+      //   arabicImages: variantData?.imageUrlArabic,
+      //   currentLanguage,
+      // });
     }
   }, [selectedVariant, product, currentLanguage]);
 
