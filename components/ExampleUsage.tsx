@@ -72,7 +72,7 @@ export default function ExampleUsage() {
           <div>
             <span className="font-medium">Current Country:</span>
             <br />
-            <span className="text-gray-600">{selectedCountry.name} ({selectedCountry.currency})</span>
+            <span className="text-gray-600">{selectedCountry ? `${selectedCountry.nameEnglish} (${selectedCountry.currencyValue})` : 'Loading...'}</span>
           </div>
           <div>
             <span className="font-medium">Text Direction:</span>
@@ -82,7 +82,7 @@ export default function ExampleUsage() {
           <div>
             <span className="font-medium">Currency Symbol:</span>
             <br />
-            <span className="text-gray-600">{selectedCountry.currencySymbol}</span>
+            <span className="text-gray-600">{selectedCountry ? selectedCountry.abbreviation : 'Loading...'}</span>
           </div>
         </div>
       </div>

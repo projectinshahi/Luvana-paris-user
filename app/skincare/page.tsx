@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { ShoppingCart, Heart } from "lucide-react";
+import { ShoppingCart, Heart, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { useLanguage } from "@/lib/useLanguage";
@@ -37,8 +37,10 @@ export default function SkincarePage() {
   const [loading, setLoading] = useState(true);
   const [priceRange, setPriceRange] = useState(10000);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState("default");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   // Fetch products from backend
   useEffect(() => {
@@ -80,26 +82,36 @@ export default function SkincarePage() {
     let data = [...products];
 
     if (searchQuery) {
-      data = data.filter((p) =>
-        p.name.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+      data = data.filter((p) => {
+        const productName = currentLanguage === "ar" ? p.nameArabic : p.nameEnglish;
+        return productName.toLowerCase().includes(searchQuery.toLowerCase());
+      });
     }
 
-    data = data.filter((p) => p.price <= priceRange);
+    data = data.filter((p) => p.minPrice <= priceRange);
 
     if (selectedCategories.length) {
-      data = data.filter((p) => selectedCategories.includes(p.category));
+      data = data.filter((p) => {
+        const categoryName = currentLanguage === "ar" 
+          ? p.category?.nameArabic 
+          : p.category?.nameEnglish;
+        return selectedCategories.includes(categoryName || "");
+      });
     }
 
     if (selectedBrands.length) {
-      data = data.filter((p) => selectedBrands.includes(p.brand));
+      data = data.filter((p) => selectedBrands.includes(
+        currentLanguage === "ar" 
+          ? p.brand?.nameArabic || p.brand?.nameEnglish || ""
+          : p.brand?.nameEnglish || p.brand?.nameArabic || ""
+      ));
     }
 
-    if (sortBy === "low") data.sort((a, b) => a.price - b.price);
-    if (sortBy === "high") data.sort((a, b) => b.price - a.price);
+    if (sortBy === "low") data.sort((a, b) => a.minPrice - b.minPrice);
+    if (sortBy === "high") data.sort((a, b) => b.minPrice - a.minPrice);
 
     return data;
-  }, [priceRange, selectedCategories, selectedBrands, sortBy, searchQuery]);
+  }, [priceRange, selectedCategories, selectedBrands, sortBy, searchQuery, currentLanguage, products]);
 
   /* ================= FILTER CONTENT ================= */
   const FilterContent = () => (
@@ -222,7 +234,7 @@ export default function SkincarePage() {
           <main className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredProducts.map((product) => (
               <div
-                key={product.id}
+                key={product._id}
                 className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-lg overflow-hidden flex flex-col"
               >
                 {/* Image */}
@@ -239,8 +251,8 @@ export default function SkincarePage() {
                 {/* Image */}
 <div className="relative w-full h-64 overflow-hidden">
   <img
-    src={product.image}
-    alt={product.name}
+    src={currentLanguage === "ar" ? product.imageUrlArabic?.[0]?.imageUrl : product.imageUrlEnglish?.[0]?.imageUrl || "https://via.placeholder.com/400"}
+    alt={currentLanguage === "ar" ? product.nameArabic : product.nameEnglish}
     className="w-full h-full object-cover object-center"
   />
 
@@ -254,17 +266,17 @@ export default function SkincarePage() {
                 {/* Content */}
                 <div className="p-4 flex flex-col flex-1">
                   <p className="text-xs text-gray-400">
-                    {product.brand} • {product.category}
+                    {currentLanguage === "ar" ? product.brand?.nameArabic || product.brand?.nameEnglish : product.brand?.nameEnglish || product.brand?.nameArabic} • {currentLanguage === "ar" ? product.category?.nameArabic || product.category?.nameEnglish : product.category?.nameEnglish || product.category?.nameArabic}
                   </p>
 
-                  <h3 className="font-semibold">{product.name}</h3>
+                  <h3 className="font-semibold">{currentLanguage === "ar" ? product.nameArabic : product.nameEnglish}</h3>
 
                   <p className="text-gray-400 text-sm line-clamp-2">
-                    {product.description}
+                    {currentLanguage === "ar" ? product.shortDescriptionArabic || product.shortDescriptionEnglish : product.shortDescriptionEnglish || product.shortDescriptionArabic}
                   </p>
 
                   <p className="text-[#C9A24D] font-bold mt-3">
-                    {formatPrice(product.price)}
+                    {formatPrice(product.minPrice)}
                   </p>
 
                   <button className="mt-auto w-full flex items-center justify-center gap-2 border border-[#C9A24D] py-2 rounded-lg text-[#C9A24D] hover:bg-[#C9A24D] hover:text-black">

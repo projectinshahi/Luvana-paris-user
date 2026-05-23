@@ -559,6 +559,7 @@ import { useLanguage } from "@/lib/useLanguage";
 import ResponsiveLayout from "@/components/ResponsiveLayout";
 import api from "@/lib/axios";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import { i18n } from "next-i18next";
 
 interface OrderItem {
   name: string;
@@ -584,7 +585,7 @@ const statusConfig: Record<string, { label: string; icon: any; classes: string; 
 };
 
 export default function YourOrdersPage() {
-  const { t } = useTranslation("common");
+  const { t, i18n } = useTranslation("common");
   const { isRTL } = useLanguage();
   const { formatPrice } = useCurrency();
 
@@ -725,10 +726,10 @@ export default function YourOrdersPage() {
           <div className="mb-12">
             <p className="text-[#C9A24D]/50 text-[10px] tracking-[0.35em] uppercase mb-3 font-light">Account / History</p>
             <h1 className={`display-font text-5xl sm:text-6xl font-light leading-none mb-3 ${isRTL ? "text-right" : "text-left"}`}>
-              <span className="gold-shimmer">Your Orders</span>
+              <span className="gold-shimmer">{t("Your Orders")}</span>
             </h1>
             <p className={`text-gray-500 text-sm tracking-wide font-light ${isRTL ? "text-right" : "text-left"}`}>
-              {orders.length} order{orders.length !== 1 ? "s" : ""} in your history
+             {t("orders.historyCount", { count: orders.length })}
             </p>
             <div className="mt-6 divider-gold" />
           </div>
@@ -744,7 +745,8 @@ export default function YourOrdersPage() {
               />
               <input
                 type="text"
-                placeholder="Search by order ID or product…"
+                 key={i18n.language}
+                placeholder={t("orders.searchPlaceholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className={`input-focus w-full bg-[#111] border border-white/8 rounded-lg py-3 text-sm text-white placeholder-gray-600 focus:outline-none transition-all ${
@@ -766,12 +768,12 @@ export default function YourOrdersPage() {
                   isRTL ? "pr-4 pl-10 text-right" : "pl-10 pr-8 text-left"
                 }`}
               >
-                <option value="all">All Orders</option>
-                <option value="pending">Pending</option>
-                <option value="processing">Processing</option>
-                <option value="shipped">Shipped</option>
-                <option value="delivered">Delivered</option>
-                <option value="cancelled">Cancelled</option>
+                <option value="all">{t("allOrders")}</option>
+                <option value="pending">{t("pending")}</option>
+                <option value="processing">{t("processing")}</option>
+                <option value="shipped">{t("shipped")}</option>
+                <option value="delivered">{t("delivered")}</option>
+                <option value="cancelled">{t("cancelled")}</option>
               </select>
               <ChevronRight size={12} className={`absolute top-1/2 -translate-y-1/2 text-gray-500 rotate-90 pointer-events-none ${isRTL ? "left-3" : "right-3"}`} />
             </div>
@@ -783,8 +785,8 @@ export default function YourOrdersPage() {
               <div className="w-20 h-20 rounded-full bg-[#C9A24D]/8 border border-[#C9A24D]/15 flex items-center justify-center mb-6">
                 <Package size={32} className="text-[#C9A24D]/40" />
               </div>
-              <h3 className="display-font text-2xl font-light text-gray-300 mb-2">No orders found</h3>
-              <p className="text-gray-600 text-sm">Try adjusting your search or filter</p>
+              <h3 className="display-font text-2xl font-light text-gray-300 mb-2">{t("orders.noOrders")}</h3>
+              <p className="text-gray-600 text-sm">{t("orders.tryAdjusting")}</p>
             </div>
           ) : (
 
@@ -817,7 +819,7 @@ export default function YourOrdersPage() {
                           <span className="font-medium text-sm text-white truncate">{order.id}</span>
                           <span className={`status-badge inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium border ${cfg.classes}`}>
                             <span className={`w-1.5 h-1.5 rounded-full ${cfg.dot}`} />
-                            {cfg.label}
+                             {t(cfg.label)}
                           </span>
                         </div>
                         <p className="text-[11px] text-gray-600 font-light">
