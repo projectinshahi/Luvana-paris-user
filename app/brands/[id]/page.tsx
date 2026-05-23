@@ -1070,7 +1070,7 @@ const handleAddToCart = async () => {
     }
 
     const API_URL =
-      process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      process.env.NEXT_PUBLIC_API_URL;
 
     const res = await fetch(`${API_URL}/user/cart`, {
       method: "POST",
@@ -1129,7 +1129,7 @@ const handleImageMouseMove = useCallback(
       try {
         setLoading(true);
 
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+        const API_URL = process.env.NEXT_PUBLIC_API_URL;
         const res = await fetch(
           `${API_URL}/user/product/${productId}`
         );

@@ -47,7 +47,7 @@ export default function SkincarePage() {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+        const API_URL = process.env.NEXT_PUBLIC_API_URL;
         const res = await fetch(`${API_URL}/user/product?category=Skincare`);
         const data = await res.json();
         

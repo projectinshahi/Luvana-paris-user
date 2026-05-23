@@ -480,7 +480,7 @@ export default function ImageSection() {
   useEffect(() => {
     const fetchHome = async () => {
       try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+        const API_URL = process.env.NEXT_PUBLIC_API_URL;
         const res = await fetch(`${API_URL}/user/home`);
         const data = await res.json();
 
