@@ -1070,7 +1070,7 @@ const handleAddToCart = async () => {
     }
 
     const API_URL =
-      process.env.NEXT_PUBLIC_API_URL;
+      process.env.NEXT_PUBLIC_API_URL || "https://api.luvanaparis.com";
 
     const res = await fetch(`${API_URL}/user/cart`, {
       method: "POST",
@@ -1129,7 +1129,7 @@ const handleImageMouseMove = useCallback(
       try {
         setLoading(true);
 
-        const API_URL = process.env.NEXT_PUBLIC_API_URL;
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.luvanaparis.com";
         const res = await fetch(
           `${API_URL}/user/product/${productId}`
         );
@@ -1159,13 +1159,7 @@ const handleImageMouseMove = useCallback(
   useEffect(() => {
     if (product) {
       const variantData = product.variants?.[selectedVariant];
-      // console.log("Current variant images:", {
-      //   variantIndex: selectedVariant,
-      //   variantName: variantData?.nameEnglish || variantData?.nameArabic,
-      //   englishImages: variantData?.imageUrlEnglish,
-      //   arabicImages: variantData?.imageUrlArabic,
-      //   currentLanguage,
-      // });
+   
     }
   }, [selectedVariant, product, currentLanguage]);
 
