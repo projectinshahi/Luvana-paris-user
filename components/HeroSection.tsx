@@ -41,7 +41,7 @@ export default function HeroSection() {
   const prev = () => setCurrent((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
 
   return (
-    <div className="relative w-full h-[400px] md:h-[600px] overflow-hidden">
+    <div className="relative w-full h-[320px] sm:h-[450px] md:h-[550px] lg:h-[600px] overflow-hidden">
       {/* Slides */}
       {heroSlides.map((slide, index) => (
         <div

@@ -767,7 +767,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { logoutUser, selectIsAuthenticated } from "@/app/features/auth";
 import { toast } from "react-toastify";
@@ -791,6 +791,7 @@ type CountryFromBackend = {
 
 export default function Navbar() {
   const router = useRouter();
+  const pathname = usePathname();
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const { t, ready } = useTranslation("common");
@@ -978,8 +979,8 @@ export default function Navbar() {
             {offers.length > 0 ? offers[offerIndex] : "Loading..."}
           </span>
         </div>     */}
-        <div className="bg-[#0A0A0A] text-white text-center py-3">
-  <span className="block text-sm sm:text-base font-medium tracking-wide">
+        <div className="bg-[#0A0A0A] border-b border-white/5 text-[#E3C6A8] text-center py-2.5 shadow-sm">
+  <span className="block text-xs sm:text-sm font-medium tracking-widest uppercase">
     {offers.length > 0 ? offers[offerIndex] : "Loading..."}
   </span>
 </div>
@@ -987,7 +988,7 @@ export default function Navbar() {
         {/* DESKTOP NAVBAR */}
         <nav
           dir="ltr"
-          className="hidden sm:flex items-center justify-between bg-[#0D0D0D] text-white px-4 md:px-10 py-3"
+          className="hidden sm:flex items-center justify-between bg-[#0D0D0D]/95 backdrop-blur-lg border-b border-white/5 text-white px-4 md:px-10 py-3.5 transition-all duration-300"
         >
           <div
             onClick={() => router.push("/")}
@@ -996,15 +997,15 @@ export default function Navbar() {
             {t("navbar.logo")}
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-5">
 
-            <Search size={18} onClick={() => setShowSearch(true)} className="cursor-pointer hover:text-gray-300 transition" />
-            <Heart size={18} onClick={() => setShowWishlist(true)} className="cursor-pointer hover:text-red-500 transition" />
+            <Search size={19} onClick={() => setShowSearch(true)} className="cursor-pointer text-gray-300 hover:text-[#C5A059] transition-colors duration-300" />
+            <Heart size={19} onClick={() => setShowWishlist(true)} className="cursor-pointer text-gray-300 hover:text-[#C5A059] transition-colors duration-300" />
 
             <div className="relative" ref={userDropdownRef}>
               <User
-                size={18}
-                className="cursor-pointer hover:text-gray-300 transition"
+                size={19}
+                className="cursor-pointer text-gray-300 hover:text-[#C5A059] transition-colors duration-300"
                 onClick={() => {
                   if (!isAuthenticated) setShowLogin(true);
                   else setShowUserDropdown(!showUserDropdown);
@@ -1042,10 +1043,10 @@ export default function Navbar() {
               )}
             </div>
 
-            <ShoppingCart size={18} onClick={() => setShowCart(true)} className="cursor-pointer hover:text-gray-300 transition" />
+            <ShoppingCart size={19} onClick={() => setShowCart(true)} className="cursor-pointer text-gray-300 hover:text-[#C5A059] transition-colors duration-300" />
 
             {/* COUNTRY & LANGUAGE GROUP */}
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-2 pl-2 border-l border-white/10">
               
               {/* COUNTRY SELECTOR */}
               <div className="relative" ref={countryDropdownRef}>
@@ -1144,30 +1145,118 @@ export default function Navbar() {
         {/* MOBILE NAVBAR */}
         <nav
           dir="ltr"
-          className="sm:hidden flex items-center justify-between bg-[#0D0D0D] text-white px-4 py-3"
+          className="sm:hidden flex items-center justify-between bg-[#0D0D0D]/95 backdrop-blur-lg border-b border-white/5 text-white px-5 py-3.5 transition-all duration-300"
         >
-          <Menu size={22} onClick={() => setMobileMenuOpen(true)} className="cursor-pointer" />
+          <Menu size={24} onClick={() => setMobileMenuOpen(true)} className="cursor-pointer text-gray-300 hover:text-[#C5A059] transition-colors" />
           <div
             onClick={() => router.push("/")}
-            className="text-yellow-400 font-bold text-lg cursor-pointer"
+            className="text-[#C5A059] font-bold text-xl tracking-wide cursor-pointer"
           >
             {t("navbar.logo")}
           </div>
-          <Settings size={22} onClick={() => setShowSettings(true)} className="cursor-pointer" />
+          <Settings size={22} onClick={() => setShowSettings(true)} className="cursor-pointer text-gray-300 hover:text-[#C5A059] transition-colors" />
         </nav>
       </div>
 
-      {/* MOBILE FLOAT NAV */}
+      {/* MOBILE BOTTOM NAV */}
       <nav
         dir="ltr"
-        className="sm:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-40"
+        className="sm:hidden fixed bottom-0 left-0 w-full z-40 bg-gradient-to-t from-[#0A0A0A] to-[#111111]/95 backdrop-blur-xl border-t border-[#D4AF37]/20 rounded-t-[24px] shadow-[0_-8px_30px_rgba(0,0,0,0.8)]"
+        style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
-        <div className="flex items-center gap-6 px-6 py-3 rounded-full bg-[#2a2a2a]/90 backdrop-blur-md shadow-lg">
-          <Home size={20} onClick={() => router.push("/")} className="cursor-pointer" />
-          <Heart size={20} onClick={() => setShowWishlist(true)} className="cursor-pointer" />
-          <ShoppingCart size={20} onClick={() => setShowCart(true)} className="cursor-pointer" />
-          <Search size={20} onClick={() => setShowSearch(true)} className="cursor-pointer" />
-          <User size={20} onClick={() => setShowLogin(true)} className="cursor-pointer" />
+        <div className="flex items-center justify-between px-6 py-2">
+          
+          <button 
+            onClick={() => {
+              setShowWishlist(false);
+              setShowCart(false);
+              setShowSearch(false);
+              setShowLogin(false);
+              setShowUserDropdown(false);
+              router.push("/");
+            }} 
+            className="relative flex flex-col items-center justify-center p-2 w-14 h-14 group tap-highlight-transparent"
+          >
+            <span className={`absolute top-0 w-8 h-1 rounded-full transition-all duration-300 ${pathname === "/" && !showWishlist && !showCart && !showSearch && !showLogin && !showUserDropdown ? "bg-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.8)] scale-100" : "bg-transparent scale-0"}`} />
+            <Home 
+              size={24} 
+              strokeWidth={pathname === "/" && !showWishlist && !showCart && !showSearch && !showLogin && !showUserDropdown ? 2 : 1.5}
+              className={`transition-all duration-300 mt-1 ${pathname === "/" && !showWishlist && !showCart && !showSearch && !showLogin && !showUserDropdown ? "text-[#D4AF37] drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]" : "text-[#777] group-hover:text-[#D4AF37]/70"}`} 
+            />
+          </button>
+
+          <button 
+            onClick={() => {
+              setShowCart(false);
+              setShowSearch(false);
+              setShowLogin(false);
+              setShowUserDropdown(false);
+              setShowWishlist(true);
+            }} 
+            className="relative flex flex-col items-center justify-center p-2 w-14 h-14 group tap-highlight-transparent"
+          >
+            <span className={`absolute top-0 w-8 h-1 rounded-full transition-all duration-300 ${showWishlist ? "bg-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.8)] scale-100" : "bg-transparent scale-0"}`} />
+            <Heart 
+              size={24} 
+              strokeWidth={showWishlist ? 2 : 1.5}
+              className={`transition-all duration-300 mt-1 ${showWishlist ? "text-[#D4AF37] drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]" : "text-[#777] group-hover:text-[#D4AF37]/70"}`} 
+            />
+          </button>
+
+          <button 
+            onClick={() => {
+              setShowWishlist(false);
+              setShowSearch(false);
+              setShowLogin(false);
+              setShowUserDropdown(false);
+              setShowCart(true);
+            }} 
+            className="relative flex flex-col items-center justify-center p-2 w-14 h-14 group tap-highlight-transparent"
+          >
+            <span className={`absolute top-0 w-8 h-1 rounded-full transition-all duration-300 ${showCart ? "bg-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.8)] scale-100" : "bg-transparent scale-0"}`} />
+            <ShoppingCart 
+              size={24} 
+              strokeWidth={showCart ? 2 : 1.5}
+              className={`transition-all duration-300 mt-1 ${showCart ? "text-[#D4AF37] drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]" : "text-[#777] group-hover:text-[#D4AF37]/70"}`} 
+            />
+          </button>
+
+          <button 
+            onClick={() => {
+              setShowWishlist(false);
+              setShowCart(false);
+              setShowLogin(false);
+              setShowUserDropdown(false);
+              setShowSearch(true);
+            }} 
+            className="relative flex flex-col items-center justify-center p-2 w-14 h-14 group tap-highlight-transparent"
+          >
+            <span className={`absolute top-0 w-8 h-1 rounded-full transition-all duration-300 ${showSearch ? "bg-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.8)] scale-100" : "bg-transparent scale-0"}`} />
+            <Search 
+              size={24} 
+              strokeWidth={showSearch ? 2 : 1.5}
+              className={`transition-all duration-300 mt-1 ${showSearch ? "text-[#D4AF37] drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]" : "text-[#777] group-hover:text-[#D4AF37]/70"}`} 
+            />
+          </button>
+
+          <button 
+            onClick={() => {
+              setShowWishlist(false);
+              setShowCart(false);
+              setShowSearch(false);
+              if (!isAuthenticated) setShowLogin(true);
+              else setShowUserDropdown(!showUserDropdown);
+            }}
+            className="relative flex flex-col items-center justify-center p-2 w-14 h-14 group tap-highlight-transparent"
+          >
+            <span className={`absolute top-0 w-8 h-1 rounded-full transition-all duration-300 ${(showLogin || showUserDropdown) ? "bg-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.8)] scale-100" : "bg-transparent scale-0"}`} />
+            <User 
+              size={24} 
+              strokeWidth={(showLogin || showUserDropdown) ? 2 : 1.5}
+              className={`transition-all duration-300 mt-1 ${(showLogin || showUserDropdown) ? "text-[#D4AF37] drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]" : "text-[#777] group-hover:text-[#D4AF37]/70"}`} 
+            />
+          </button>
+
         </div>
       </nav>
 

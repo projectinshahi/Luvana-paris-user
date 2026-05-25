@@ -103,6 +103,8 @@ const { formatPrice } = useCurrency();
   const categoryParam = searchParams.get("category");
   const brandParam = searchParams.get("brand");
 
+  console.log("📍 URL Params - Category:", categoryParam, "Brand:", brandParam);
+
   if (categoryParam) {
     setSelectedCategories(categoryParam.split(","));
   } else {
@@ -110,7 +112,12 @@ const { formatPrice } = useCurrency();
   }
 
   if (brandParam) {
-    setSelectedBrands(brandParam.split(","));
+    setSelectedBrands([brandParam]);
+    // Scroll to top when brand is selected
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+      console.log("⬆️ Scrolled to top");
+    }, 100);
   } else {
     setSelectedBrands([]);
   }
@@ -171,13 +178,19 @@ const { formatPrice } = useCurrency();
       const API_URL =
         process.env.NEXT_PUBLIC_API_URL || "https://api.luvanaparis.com";
 
+      console.log("🔄 Fetching products with params:", params);
+      
       const res = await axios.get(`${API_URL}/user/product`, {
         params,
       });
 
-      setProducts(res.data.items || []);
+      console.log("📦 API Response:", res.data);
+      
+      const productsData = res.data.items || res.data.products || res.data || [];
+      setProducts(Array.isArray(productsData) ? productsData : []);
+      console.log("✅ Products set:", productsData.length);
     } catch (error) {
-      console.error("Error fetching products:", error);
+      console.error("❌ Error fetching products:", error);
       setProducts([]);
     } finally {
       setLoading(false);
@@ -399,7 +412,7 @@ const sortedProducts = useMemo(() => {
 
     /* ================= UI ================= */
     return (
-      <div dir="ltr" className="pt-17 pb-16 min-h-screen bg-linear-to-b from-[#0D0D0D] to-[#1A1A1A] text-white">
+      <div dir="ltr" className="pt-8 sm:pt-12 pb-16 min-h-screen bg-linear-to-b from-[#0D0D0D] to-[#1A1A1A] text-white">
         <div className="max-w-7xl mx-auto px-4">
 
           {/* Header Section */}
