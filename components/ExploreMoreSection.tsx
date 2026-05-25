@@ -60,7 +60,7 @@ export default function ExploreMoreSection() {
         .explore-track {
           display: flex;
           /* width is set by content — must NOT have a fixed width */
-          animation: explore-scroll 30s linear infinite;
+          animation: explore-scroll 15s linear infinite;
           will-change: transform;
         }
         .explore-wrapper:hover .explore-track {

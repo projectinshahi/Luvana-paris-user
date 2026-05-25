@@ -220,7 +220,7 @@ export default function BestSellers() {
               loop={true}
               speed={800}
               autoplay={{ 
-                delay: 4000, 
+                delay: 2000, 
                 disableOnInteraction: false,
                 pauseOnMouseEnter: true 
               }}
