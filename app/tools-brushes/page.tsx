@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { ShoppingCart, Home, X, Heart } from "lucide-react";
+import { ShoppingCart, Heart, X, SlidersHorizontal, ChevronDown, Sparkles } from "lucide-react";
 import { useCurrency } from "@/contexts/CurrencyContext";
 
+/* ─── Types ─────────────────────────────────────────────────────────────── */
 interface Product {
   id: number;
   name: string;
@@ -14,8 +15,31 @@ interface Product {
   brand: string;
 }
 
-export default function BrandsPage() {
+/* ─── Gold theme constants ───────────────────────────────────────────────── */
+const GOLD = "#C9A24D";
+const GOLD_LIGHT = "#E2C07A";
+const GOLD_DARK = "#A07C30";
+
+/* ─── Skeleton card ──────────────────────────────────────────────────────── */
+function SkeletonCard() {
+  return (
+    <div className="lux-card rounded-2xl overflow-hidden animate-pulse">
+      <div className="w-full aspect-[3/4] bg-[#1E1E1E]" />
+      <div className="p-4 space-y-3">
+        <div className="h-2.5 bg-[#1E1E1E] rounded w-1/3" />
+        <div className="h-4 bg-[#1E1E1E] rounded w-3/4" />
+        <div className="h-3 bg-[#1E1E1E] rounded w-full" />
+        <div className="h-5 bg-[#1E1E1E] rounded w-1/4 mt-2" />
+        <div className="h-10 bg-[#1E1E1E] rounded-xl mt-3" />
+      </div>
+    </div>
+  );
+}
+
+/* ─── Main Page ──────────────────────────────────────────────────────────── */
+export default function ToolsBrushesPage() {
   const { formatPrice } = useCurrency();
+
   const [priceRange, setPriceRange] = useState(5000);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
@@ -23,92 +47,83 @@ export default function BrandsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-  /* ================= PRODUCTS ================= */
+  /* ─── Static product data ─────────────────────────────────────────────── */
   const products: Product[] = [
     {
       id: 1,
-      name: "Hydra Glow Face Serum",
-      description: "Lightweight hyaluronic acid serum for intense hydration.",
+      name: "Pro Blending Brush Set",
+      description: "Ultra-soft synthetic bristles for seamless blending.",
       price: 1299,
-      image:
-        "https://www.jovees.com/cdn/shop/files/Artboard_3_b97ec74d-8c5a-4ea6-81ed-7360dfbfa50e.jpg?v=1738930572",
-      category: "Skincare",
+      image: "https://www.jovees.com/cdn/shop/files/Artboard_3_b97ec74d-8c5a-4ea6-81ed-7360dfbfa50e.jpg?v=1738930572",
+      category: "Brushes",
       brand: "GlowLab",
     },
     {
       id: 2,
-      name: "Vitamin C Brightening Cream",
-      description: "Daily moisturizer enriched with Vitamin C.",
-      price: 1799,
-      image:
-        "https://healthstores.in/cdn/shop/files/PP_whitening_Cream_7.jpg?v=1766571833&width=1445",
-      category: "Skincare",
+      name: "Foundation Flat Brush",
+      description: "Precision flat brush for flawless foundation application.",
+      price: 799,
+      image: "https://healthstores.in/cdn/shop/files/PP_whitening_Cream_7.jpg?v=1766571833&width=1445",
+      category: "Brushes",
       brand: "DermaCare",
     },
     {
       id: 3,
-      name: "Matte Finish Foundation",
-      description: "Full coverage matte foundation.",
+      name: "Contour & Highlight Kit",
+      description: "Angled brush set for sculpted, defined looks.",
       price: 2199,
-      image:
-        "https://assets.myntassets.com/h_1440,q_75,w_1080/v1/assets/images/24576580/2023/11/28/a7cac8ba-5190-410f-994a-c4b3a0aefce61701159587240-NOY-Set-Of-15-Makeup-Gift-Set-9491701159587175-1.jpg",
-      category: "Makeup",
+      image: "https://assets.myntassets.com/h_1440,q_75,w_1080/v1/assets/images/24576580/2023/11/28/a7cac8ba-5190-410f-994a-c4b3a0aefce61701159587240-NOY-Set-Of-15-Makeup-Gift-Set-9491701159587175-1.jpg",
+      category: "Tools",
       brand: "Luxe Beauty",
     },
     {
       id: 4,
-      name: "Velvet Touch Lipstick",
-      description: "Creamy matte lipstick with rich pigment.",
+      name: "Eyeliner Precision Brush",
+      description: "Fine-tip brush for sharp, precise liner application.",
       price: 899,
-      image:
-        "https://cdn.thewirecutter.com/wp-content/media/2026/02/BEST-LIPSTICK-0410-2x1-1.jpg",
-      category: "Makeup",
+      image: "https://cdn.thewirecutter.com/wp-content/media/2026/02/BEST-LIPSTICK-0410-2x1-1.jpg",
+      category: "Brushes",
       brand: "Luxe Beauty",
     },
-        {
+    {
       id: 5,
-      name: "Argan Repair Hair Serum",
-      description: "Nourishing serum to control frizz.",
+      name: "Makeup Sponge Duo",
+      description: "Latex-free sponges for airbrushed coverage.",
       price: 999,
-      image:
-        "https://m.media-amazon.com/images/I/61Nnnk9WDIL._AC_UF1000,1000_QL80_.jpg",
-      category: "Haircare",
+      image: "https://m.media-amazon.com/images/I/61Nnnk9WDIL._AC_UF1000,1000_QL80_.jpg",
+      category: "Tools",
       brand: "SilkRoots",
     },
     {
       id: 6,
-      name: "Keratin Smooth Shampoo",
-      description: "Strengthens hair and reduces breakage.",
+      name: "Brush Cleaner Spray",
+      description: "Fast-drying formula that sanitises and conditions bristles.",
       price: 749,
-      image:
-        "https://svashudhi.com/cdn/shop/collections/hairfall_treatment_square_2400x.jpg?v=1690965512",
-      category: "Haircare",
+      image: "https://svashudhi.com/cdn/shop/collections/hairfall_treatment_square_2400x.jpg?v=1690965512",
+      category: "Tools",
       brand: "SilkRoots",
     },
   ];
 
-  const categories = ["Skincare", "Makeup", "Haircare", "Fragrance"];
-  const brands = ["GlowLab", "DermaCare", "Luxe Beauty", "SilkRoots", "Maison Aura"];
+  const categories = [...new Set(products.map((p) => p.category))];
+  const brands = [...new Set(products.map((p) => p.brand))];
 
-  /* ================= FILTER + SORT ================= */
+  /* ─── Filter + Sort ───────────────────────────────────────────────────── */
   const filteredProducts = useMemo(() => {
     let data = [...products];
 
-    if (searchQuery) {
+    if (searchQuery)
       data = data.filter((p) =>
         p.name.toLowerCase().includes(searchQuery.toLowerCase())
       );
-    }
 
     data = data.filter((p) => p.price <= priceRange);
 
-    if (selectedCategories.length) {
+    if (selectedCategories.length)
       data = data.filter((p) => selectedCategories.includes(p.category));
-    }
 
-    if (selectedBrands.length) {
+    if (selectedBrands.length)
       data = data.filter((p) => selectedBrands.includes(p.brand));
-    }
 
     if (sortBy === "low") data.sort((a, b) => a.price - b.price);
     if (sortBy === "high") data.sort((a, b) => b.price - a.price);
@@ -116,201 +131,537 @@ export default function BrandsPage() {
     return data;
   }, [priceRange, selectedCategories, selectedBrands, sortBy, searchQuery]);
 
-  /* ================= FILTER CONTENT ================= */
-  const FilterContent = () => (
-    // <div className="space-y-4 text-sm">
-    <div className="space-y-4 text-sm h-fit self-start">
+  const activeFilterCount =
+    selectedCategories.length +
+    selectedBrands.length +
+    (priceRange < 5000 ? 1 : 0);
 
-      {/* Price (compact) */}
+  const resetFilters = () => {
+    setPriceRange(5000);
+    setSelectedCategories([]);
+    setSelectedBrands([]);
+    setSearchQuery("");
+  };
+
+  /* ─── Filter panel (shared desktop + mobile) ──────────────────────────── */
+  const FilterPanel = () => (
+    <div className="space-y-7">
+      {/* Price */}
       <div>
-        <h3 className="text-[#C9A24D] font-semibold mb-1"> Filter By Price</h3>
+        <h3
+          className="text-xs font-semibold uppercase tracking-[0.2em] mb-4"
+          style={{ color: GOLD }}
+        >
+          Price Range
+        </h3>
         <input
           type="range"
           min="0"
           max="5000"
           value={priceRange}
           onChange={(e) => setPriceRange(Number(e.target.value))}
-          className="w-full accent-[#C9A24D]"
+          className="w-full h-1 rounded-full appearance-none cursor-pointer"
+          style={{
+            accentColor: GOLD,
+            background: `linear-gradient(to right, ${GOLD} 0%, ${GOLD} ${(priceRange / 5000) * 100}%, #2A2A2A ${(priceRange / 5000) * 100}%, #2A2A2A 100%)`,
+          }}
         />
-        <p className="text-xs text-gray-400 mt-1">
-          Up to {formatPrice(priceRange)}
-        </p>
+        <div className="flex justify-between mt-3">
+          <span className="text-xs text-white/30">0</span>
+          <span className="text-xs font-semibold" style={{ color: GOLD }}>
+            {formatPrice(priceRange)}
+          </span>
+        </div>
       </div>
 
+      {/* Divider */}
+      <div
+        className="h-px"
+        style={{
+          background: `linear-gradient(to right, transparent, ${GOLD}30, transparent)`,
+        }}
+      />
+
       {/* Categories */}
-      {/* <div>
-        <h3 className="text-[#C9A24D] font-semibold mb-1">Categories</h3>
-        {categories.map((cat) => (
-          <label key={cat} className="flex gap-2 text-gray-300">
-            <input
-              type="checkbox"
-              className="accent-[#C9A24D]"
-              checked={selectedCategories.includes(cat)}
-              onChange={() =>
-                setSelectedCategories((prev) =>
-                  prev.includes(cat)
-                    ? prev.filter((c) => c !== cat)
-                    : [...prev, cat]
-                )
-              }
-            />
-            {cat}
-          </label>
-        ))}
-      </div> */}
+      <div>
+        <h3
+          className="text-xs font-semibold uppercase tracking-[0.2em] mb-4"
+          style={{ color: GOLD }}
+        >
+          Categories
+        </h3>
+        <div className="space-y-2.5">
+          {categories.map((cat) => {
+            const active = selectedCategories.includes(cat);
+            return (
+              <label key={cat} className="flex items-center gap-3 cursor-pointer group">
+                <div
+                  onClick={() =>
+                    setSelectedCategories((prev) =>
+                      active ? prev.filter((c) => c !== cat) : [...prev, cat]
+                    )
+                  }
+                  className="w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 transition-all duration-200"
+                  style={{
+                    borderColor: active ? GOLD : "#3A3A3A",
+                    background: active ? `${GOLD}20` : "transparent",
+                  }}
+                >
+                  {active && (
+                    <div className="w-2 h-2 rounded-sm" style={{ background: GOLD }} />
+                  )}
+                </div>
+                <span
+                  className={`text-sm transition-colors duration-200 ${
+                    active ? "text-white" : "text-white/50 group-hover:text-white/80"
+                  }`}
+                >
+                  {cat}
+                </span>
+              </label>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Divider */}
+      <div
+        className="h-px"
+        style={{
+          background: `linear-gradient(to right, transparent, ${GOLD}30, transparent)`,
+        }}
+      />
 
       {/* Brands */}
       <div>
-        <h3 className="text-[#C9A24D] font-semibold mb-1">Brands</h3>
-        {brands.map((brand) => (
-          <label key={brand} className="flex gap-2 text-gray-300">
-            <input
-              type="checkbox"
-              className="accent-[#C9A24D]"
-              checked={selectedBrands.includes(brand)}
-              onChange={() =>
-                setSelectedBrands((prev) =>
-                  prev.includes(brand)
-                    ? prev.filter((b) => b !== brand)
-                    : [...prev, brand]
-                )
-              }
-            />
-            {brand}
-          </label>
-        ))}
+        <h3
+          className="text-xs font-semibold uppercase tracking-[0.2em] mb-4"
+          style={{ color: GOLD }}
+        >
+          Brands
+        </h3>
+        <div className="space-y-2.5">
+          {brands.map((brand) => {
+            const active = selectedBrands.includes(brand);
+            return (
+              <label key={brand} className="flex items-center gap-3 cursor-pointer group">
+                <div
+                  onClick={() =>
+                    setSelectedBrands((prev) =>
+                      active ? prev.filter((b) => b !== brand) : [...prev, brand]
+                    )
+                  }
+                  className="w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 transition-all duration-200"
+                  style={{
+                    borderColor: active ? GOLD : "#3A3A3A",
+                    background: active ? `${GOLD}20` : "transparent",
+                  }}
+                >
+                  {active && (
+                    <div className="w-2 h-2 rounded-sm" style={{ background: GOLD }} />
+                  )}
+                </div>
+                <span
+                  className={`text-sm transition-colors duration-200 ${
+                    active ? "text-white" : "text-white/50 group-hover:text-white/80"
+                  }`}
+                >
+                  {brand}
+                </span>
+              </label>
+            );
+          })}
+        </div>
       </div>
+
+      {/* Reset */}
+      {activeFilterCount > 0 && (
+        <button
+          onClick={resetFilters}
+          className="w-full py-2.5 rounded-xl text-xs font-semibold tracking-wide border transition-all duration-200"
+          style={{ borderColor: `${GOLD}40`, color: GOLD }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = `${GOLD}15`;
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "transparent";
+          }}
+        >
+          Clear All Filters
+        </button>
+      )}
     </div>
   );
 
-  /* ================= UI ================= */
+  /* ─── Render ──────────────────────────────────────────────────────────── */
   return (
-    <div className="pt-16 pb-16 min-h-screen bg-[#0D0D0D] text-white">
-      <div className="max-w-7xl mx-auto px-4">
+    <>
+      {/* ── Luxury styles ── */}
+      <style>{`
+        .lux-page { font-family: 'DM Sans', -apple-system, sans-serif; }
 
-        {/* Breadcrumb */}
-       
-        {/* TOP BAR (ALL DEVICES) */}
-        {/* <div className="flex flex-col sm:flex-row gap-3 mb-5"> */}
-          {/* <input
-            placeholder="Search"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1 bg-gray-800 rounded-full px-4 py-2 text-sm outline-none"
-          /> */}
+        .lux-card {
+          background: #111;
+          border: 1px solid rgba(255,255,255,0.06);
+          transition: border-color 0.35s ease, box-shadow 0.35s ease, transform 0.25s ease;
+        }
+        .lux-card:hover {
+          border-color: rgba(201,162,77,0.3);
+          box-shadow: 0 0 0 1px rgba(201,162,77,0.08), 0 12px 48px rgba(0,0,0,0.6);
+          transform: translateY(-3px);
+        }
 
-<div className="flex flex-col sm:flex-row gap-3 mb-5">
-  <div className="ml-auto flex gap-3">
-    <select
-      value={sortBy}
-      onChange={(e) => setSortBy(e.target.value)}
-      className="h-9 px-4 rounded-full text-sm bg-gray-800"
-    >
-      <option value="default">Sort</option>
-      <option value="low">Price: Low → High</option>
-      <option value="high">Price: High → Low</option>
-    </select>
+        .lux-btn-cart {
+          border: 1px solid rgba(201,162,77,0.5);
+          color: ${GOLD};
+          background: transparent;
+          transition: all 0.25s ease;
+        }
+        .lux-btn-cart:hover {
+          background: linear-gradient(135deg, ${GOLD_DARK}, ${GOLD}, ${GOLD_LIGHT});
+          border-color: transparent;
+          color: #000;
+          box-shadow: 0 4px 20px rgba(201,162,77,0.3);
+        }
 
-    <button
-      onClick={() => setIsFilterOpen(true)}
-      className="h-9 px-4 rounded-full text-sm font-medium bg-[#FF7A00] lg:hidden w-fit flex items-center"
-    >
-      Filters
-    </button>
-  </div>
+        .lux-btn-filter {
+          background: linear-gradient(135deg, ${GOLD_DARK}, ${GOLD});
+          color: #000;
+          font-weight: 600;
+          letter-spacing: 0.05em;
+          transition: all 0.25s ease;
+        }
+        .lux-btn-filter:hover {
+          background: linear-gradient(135deg, ${GOLD}, ${GOLD_LIGHT});
+          box-shadow: 0 4px 20px rgba(201,162,77,0.35);
+          transform: translateY(-1px);
+        }
 
+        .lux-select {
+          background: #111;
+          border: 1px solid rgba(201,162,77,0.25);
+          color: ${GOLD};
+          font-size: 11px;
+          font-weight: 600;
+          letter-spacing: 0.04em;
+          transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .lux-select:focus {
+          border-color: rgba(201,162,77,0.6);
+          box-shadow: 0 0 0 2px rgba(201,162,77,0.1);
+          outline: none;
+        }
+        .lux-select option { background: #0D0D0D; color: #ccc; }
 
+        @keyframes slideInLeft {
+          from { transform: translateX(-100%); opacity: 0; }
+          to   { transform: translateX(0);    opacity: 1; }
+        }
+        .filter-drawer { animation: slideInLeft 0.3s cubic-bezier(0.16,1,0.3,1) forwards; }
 
-</div>
+        @keyframes cardIn {
+          from { opacity: 0; transform: translateY(16px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        .card-enter { animation: cardIn 0.4s ease forwards; }
 
+        input[type=range]::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          width: 16px; height: 16px;
+          border-radius: 50%;
+          background: ${GOLD};
+          border: 2px solid #000;
+          cursor: pointer;
+          box-shadow: 0 0 8px rgba(201,162,77,0.5);
+        }
+        input[type=range]::-moz-range-thumb {
+          width: 16px; height: 16px;
+          border-radius: 50%;
+          background: ${GOLD};
+          border: 2px solid #000;
+          cursor: pointer;
+        }
+      `}</style>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <div className="lux-page pt-6 sm:pt-10 pb-20 min-h-screen bg-[#0D0D0D] text-white overflow-x-hidden">
+        <div className="max-w-7xl mx-auto px-3 sm:px-5 lg:px-8">
 
-          {/* Filters */}
-          {/* <aside className="hidden lg:block bg-[#1A1A1A] border border-[#2A2A2A] p-4 rounded-lg"> */}
-          <aside className="hidden lg:block bg-[#1A1A1A] border border-[#2A2A2A] p-4 rounded-lg h-fit">
+          {/* ── Page heading ── */}
+          <div className="mb-6">
+            <h1
+              className="text-2xl sm:text-3xl font-semibold tracking-wide"
+              style={{ color: GOLD }}
+            >
+              Tools &amp; Brushes
+            </h1>
+            <p className="text-xs text-white/30 mt-1 tracking-widest uppercase">
+              Professional-grade artistry essentials
+            </p>
+          </div>
 
-            <FilterContent />
-          </aside>
+          {/* ══ CONTROLS ROW ══
+               Desktop: [Sort▾]  ·  [N items]   (Sort sits above the product grid, right-aligned)
+               Mobile:  [Sort▾]  [Customize]  ·  [N items]
+          ══════════════════════════════════════════════════════ */}
+          <div className="flex items-center gap-2 sm:gap-3 mb-6 w-full">
 
-          {/* Products */}
-          <main className="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProducts.map((product) => (
-              <div
-                key={product.id}
-                className="bg-[#1A1A1A] border border-[#2A2A2A] rounded-lg overflow-hidden flex flex-col"
+            {/* Sort By — luxury dropdown */}
+            <div className="relative flex-shrink-0">
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="lux-select appearance-none rounded-lg pl-3 pr-7 py-2 text-xs cursor-pointer"
               >
-                {/* Image */}
-                {/* <div className="relative aspect-square">
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-full object-cover"
-                  />
-                  <button className="absolute top-3 right-3 bg-black/60 p-2 rounded-full">
-                    <Heart size={16} />
-                  </button>
-                </div> */}
-                {/* Image */}
-<div className="relative w-full h-64 overflow-hidden">
-  <img
-    src={product.image}
-    alt={product.name}
-    className="w-full h-full object-cover object-center"
-  />
+                <option value="default">Sort By</option>
+                <option value="low">Price: Low → High</option>
+                <option value="high">Price: High → Low</option>
+              </select>
+              <ChevronDown
+                size={11}
+                className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none"
+                style={{ color: `${GOLD}80` }}
+              />
+            </div>
 
-  {/* Wishlist */}
-  <button className="absolute top-3 right-3 bg-black/60 p-2 rounded-full hover:bg-[#C9A24D] transition">
-    <Heart size={16} />
-  </button>
-</div>
+            {/* Customize — mobile only */}
+            <button
+              onClick={() => setIsFilterOpen(true)}
+              className="lux-btn-filter lg:hidden flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs flex-shrink-0 relative"
+            >
+              <SlidersHorizontal size={12} />
+              Customize
+              {activeFilterCount > 0 && (
+                <span
+                  className="ml-0.5 w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold"
+                  style={{
+                    background: "rgba(0,0,0,0.35)",
+                    color: "#000",
+                    border: "1px solid rgba(0,0,0,0.25)",
+                  }}
+                >
+                  {activeFilterCount}
+                </span>
+              )}
+            </button>
 
+            {/* Item count — pushed to the right */}
+            <span className="ml-auto text-[11px] text-white/25 whitespace-nowrap">
+              {filteredProducts.length} item{filteredProducts.length !== 1 ? "s" : ""}
+            </span>
+          </div>
 
-                {/* Content */}
-                <div className="p-4 flex flex-col flex-1">
-                  <p className="text-xs text-gray-400">
-                    {product.brand} • {product.category}
+          {/* ── Main layout: sidebar + grid ── */}
+          <div className="flex gap-6 lg:gap-8 items-start">
+
+            {/* ── Desktop Filter Sidebar ── */}
+            <aside className="hidden lg:block w-56 xl:w-64 flex-shrink-0">
+              <div
+                className="sticky top-24 rounded-2xl p-5"
+                style={{
+                  background: "#111",
+                  border: "1px solid rgba(255,255,255,0.06)",
+                }}
+              >
+                {/* Sidebar header */}
+                <div className="flex items-center justify-between mb-5">
+                  <div className="flex items-center gap-2">
+                    <SlidersHorizontal size={14} style={{ color: GOLD }} />
+                    <h2
+                      className="text-xs font-semibold uppercase tracking-[0.2em]"
+                      style={{ color: GOLD }}
+                    >
+                      Customize
+                    </h2>
+                  </div>
+                  {activeFilterCount > 0 && (
+                    <span
+                      className="text-[10px] px-2 py-0.5 rounded-full font-semibold"
+                      style={{
+                        background: `${GOLD}18`,
+                        color: GOLD,
+                        border: `1px solid ${GOLD}35`,
+                      }}
+                    >
+                      {activeFilterCount}
+                    </span>
+                  )}
+                </div>
+                <FilterPanel />
+              </div>
+            </aside>
+
+            {/* ── Product Grid ── */}
+            <main className="flex-1 min-w-0">
+              {filteredProducts.length === 0 ? (
+                <div className="flex flex-col items-center justify-center py-24 text-center">
+                  <div
+                    className="w-16 h-16 rounded-full flex items-center justify-center mb-5"
+                    style={{
+                      background: `${GOLD}10`,
+                      border: `1px solid ${GOLD}25`,
+                    }}
+                  >
+                    <Sparkles size={24} style={{ color: `${GOLD}80` }} />
+                  </div>
+                  <h3 className="text-lg font-semibold text-white/70 mb-2">
+                    No products found
+                  </h3>
+                  <p className="text-sm text-white/30 mb-6">
+                    Try adjusting your filters
                   </p>
-
-                  <h3 className="font-semibold">{product.name}</h3>
-
-                  <p className="text-gray-400 text-sm line-clamp-2">
-                    {product.description}
-                  </p>
-
-                  <p className="text-[#C9A24D] font-bold mt-3">
-                    {formatPrice(product.price)}
-                  </p>
-
-                  <button className="mt-auto w-full flex items-center justify-center gap-2 border border-[#C9A24D] py-2 rounded-lg text-[#C9A24D] hover:bg-[#C9A24D] hover:text-black">
-                    <ShoppingCart size={16} />
-                    Add to Cart
+                  <button
+                    onClick={resetFilters}
+                    className="lux-btn-filter px-6 py-2.5 rounded-full text-sm"
+                  >
+                    Reset Filters
                   </button>
                 </div>
-              </div>
-            ))}
-          </main>
+              ) : (
+                <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-5">
+                  {filteredProducts.map((product, idx) => (
+                    <div
+                      key={product.id}
+                      className="card-enter"
+                      style={{ animationDelay: `${Math.min(idx * 40, 300)}ms` }}
+                    >
+                      <div className="lux-card group relative rounded-2xl overflow-hidden cursor-pointer flex flex-col">
+
+                        {/* Image */}
+                        <div className="relative w-full aspect-[3/4] overflow-hidden bg-[#111]">
+                          <img
+                            src={product.image}
+                            alt={product.name}
+                            className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                            onError={(e) => {
+                              e.currentTarget.src = "/placeholder.png";
+                            }}
+                          />
+                          {/* Gradient overlay */}
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                          {/* Wishlist */}
+                          <button
+                            className="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0"
+                            style={{
+                              background: "rgba(0,0,0,0.7)",
+                              backdropFilter: "blur(8px)",
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.background = GOLD;
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.background = "rgba(0,0,0,0.7)";
+                            }}
+                          >
+                            <Heart size={15} strokeWidth={2} />
+                          </button>
+                        </div>
+
+                        {/* Content */}
+                        <div className="p-3 sm:p-4 flex flex-col flex-1">
+                          <p
+                            className="text-[9px] sm:text-[10px] font-medium uppercase tracking-[0.12em] mb-1"
+                            style={{ color: `${GOLD}99` }}
+                          >
+                            {product.brand}
+                          </p>
+
+                          <h3 className="font-semibold text-xs sm:text-sm leading-snug mb-1.5 text-white/90 group-hover:text-white transition-colors line-clamp-2">
+                            {product.name}
+                          </h3>
+
+                          <p className="text-[11px] text-white/35 line-clamp-2 mb-2 flex-1 leading-relaxed hidden sm:block">
+                            {product.description}
+                          </p>
+
+                          <div className="mb-3">
+                            <span
+                              className="text-sm sm:text-base font-bold"
+                              style={{ color: GOLD }}
+                            >
+                              {formatPrice(product.price)}
+                            </span>
+                          </div>
+
+                          <button className="lux-btn-cart w-full flex items-center justify-center gap-1.5 py-2 sm:py-2.5 rounded-xl text-[11px] sm:text-xs font-semibold tracking-wide">
+                            <ShoppingCart size={12} strokeWidth={2.5} className="sm:hidden" />
+                            <ShoppingCart size={14} strokeWidth={2.5} className="hidden sm:block" />
+                            <span className="sm:hidden">Cart</span>
+                            <span className="hidden sm:inline">Add to Cart</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </main>
+          </div>
         </div>
 
-        {/* Mobile Filter Drawer */}
+        {/* ── Mobile Filter Drawer ── */}
         {isFilterOpen && (
           <>
+            {/* Backdrop */}
             <div
-              className="fixed inset-0 bg-black/60 z-40"
+              className="fixed inset-0 bg-black/70 z-40 backdrop-blur-sm"
               onClick={() => setIsFilterOpen(false)}
             />
-            <div className="fixed top-0 left-0 h-full w-80 bg-[#0D0D0D] z-50 p-5 overflow-y-auto">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold">Filters</h2>
-                <button onClick={() => setIsFilterOpen(false)}>
-                  <X />
+            {/* Drawer */}
+            <div
+              className="filter-drawer fixed top-0 left-0 h-full w-[85vw] max-w-sm bg-[#0D0D0D] z-50 flex flex-col shadow-2xl"
+              style={{ borderRight: `1px solid ${GOLD}20` }}
+            >
+              {/* Header */}
+              <div
+                className="flex items-center justify-between px-6 py-5"
+                style={{ borderBottom: `1px solid ${GOLD}15` }}
+              >
+                <div className="flex items-center gap-3">
+                  <SlidersHorizontal size={16} style={{ color: GOLD }} />
+                  <h2
+                    className="text-sm font-semibold uppercase tracking-[0.2em]"
+                    style={{ color: GOLD }}
+                  >
+                    Customize
+                  </h2>
+                </div>
+                <button
+                  onClick={() => setIsFilterOpen(false)}
+                  className="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
+                  style={{ background: "rgba(255,255,255,0.05)" }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = `${GOLD}20`;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = "rgba(255,255,255,0.05)";
+                  }}
+                >
+                  <X size={16} />
                 </button>
               </div>
-              <FilterContent />
+
+              {/* Body */}
+              <div className="flex-1 overflow-y-auto px-6 py-6">
+                <FilterPanel />
+              </div>
+
+              {/* Footer */}
+              <div
+                className="px-6 py-5"
+                style={{ borderTop: `1px solid ${GOLD}15` }}
+              >
+                <button
+                  onClick={() => setIsFilterOpen(false)}
+                  className="lux-btn-filter w-full py-3 rounded-xl text-sm"
+                >
+                  Show {filteredProducts.length} Result
+                  {filteredProducts.length !== 1 ? "s" : ""}
+                </button>
+              </div>
             </div>
           </>
         )}
       </div>
-    </div>
+    </>
   );
 }
