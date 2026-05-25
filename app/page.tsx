@@ -14,8 +14,7 @@ export default function Home() {
   return (
     <div>
      
-      {/* <div className="pt-[130px] sm:pt-[160px] md:pt-20 pb-20 sm:pb-0"> */}
-      <div className="pt-32.5 sm:pt-40 md:pt-20 pb-20 sm:pb-0">
+      <div className="pt-8 sm:pt-12 md:pt-12 pb-20 sm:pb-0">
 
         <ImageSection/>
         <CategoryBar />

@@ -160,7 +160,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
       <div
         className={`fixed top-16 bottom-0 ${
           isRTL ? "left-0" : "right-0"
-        } w-80 sm:w-96 bg-[#1A1A1A] text-white z-50 transform transition-transform duration-300 ${
+        } w-full sm:w-80 md:w-96 max-w-sm bg-[#1A1A1A] text-white z-50 transform transition-transform duration-300 ${
           isOpen
             ? "translate-x-0"
             : isRTL
@@ -224,7 +224,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                   className="flex gap-3 bg-[#0D0D0D] rounded-lg p-3 border border-[#2A2A2A]"
                 >
                   {/* Product Image */}
-                  <div className="w-24 h-24 shrink-0 rounded-lg overflow-hidden bg-[#2A2A2A]">
+                  <div className="w-20 sm:w-24 h-20 sm:h-24 shrink-0 rounded-lg overflow-hidden bg-[#2A2A2A] aspect-square">
                     <img
                       src={imageUrl}
                       alt={name}
