@@ -119,7 +119,7 @@ function OrderItemRow({ name, qty, price, img, formatPrice }: {
           display: "flex", alignItems: "center", justifyContent: "center",
         }}>
           {img ? <img src={img} alt={name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                : <Sparkles size={20} color={GOLD} />}
+            : <Sparkles size={20} color={GOLD} />}
         </div>
         <div style={{
           position: "absolute", top: -6, right: -6,
@@ -208,19 +208,39 @@ export default function CheckoutPage() {
         typeof window !== "undefined" ? window.location.origin : "http://luvanaparis.com";
 
       const redirectUrl = `${origin}/payment/callback`;
+      const cleanPhone = info.phone.replace(/\D/g, "");
 
-      // Call our own backend — backend calls Tap (no CORS issue)
-      const res = await api.post("/user/payment/create-charge", {
+      if (!cleanPhone) {
+        setPayError("Please enter a valid phone number");
+        setPaying(false);
+        return;
+      }
+
+      // Call Tap Payments via Next.js Server Action to avoid CORS
+      const { initiateTapPayment } = await import("@/app/actions/tapPayment");
+      const tapResponse = await initiateTapPayment({
         amount: total > 0 ? parseFloat(total.toFixed(3)) : 1,
         currency: "KWD",
-        customerName: info.name,
-        customerEmail: info.email,
-        customerPhone: info.phone,
-        redirectUrl,
+        customer: {
+          first_name: info.name,
+          email: info.email,
+          phone: {
+            country_code: "965",
+            // number: info.phone
+            number: info.phone.replace(/\D/g, "")
+          }
+        },
+        source: { id: "src_all" },
+        redirect: { url: redirectUrl },
         description: `Luvana Paris Order — ${info.name}`,
       });
 
-      const { chargeId, transactionUrl } = res.data;
+      if (!tapResponse.success) {
+        throw new Error(tapResponse.error);
+      }
+
+      const chargeId = tapResponse.chargeId;
+      const transactionUrl = tapResponse.transactionUrl;
 
       // Save pending order info for the callback page — include full cart data
       sessionStorage.setItem(
