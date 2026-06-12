@@ -66,11 +66,25 @@ export default function PaymentCallbackPage() {
             try {
               const pending = JSON.parse(pendingRaw);
               const api = (await import("@/lib/axios")).default;
-              const orderResponse = await api.post("/user/orders", {
+
+              let addressId = null;
+              try {
+                // Create Address first to get the _id needed for the order
+                const addressRes = await api.post("/user/address", {
+                  ...pending.deliveryInfo,
+                  type: "home",
+                  isDefault: false
+                });
+                addressId = addressRes.data.address._id;
+              } catch (addrErr: any) {
+                console.error("[PaymentCallback] Address creation failed", addrErr?.response?.data || addrErr.message);
+                throw new Error("Failed to create shipping address: " + (addrErr?.response?.data?.message || addrErr.message));
+              }
+
+              const orderResponse = await api.post("/user/order", {
                 items: pending.cartItems,
-                shippingAddress: pending.deliveryInfo,
+                shippingAddress: addressId,
                 tapChargeId: chargeId,
-                // paymentStatus: "paid",
                 paymentStatus:
   finalStatus === "CAPTURED" || finalStatus === "AUTHORIZED"
     ? "paid"
