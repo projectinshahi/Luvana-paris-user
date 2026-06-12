@@ -68,7 +68,7 @@ export async function createOrder(request: CreateOrderRequest): Promise<OrderRes
       paymentStatus: request.paymentStatus,
     });
 
-    const response = await api.post('/user/orders', request);
+    const response = await api.post('/user/order', request);
     console.log('[OrderService] ✅ Order created successfully', response.data);
     return response.data;
   } catch (error: any) {
@@ -95,7 +95,7 @@ export async function fetchUserOrders(): Promise<UserOrder[]> {
   try {
     console.log("[OrderService] 📋 Fetching user orders...");
 
-    const response = await api.get("/user/orders");
+    const response = await api.get("/user/order");
     const orders = response.data.orders || [];
 
     console.log("[OrderService] ✅ Orders fetched", {
