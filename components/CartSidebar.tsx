@@ -7,6 +7,7 @@ import { useCurrency } from "@/contexts/CurrencyContext";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import api from "@/lib/axios";
+import Image from "next/image";
 
 interface CartItem {
   _id: string;
@@ -151,7 +152,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
       {/* Backdrop */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-45"
+          className="fixed inset-0 bg-ink/40 backdrop-blur-sm z-45"
           onClick={onClose}
         />
       )}
@@ -160,7 +161,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
       <div
         className={`fixed top-16 bottom-0 ${
           isRTL ? "left-0" : "right-0"
-        } w-full sm:w-80 md:w-96 max-w-sm bg-[#1A1A1A] text-white z-50 transform transition-transform duration-300 ${
+        } w-full sm:w-80 md:w-96 max-w-sm bg-cream text-ink border-s border-line shadow-luxury-lg z-50 transform transition-transform duration-300 ${
           isOpen
             ? "translate-x-0"
             : isRTL
@@ -169,21 +170,22 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
         } flex flex-col`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-[#2A2A2A]">
-          <h2 className="text-xl font-semibold text-gray-300">
+        <div className="flex items-center justify-between p-4 border-b border-line">
+          <h2 className="text-xl font-semibold text-ink">
             {t("cart.yourCart")}
           </h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-[#2A2A2A] rounded-full transition"
+            aria-label="Close cart sidebar"
+            className="p-2 text-ink hover:bg-champagne rounded-full transition focus-visible:ring-2 focus-visible:ring-gold focus:outline-none"
           >
             <X size={20} />
           </button>
         </div>
 
         {/* Shop Order Header */}
-        <div className="px-4 py-3 border-b border-[#2A2A2A]">
-          <p className="text-sm text-gray-400">
+        <div className="px-4 py-3 border-b border-line">
+          <p className="text-sm text-muted">
             {t("cart.shopOrder")} ({summary.itemCount} {t("cart.items")})
           </p>
         </div>
@@ -191,13 +193,13 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
         {/* Cart Items - Scrollable */}
         <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
           {loading ? (
-            <p className="text-center text-gray-400">Loading...</p>
+            <p className="text-center text-muted">Loading...</p>
           ) : cartItems.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full gap-4">
-              <div className="w-16 h-16 rounded-full bg-[#2A2A2A] flex items-center justify-center">
-                <X size={28} className="text-gray-600" />
+              <div className="w-16 h-16 rounded-full bg-champagne flex items-center justify-center">
+                <X size={28} className="text-muted" />
               </div>
-              <p className="text-center text-gray-400">Your cart is empty</p>
+              <p className="text-center text-muted">Your cart is empty</p>
             </div>
           ) : (
             cartItems.map((item) => {
@@ -221,14 +223,16 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
               return (
                 <div
                   key={item._id}
-                  className="flex gap-3 bg-[#0D0D0D] rounded-lg p-3 border border-[#2A2A2A]"
+                  className="flex gap-3 bg-card rounded-xl p-3 border border-line"
                 >
                   {/* Product Image */}
-                  <div className="w-20 sm:w-24 h-20 sm:h-24 shrink-0 rounded-lg overflow-hidden bg-[#2A2A2A] aspect-square">
-                    <img
+                  <div className="relative w-20 sm:w-24 h-20 sm:h-24 shrink-0 rounded-lg overflow-hidden bg-champagne aspect-square">
+                    <Image
                       src={imageUrl}
                       alt={name}
-                      className="w-full h-full object-cover"
+                      fill
+                      sizes="(max-width: 640px) 5rem, 6rem"
+                      className="object-cover"
                     />
                   </div>
 
@@ -239,15 +243,15 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                         {name}
                       </h3>
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="text-sm font-bold text-white">
+                        <span className="text-sm font-bold text-ink">
                           {formatPrice(item.variant?.price)}
                         </span>
                         {discount > 0 && (
                           <>
-                            <span className="text-xs text-gray-500 line-through">
+                            <span className="text-xs text-muted line-through">
                               {formatPrice(item.variant?.mrp)}
                             </span>
-                            <span className="text-xs text-green-500 font-semibold">
+                            <span className="text-xs text-green-600 font-semibold">
                               {discount}% {t("cart.off")}
                             </span>
                           </>
@@ -257,23 +261,25 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
 
                     {/* Quantity Controls */}
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2 bg-[#2A2A2A] rounded-full">
+                      <div className="flex items-center gap-2 border border-line rounded-full">
                         <button
                           onClick={() =>
                             updateQuantity(item._id, item.quantity - 1)
                           }
-                          className="w-7 h-7 flex items-center justify-center hover:bg-[#3A3A3A] rounded-full transition"
+                          aria-label="Decrease quantity"
+                          className="w-7 h-7 flex items-center justify-center text-ink hover:bg-champagne rounded-full transition focus-visible:ring-2 focus-visible:ring-gold focus:outline-none"
                         >
                           <Minus size={14} />
                         </button>
-                        <span className="text-sm font-medium w-6 text-center">
+                        <span className="text-sm font-medium w-6 text-center text-ink">
                           {item.quantity}
                         </span>
                         <button
                           onClick={() =>
                             updateQuantity(item._id, item.quantity + 1)
                           }
-                          className="w-7 h-7 flex items-center justify-center hover:bg-[#3A3A3A] rounded-full transition"
+                          aria-label="Increase quantity"
+                          className="w-7 h-7 flex items-center justify-center text-ink hover:bg-champagne rounded-full transition focus-visible:ring-2 focus-visible:ring-gold focus:outline-none"
                         >
                           <Plus size={14} />
                         </button>
@@ -281,7 +287,8 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
 
                       <button
                         onClick={() => removeItem(item._id)}
-                        className="text-xs text-red-500 hover:text-red-400 transition"
+                        aria-label="Remove item"
+                        className="text-xs text-muted hover:text-red-500 transition focus-visible:ring-2 focus-visible:ring-gold focus:outline-none rounded px-1"
                       >
                         {t("cart.remove")}
                       </button>
@@ -295,56 +302,57 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
 
         {/* Payment Summary */}
         {cartItems.length > 0 && (
-          <div className="border-t border-[#2A2A2A] bg-[#0D0D0D]">
+          <div className="border-t border-line bg-champagne">
             <div className="px-4 py-3 space-y-2">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-400">{t("cart.payment")}</span>
-                <span className="text-gray-400">
+                <span className="text-muted">{t("cart.payment")}</span>
+                <span className="text-muted">
                   {t("cart.items")} ({summary.itemCount})
                 </span>
               </div>
 
               <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-400">{t("cart.total")}</span>
-                <span className="text-white font-medium">
+                <span className="text-muted">{t("cart.total")}</span>
+                <span className="text-ink font-medium">
                   {formatPrice(summary.subtotal)}
                 </span>
               </div>
 
               <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-400">{t("cart.discount")}</span>
-                <span className="text-green-500 font-medium">
+                <span className="text-muted">{t("cart.discount")}</span>
+                <span className="text-green-600 font-medium">
                   {formatPrice(summary.discount)}
                 </span>
               </div>
 
               <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-400">{t("cart.shipping")}</span>
-                <span className="text-white font-medium">
+                <span className="text-muted">{t("cart.shipping")}</span>
+                <span className="text-ink font-medium">
                   {t("cart.free")}
                 </span>
               </div>
 
               {summary.tax > 0 && (
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-400">Tax</span>
-                  <span className="text-white font-medium">
+                  <span className="text-muted">Tax</span>
+                  <span className="text-ink font-medium">
                     {formatPrice(summary.tax)}
                   </span>
                 </div>
               )}
 
               {/* Final Total */}
-              <div className="flex items-center justify-between pt-3 border-t border-[#2A2A2A]">
-                <span className="text-2xl font-bold text-white">
+              <div className="flex items-center justify-between pt-3 border-t border-line">
+                <span className="text-2xl font-bold text-ink">
                   {formatPrice(summary.total)}
                 </span>
                 <button
-                  className="bg-[#C9A24D] hover:bg-[#B8934C] text-black px-8 py-3 rounded-lg font-semibold transition"
+                  className="bg-gold hover:bg-gold-dark text-cream px-8 py-3 rounded-full font-semibold uppercase tracking-wide transition focus-visible:ring-2 focus-visible:ring-gold-dark focus:outline-none"
                   onClick={() => {
                     onClose();
                     router.push("/checkout");
                   }}
+                  aria-label="Proceed to checkout"
                 >
                   {t("cart.buyNow")}
                 </button>

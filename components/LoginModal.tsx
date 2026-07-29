@@ -432,7 +432,7 @@ const handleSubmit = async (e: React.FormEvent) => {
   return (
     <>
       <div
-        className="fixed top-18 sm:top-20 left-0 right-0 bottom-0 backdrop-blur-sm transition-opacity duration-300"
+        className="fixed top-18 sm:top-20 left-0 right-0 bottom-0 bg-ink/50 backdrop-blur-sm transition-opacity duration-300"
         style={{ backgroundColor: "#2423380", zIndex: 45 }}
         onClick={onClose}
       />
@@ -442,17 +442,17 @@ const handleSubmit = async (e: React.FormEvent) => {
         style={{ zIndex: 45 }}
       >
         <div
-          className="relative bg-[#33333a] rounded-2xl w-full max-w-md mx-4 p-8 shadow-2xl pointer-events-auto animate-slide-in-right"
+          className="relative bg-card border border-line rounded-2xl w-full max-w-md mx-4 p-8 shadow-luxury-lg pointer-events-auto animate-slide-in-right"
           onClick={(e) => e.stopPropagation()}
         >
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 p-2 hover:bg-gray-800 rounded-full transition"
+            className="absolute top-4 right-4 p-2 hover:bg-champagne rounded-full transition"
           >
-            <X size={20} className="text-gray-400" />
+            <X size={20} className="text-muted hover:text-ink" />
           </button>
 
-          <h2 className="text-2xl font-semibold text-white text-center mb-8">
+          <h2 className="text-2xl font-semibold text-ink text-center mb-8">
             Login
           </h2>
 
@@ -480,9 +480,9 @@ const handleSubmit = async (e: React.FormEvent) => {
       setEmail(e.target.value);
       setErrors((prev) => ({ ...prev, email: "" }));
     }}
-    className={`w-full px-4 py-3 bg-gray-800/50 border ${
-      errors.email ? "border-red-500" : "border-gray-700"
-    } rounded-lg text-white placeholder-gray-500 focus:outline-none`}
+    className={`w-full px-4 py-3 bg-card border ${
+      errors.email ? "border-red-500" : "border-line"
+    } rounded-lg text-ink placeholder:text-muted focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 transition`}
   />
 
   {errors.email && (
@@ -512,9 +512,9 @@ const handleSubmit = async (e: React.FormEvent) => {
       setPassword(e.target.value);
       setErrors((prev) => ({ ...prev, password: "" }));
     }}
-    className={`w-full px-4 py-3 bg-gray-800/50 border ${
-      errors.password ? "border-red-500" : "border-gray-700"
-    } rounded-lg text-white placeholder-gray-500 focus:outline-none`}
+    className={`w-full px-4 py-3 bg-card border ${
+      errors.password ? "border-red-500" : "border-line"
+    } rounded-lg text-ink placeholder:text-muted focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 transition`}
   />
 
   {errors.password && (
@@ -525,7 +525,7 @@ const handleSubmit = async (e: React.FormEvent) => {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className={`absolute top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-white transition ${
+                className={`absolute top-1/2 -translate-y-1/2 p-2 text-muted hover:text-ink transition ${
                   isRTL ? "left-2" : "right-2"
                 }`}
               >
@@ -540,14 +540,14 @@ const handleSubmit = async (e: React.FormEvent) => {
             <button
               type="submit"
               disabled={loading as boolean}
-              className="w-full py-3 bg-[#C9A24D] hover:bg-[#B8934C] text-black font-semibold rounded-lg transition duration-300 mt-6 disabled:opacity-50"
+              className="w-full py-3 bg-gold hover:bg-gold-dark text-cream font-semibold uppercase tracking-wide rounded-full transition duration-300 mt-6 disabled:opacity-50"
             >
               {loading ? "Logging in..." : "Continue"}
             </button>
             <button
           type="button"
           onClick={() => toast.info("Google Sign Up coming soon!")}
-          className="w-full py-3 bg-gray-800/50 hover:bg-gray-800 border border-gray-700 text-white rounded-lg transition duration-300 flex items-center justify-center gap-3"
+          className="w-full py-3 bg-card hover:bg-champagne border border-line text-ink rounded-lg transition duration-300 flex items-center justify-center gap-3"
         >
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M17.64 9.20443C17.64 8.56625 17.5827 7.95262 17.4764 7.36353H9V10.8449H13.8436C13.635 11.9699 13.0009 12.9231 12.0477 13.5613V15.8194H14.9564C16.6582 14.2526 17.64 11.9453 17.64 9.20443Z" fill="#4285F4"/>
@@ -563,14 +563,14 @@ const handleSubmit = async (e: React.FormEvent) => {
                <button
           type="button"
           onClick={() => toast.info("Apple Sign Up coming soon!")}
-          className="w-full py-3 bg-black hover:bg-gray-900 border border-gray-700 text-white rounded-lg transition duration-300 flex items-center justify-center gap-3"
+          className="w-full py-3 bg-card hover:bg-champagne border border-line text-ink rounded-lg transition duration-300 flex items-center justify-center gap-3"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             width="18"
             height="18"
-            fill="white"
+            fill="currentColor"
           >
             <path d="M16.365 1.43c0 1.14-.46 2.24-1.22 3.05-.78.82-2.06 1.45-3.19 1.36-.15-1.08.39-2.23 1.14-3.02.82-.86 2.16-1.48 3.27-1.39zM21.4 17.13c-.6 1.36-.89 1.97-1.69 3.18-1.11 1.66-2.67 3.73-4.63 3.75-1.73.02-2.18-1.13-4.52-1.12-2.34.01-2.83 1.14-4.56 1.12-1.96-.02-3.45-1.88-4.57-3.55C.6 17.34-.7 12.52 1.21 9.47c1.36-2.15 3.51-3.41 5.53-3.41 2.05 0 3.34 1.15 5.03 1.15 1.64 0 2.65-1.15 5-1.15 1.8 0 3.7.98 5.05 2.68-4.46 2.46-3.75 8.83.22 10.39z"/>
           </svg>
@@ -579,12 +579,12 @@ const handleSubmit = async (e: React.FormEvent) => {
         </button>
           </form>
 
-          <p className="text-center text-gray-400 text-sm mt-6">
+          <p className="text-center text-muted text-sm mt-6">
             Don't have an account?{" "}
             <button
               type="button"
               onClick={handleSwitchToSignup}
-              className="text-[#C9A24D] hover:text-[#B8934C] font-medium transition"
+              className="text-gold-dark hover:text-gold font-medium transition"
             >
               Sign up
             </button>

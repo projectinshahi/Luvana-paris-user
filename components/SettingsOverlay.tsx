@@ -99,36 +99,36 @@ useEffect(() => {
   return (
     <>
       {/* Overlay Background */}
-      <div 
-        className="fixed inset-0 bg-black/30 z-40"
+      <div
+        className="fixed inset-0 bg-ink/40 z-40"
         onClick={onClose}
       />
       
       {/* Settings Panel */}
-      <div className="fixed top-16 right-4 w-80 bg-white/95 backdrop-blur-sm rounded-lg shadow-xl z-50 overflow-hidden" dir={isRTL ? 'rtl' : 'ltr'}>
+      <div className="fixed top-16 right-4 w-80 bg-cream backdrop-blur-sm rounded-lg border border-line shadow-luxury-lg z-50 overflow-hidden" dir="ltr">
         
         {/* Country Section */}
-        <div className="border-b border-gray-200">
+        <div className="border-b border-line">
           <button
             onClick={() => setShowCountryList(!showCountryList)}
-            className={`w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors ${isRTL ? 'flex-row-reverse' : ''}`}
+            className={`w-full p-4 flex items-center justify-between hover:bg-champagne transition-colors ${isRTL ? '' : ''}`}
           >
-            <span className={`text-gray-700 font-medium ${isRTL ? 'text-right' : 'text-left'}`}>Country</span>
-            <ChevronRight 
-              size={16} 
-              className={`text-gray-400 transition-transform shrink-0 ${showCountryList ? 'rotate-90' : ''} ${isRTL ? '-scale-x-100' : ''}`} 
+            <span className={`text-ink font-medium ${isRTL ? 'text-right' : 'text-left'}`}>Country</span>
+            <ChevronRight
+              size={16}
+              className={`text-muted transition-transform shrink-0 ${showCountryList ? 'rotate-90' : ''} ${isRTL ? '-scale-x-100' : ''}`}
             />
           </button>
           
           {showCountryList && (
-            <div className="bg-gray-50 max-h-48 overflow-y-auto">
+            <div className="bg-sand max-h-48 overflow-y-auto">
               {/* {COUNTRIES.map((country) => ( */}
               {countries.map((country) => (
                 <button
                   key={country._id}
                   onClick={() => handleCountrySelect(country)}
-                  className={`w-full p-3 hover:bg-white transition-colors border-b border-gray-100 last:border-b-0 ${
-                    selectedCountry?._id === country._id ? 'bg-blue-50 text-blue-600' : 'text-gray-700'
+                  className={`w-full p-3 hover:bg-champagne transition-colors border-b border-line last:border-b-0 ${
+                    selectedCountry?._id === country._id ? 'bg-champagne text-gold-dark' : 'text-ink'
                   } ${isRTL ? 'text-right' : 'text-left'}`}
                 >
                   {/* {country.name} */}
@@ -143,24 +143,24 @@ useEffect(() => {
         <div>
           <button
             onClick={() => setShowLanguageList(!showLanguageList)}
-            className={`w-full p-4 flex items-center justify-between hover:bg-gray-50 transition-colors ${isRTL ? 'flex-row-reverse' : ''}`}
+            className={`w-full p-4 flex items-center justify-between hover:bg-champagne transition-colors ${isRTL ? '' : ''}`}
           >
-            <span className={`text-gray-700 font-medium ${isRTL ? 'text-right' : 'text-left'}`}>Language</span>
-            <ChevronRight 
-              size={16} 
-              className={`text-gray-400 transition-transform shrink-0 ${showLanguageList ? 'rotate-90' : ''} ${isRTL ? '-scale-x-100' : ''}`} 
+            <span className={`text-ink font-medium ${isRTL ? 'text-right' : 'text-left'}`}>Language</span>
+            <ChevronRight
+              size={16}
+              className={`text-muted transition-transform shrink-0 ${showLanguageList ? 'rotate-90' : ''} ${isRTL ? '-scale-x-100' : ''}`}
             />
           </button>
           
           {showLanguageList && (
-            <div className="bg-gray-50 max-h-48 overflow-y-auto">
+            <div className="bg-sand max-h-48 overflow-y-auto">
               {languages.map((lang) => (
                 <button
                   key={lang.code}
                   onClick={() => handleLanguageSelect(lang.code)}
-                  className={`w-full p-3 hover:bg-white transition-colors border-b border-gray-100 last:border-b-0 flex items-center gap-3 ${
-                    currentLang.code === lang.code ? 'bg-blue-50 text-blue-600' : 'text-gray-700'
-                  } ${isRTL ? 'text-right flex-row-reverse' : 'text-left'}`}
+                  className={`w-full p-3 hover:bg-champagne transition-colors border-b border-line last:border-b-0 flex items-center gap-3 ${
+                    currentLang.code === lang.code ? 'bg-champagne text-gold-dark' : 'text-ink'
+                  } ${isRTL ? 'text-right' : 'text-left'}`}
                 >
                   <img
                     src={lang.flag}

@@ -48,7 +48,8 @@ i18next.on("languageChanged", (lng) => {
   if (typeof window !== "undefined") {
     localStorage.setItem("language", lng);
     document.documentElement.lang = lng;
-    document.documentElement.dir = lng === "ar" ? "rtl" : "ltr";
+    // Layout always stays LTR — only text content is translated to Arabic.
+    document.documentElement.dir = "ltr";
 
     if (lng === "ar") {
       document.body.classList.add("rtl");

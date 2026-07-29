@@ -71,8 +71,8 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     }
 
     document.documentElement.lang = savedLanguage;
-    document.documentElement.dir =
-      savedLanguage === "ar" ? "rtl" : "ltr";
+    // Layout always stays LTR — only text content is translated to Arabic.
+    document.documentElement.dir = "ltr";
 
     setReady(true);
   }, []);

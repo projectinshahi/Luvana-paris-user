@@ -146,8 +146,42 @@ const cactusSerif = Cactus_Classical_Serif({
 });
 
 export const metadata: Metadata = {
-  title: "Luvana Paris",
-  description: "Luxury Shopping Experience",
+  metadataBase: new URL("https://luvanaparis.com"),
+  title: {
+    default: "Luvana Paris — Luxury Beauty, Fragrance & Cosmetics",
+    template: "%s | Luvana Paris",
+  },
+  description:
+    "Luvana Paris — a curated luxury destination for premium beauty, skincare, fragrance and cosmetics from iconic brands.",
+  applicationName: "Luvana Paris",
+  keywords: [
+    "Luvana Paris",
+    "luxury beauty",
+    "fragrance",
+    "perfume",
+    "skincare",
+    "makeup",
+    "cosmetics",
+    "premium beauty",
+  ],
+  authors: [{ name: "Luvana Paris" }],
+  openGraph: {
+    type: "website",
+    siteName: "Luvana Paris",
+    title: "Luvana Paris — Luxury Beauty, Fragrance & Cosmetics",
+    description:
+      "A curated luxury destination for premium beauty, skincare, fragrance and cosmetics.",
+    images: [{ url: "/images/final.png", alt: "Luvana Paris" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Luvana Paris — Luxury Beauty, Fragrance & Cosmetics",
+    description:
+      "A curated luxury destination for premium beauty, skincare, fragrance and cosmetics.",
+    images: ["/images/final.png"],
+  },
+  robots: { index: true, follow: true },
+  icons: { icon: "/images/final.png" },
 };
 
 export default function RootLayout({
@@ -160,7 +194,13 @@ export default function RootLayout({
       <head>
         <meta
           name="viewport"
-          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+          content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
         />
         <link
           href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@100;200;300;400;500;600;700;800;900&family=Cairo:wght@200;300;400;500;600;700;800;900&family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Tajawal:wght@200;300;400;500;700;800;900&display=swap"
@@ -169,7 +209,7 @@ export default function RootLayout({
       </head>
 
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${cactusSerif.variable} antialiased w-full overflow-x-hidden bg-black`}
+        className={`${geistSans.variable} ${geistMono.variable} ${cactusSerif.variable} antialiased w-full overflow-x-clip bg-cream text-ink`}
         suppressHydrationWarning
       >
         <ReduxProvider>

@@ -13,7 +13,7 @@ export default function ResponsiveLayout({ children, className = '' }: Responsiv
 
   return (
     <div className={`
-      w-full min-h-screen bg-black
+      w-full min-h-screen bg-cream
       mobile-viewport-fix mobile-no-scroll
       prevent-layout-shift text-rendering-fix
       ${isRTL ? 'rtl font-arabic' : 'ltr'}

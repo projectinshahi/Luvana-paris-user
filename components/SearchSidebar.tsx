@@ -696,7 +696,7 @@ display:none;
 
   {isOpen && (
     <div
-      className="fixed inset-0 bg-black/80 backdrop-blur-md z-45"
+      className="fixed inset-0 bg-ink/40 backdrop-blur-md z-45"
       onClick={onClose}
     />
   )}
@@ -704,20 +704,22 @@ display:none;
   {/* SIDEBAR */}
 
   <aside
-    className={`fixed top-16 right-0 bottom-0 w-full sm:w-95 bg-[#1A1A1A] text-white z-50
+    className={`fixed top-16 bottom-0 w-full sm:w-95 bg-cream text-ink border border-line shadow-luxury-lg z-50
     transform transition-transform duration-300 ease-in-out
-    ${isOpen ? "translate-x-0" : "translate-x-full"}`}
+    ${isArabic ? "left-0" : "right-0"}
+    ${isOpen ? "translate-x-0" : isArabic ? "-translate-x-full" : "translate-x-full"}`}
   >
     {/* HEADER */}
 
-    <div className="flex items-center justify-between p-4 border-b border-[#2A2A2A]">
-      <h2 className="text-lg font-semibold">
+    <div className="flex items-center justify-between p-4 border-b border-line">
+      <h2 className="text-lg font-semibold text-ink">
         {isArabic ? "البحث عن المنتجات" : "Search Products"}
       </h2>
 
       <button
         onClick={onClose}
-        className="p-2 hover:bg-[#2A2A2A] rounded-full transition"
+        aria-label="Close search sidebar"
+        className="p-2 text-ink-soft hover:bg-champagne hover:text-ink rounded-full transition focus-visible:ring-2 focus-visible:ring-gold focus:outline-none"
       >
         <X size={20} />
       </button>
@@ -726,8 +728,8 @@ display:none;
     {/* SEARCH INPUT */}
 
     <div className="p-4">
-      <div className="relative flex items-center gap-3 bg-[#2A2A2A] rounded-lg px-4 py-3">
-        <Search className="w-5 h-5 text-gray-400" />
+      <div className="relative flex items-center gap-3 bg-card border border-line rounded-lg px-4 py-3 focus-within:border-gold focus-within:ring-2 focus-within:ring-gold/20 transition">
+        <Search className="w-5 h-5 text-muted" />
 
         <input
           value={query}
@@ -735,16 +737,17 @@ display:none;
           placeholder={
             isArabic ? "ابحث عن المنتجات..." : "Search for products..."
           }
-          className="bg-transparent text-sm text-white placeholder-gray-400 outline-none w-full"
+          className="bg-transparent text-sm text-ink placeholder:text-muted outline-none w-full"
           autoFocus
         />
 
         {query && (
           <button
             onClick={handleClear}
-            className="p-1 hover:bg-[#3A3A3A] rounded-full transition"
+            aria-label="Clear search query"
+            className="p-1 text-ink-soft hover:bg-champagne hover:text-ink rounded-full transition focus-visible:ring-2 focus-visible:ring-gold focus:outline-none"
           >
-            <X size={16} className="text-gray-400" />
+            <X size={16} className="text-muted" />
           </button>
         )}
       </div>
@@ -763,13 +766,13 @@ display:none;
           {[...Array(6)].map((_, i) => (
             <div
               key={i}
-              className="flex items-center gap-3 p-3 bg-[#0D0D0D] rounded-lg border border-[#2A2A2A] animate-pulse"
+              className="flex items-center gap-3 p-3 bg-card rounded-lg border border-line animate-pulse"
             >
-              <div className="w-16 h-16 bg-[#2A2A2A] rounded-lg"></div>
+              <div className="w-16 h-16 skeleton-luxury rounded-lg"></div>
 
               <div className="flex-1">
-                <div className="h-3 bg-[#2A2A2A] rounded w-32 mb-2"></div>
-                <div className="h-3 bg-[#2A2A2A] rounded w-20"></div>
+                <div className="h-3 skeleton-luxury rounded w-32 mb-2"></div>
+                <div className="h-3 skeleton-luxury rounded w-20"></div>
               </div>
             </div>
           ))}
@@ -777,7 +780,7 @@ display:none;
       ) : showResults ? (
         products.length > 0 ? (
           <>
-            <p className="text-sm text-gray-400 mb-4">
+            <p className="text-sm text-muted mb-4">
               {isArabic
                 ? `تم العثور على ${products.length}`
                 : `Found ${products.length} result${
@@ -808,11 +811,11 @@ display:none;
                   <div
                     key={product._id}
                     onClick={() => handleProductClick(product._id)}
-                    className="flex items-center gap-3 p-3 bg-[#0D0D0D] rounded-lg border border-[#2A2A2A] hover:border-[#C9A24D] cursor-pointer transition"
+                    className="flex items-center gap-3 p-3 bg-card rounded-lg border border-line hover:border-gold hover:bg-champagne cursor-pointer transition"
                   >
                     {/* IMAGE */}
 
-                    <div className="relative w-16 h-16 shrink-0 rounded-lg overflow-hidden bg-[#2A2A2A]">
+                    <div className="relative w-16 h-16 shrink-0 rounded-lg overflow-hidden bg-champagne">
                       <Image
                         src={image}
                         alt={
@@ -828,14 +831,14 @@ display:none;
                     {/* TEXT */}
 
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium line-clamp-2 mb-1">
+                      <p className="text-sm font-medium text-ink line-clamp-2 mb-1">
                         {isArabic
                           ? product.nameArabic
                           : product.nameEnglish}
                       </p>
 
                       {product.brand && (
-                        <p className="text-xs text-gray-400 mb-1">
+                        <p className="text-xs text-muted mb-1">
                           {isArabic
                             ? product.brand.nameArabic
                             : product.brand.nameEnglish}
@@ -843,7 +846,7 @@ display:none;
                       )}
 
                       {product.minPrice && (
-                        <p className="text-sm text-[#C9A24D] font-semibold">
+                        <p className="text-sm text-gold-dark font-semibold">
                           {formatPrice(product.minPrice)}
                         </p>
                       )}
@@ -855,9 +858,9 @@ display:none;
           </>
         ) : (
           <div className="flex flex-col items-center justify-center py-12 text-center">
-            <Search size={28} className="text-gray-600 mb-3" />
+            <Search size={28} className="text-muted mb-3" />
 
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-muted">
               {isArabic
                 ? `لا توجد نتائج لـ "${query}"`
                 : `No products found for "${query}"`}
@@ -866,9 +869,9 @@ display:none;
         )
       ) : (
         <div className="flex flex-col items-center justify-center py-12 text-center">
-          <Search size={28} className="text-gray-600 mb-3" />
+          <Search size={28} className="text-muted mb-3" />
 
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-muted">
             {isArabic
               ? "ابدأ الكتابة للبحث عن المنتجات"
               : "Start typing to search products"}

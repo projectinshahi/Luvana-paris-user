@@ -70,8 +70,8 @@
 //     <div className="w-full bg-black relative z-10">
 //       {/* ================= DESKTOP ================= */}
 //       <div
-//         className={`hidden md:flex justify-center gap-6 py-4 text-white px-4 ${
-//           isRTL ? "flex-row-reverse" : ""
+//         className={`hidden md:flex justify-center gap-6 py-4 text-ink-soft px-4 ${
+//           isRTL ? "" : ""
 //         }`}
 //       >
 //         {menu.map((item) => {
@@ -93,8 +93,8 @@
 //                 className={`px-6 py-2 rounded-full text-sm font-medium transition duration-300 border-2
 //                   ${
 //                     selectedItem === item.key
-//                       ? "text-[#C9A24D] border-[#C9A24D] bg-[#1a1a1a]"
-//                       : "text-white border-transparent hover:text-[#C9A24D]"
+//                       ? "text-gold-dark border-gold bg-champagne"
+//                       : "text-ink-soft border-transparent hover:text-gold-dark"
 //                   }
 //                 `}
 //               >
@@ -114,7 +114,7 @@
 //                     <div
 //                       key={brand.name}
 //                       className={`relative px-5 py-3 hover:bg-[#2a2a2a] cursor-pointer flex justify-between items-center border-b border-gray-700 last:border-b-0 ${
-//                         isRTL ? "flex-row-reverse" : ""
+//                         isRTL ? "" : ""
 //                       }`}
 //                       onMouseEnter={() => setOpenSub(brand.name)}
 //                     >
@@ -153,7 +153,7 @@
 //       <div className="md:hidden overflow-x-auto py-3 px-3">
 //         <div
 //           className={`flex gap-3 whitespace-nowrap ${
-//             isRTL ? "flex-row-reverse" : ""
+//             isRTL ? "" : ""
 //           }`}
 //         >
 //           {menu.map((item) => {
@@ -418,11 +418,11 @@ const handleClick = (key: string) => {
     applyMomentumScrolling(velocityRef.current);
   };
   return (
-    <div className="w-full bg-black relative z-[60]">
+    <div className="w-full bg-cream border-b border-line relative z-30">
       {/* ================= DESKTOP ================= */}
       <div
-        className={`hidden md:flex justify-center gap-6 py-4 text-white px-4 ${
-          isRTL ? "flex-row-reverse" : ""
+        className={`hidden md:flex justify-center gap-6 py-4 text-ink-soft px-4 ${
+          isRTL ? "" : ""
         }`}
       >
         {/* ===== NEW ===== */}
@@ -432,15 +432,15 @@ const handleClick = (key: string) => {
             // className={`px-6 py-2 rounded-full text-sm font-medium transition duration-300 border
             //   ${
             //     selectedItem === "new"
-            //       ? "text-[#C9A24D] border-[#C9A24D] bg-[#1a1a1a]"
-            //       : "text-white border-transparent hover:text-[#C9A24D]"
+            //       ? "text-gold-dark border-gold bg-champagne"
+            //       : "text-ink-soft border-transparent hover:text-gold-dark"
             //   }
             // `}
             className={`px-6 py-2 rounded-full text-sm font-medium transition duration-300 border focus:outline-none focus:ring-0
   ${
     selectedItem === "new"
-      ? "text-[#C9A24D] border-[#C9A24D] bg-[#1a1a1a]"
-      : "text-white border-transparent hover:text-[#C9A24D]"
+      ? "text-gold-dark border-gold bg-champagne"
+      : "text-ink-soft border-transparent hover:text-gold-dark"
   }
 `}
           >
@@ -458,8 +458,8 @@ const handleClick = (key: string) => {
             className={`px-6 py-2 rounded-full text-sm font-medium transition duration-300 border
               ${
                 selectedItem === "brands"
-                  ? "text-[#C9A24D] border-[#C9A24D] bg-[#1a1a1a]"
-                  : "text-white border-transparent hover:text-[#C9A24D]"
+                  ? "text-gold-dark border-gold bg-champagne"
+                  : "text-ink-soft border-transparent hover:text-gold-dark"
               }
             `}
           >
@@ -473,7 +473,7 @@ const handleClick = (key: string) => {
                 isRTL
                   ? "right-1/2 translate-x-1/2"
                   : "left-1/2 -translate-x-1/2"
-              } bg-[#1a1a1a] border border-[#C9A24D] rounded-lg shadow-[0_4px_30px_rgba(201,162,77,0.15)] min-w-80 max-h-96 overflow-y-auto desktop-dropdown-animate`}
+              } bg-card border border-line rounded-xl shadow-luxury min-w-80 max-h-96 overflow-y-auto desktop-dropdown-animate`}
             >
               {brands.map((brand) => (
                 <div
@@ -483,7 +483,7 @@ const handleClick = (key: string) => {
                     setOpenMenu(null);
                     router.push(`/brands?brand=${brand._id}`);
                   }}
-                  className={`px-5 py-3 hover:bg-[#2a2a2a] cursor-pointer text-sm font-medium text-gray-200 hover:text-[#C9A24D] border-b border-gray-800 last:border-b-0 transition-colors ${
+                  className={`px-5 py-3 hover:bg-champagne cursor-pointer text-sm font-medium text-ink hover:text-gold-dark border-b border-line last:border-b-0 transition-colors ${
                     isRTL ? "text-right" : "text-left"
                   }`}
                 >
@@ -502,8 +502,8 @@ const handleClick = (key: string) => {
               className={`px-6 py-2 rounded-full text-sm font-medium transition duration-300 border
                 ${
                   selectedItem === cat._id
-                    ? "text-[#C9A24D] border-[#C9A24D] bg-[#1a1a1a]"
-                    : "text-white border-transparent hover:text-[#C9A24D]"
+                    ? "text-gold-dark border-gold bg-champagne"
+                    : "text-ink-soft border-transparent hover:text-gold-dark"
                 }
               `}
             >
@@ -519,7 +519,7 @@ const handleClick = (key: string) => {
           ref={categoryScrollRef}
           onScroll={updateDropdownPosition}
           className={`flex gap-3 whitespace-nowrap overflow-x-auto hide-scrollbar scroll-snap-x select-none ${
-            isRTL ? "flex-row-reverse" : ""
+            isRTL ? "" : ""
           }`}
           style={{
             scrollBehavior: 'smooth',
@@ -538,8 +538,8 @@ const handleClick = (key: string) => {
             className={`px-4 py-2 rounded-full text-xs font-medium border scroll-snap-align-start shrink-0 transition-colors
               ${
                 selectedItem === "new"
-                  ? "text-[#C9A24D] border-[#C9A24D] bg-[#1a1a1a]"
-                  : "text-white border-transparent hover:text-[#C9A24D]"
+                  ? "text-gold-dark border-gold bg-champagne"
+                  : "text-ink-soft border-transparent hover:text-gold-dark"
               }
             `}
           >
@@ -562,8 +562,8 @@ const handleClick = (key: string) => {
             className={`px-4 py-2 rounded-full text-xs font-medium border scroll-snap-align-start shrink-0 transition-colors
               ${
                 selectedItem === "brands"
-                  ? "text-[#C9A24D] border-[#C9A24D] bg-[#1a1a1a]"
-                  : "text-white border-transparent hover:text-[#C9A24D]"
+                  ? "text-gold-dark border-gold bg-champagne"
+                  : "text-ink-soft border-transparent hover:text-gold-dark"
               }
             `}
           >
@@ -577,8 +577,8 @@ const handleClick = (key: string) => {
               className={`px-4 py-2 rounded-full text-xs font-medium border scroll-snap-align-start shrink-0 transition-colors
                 ${
                   selectedItem === cat._id
-                    ? "text-[#C9A24D] border-[#C9A24D] bg-[#1a1a1a]"
-                    : "text-white border-transparent hover:text-[#C9A24D]"
+                    ? "text-gold-dark border-gold bg-champagne"
+                    : "text-ink-soft border-transparent hover:text-gold-dark"
                 }
               `}
             >
@@ -590,7 +590,7 @@ const handleClick = (key: string) => {
         {/* Mobile Brands Dropdown Rendered outside the scrolling container */}
         {openMenu === "brands" && (
           <div
-            className="absolute z-[70] bg-[#0a0a0a] border border-[#C9A24D] rounded-lg shadow-2xl min-w-[240px] max-h-[50vh] overflow-y-auto dropdown-slide-down"
+            className="absolute z-[70] bg-card border border-line rounded-xl shadow-luxury min-w-[240px] max-h-[50vh] overflow-y-auto dropdown-slide-down"
             style={{ 
                top: '100%', 
                left: `${dropdownLeft}px`,
@@ -606,7 +606,7 @@ const handleClick = (key: string) => {
                   setOpenMenu(null);
                   router.push(`/brands?brand=${brand._id}`);
                 }}
-                className={`px-5 py-3 hover:bg-[#1a1a1a] cursor-pointer text-sm font-medium text-white hover:text-[#C9A24D] border-b border-[#222] last:border-b-0 transition-colors ${
+                className={`px-5 py-3 hover:bg-champagne cursor-pointer text-sm font-medium text-ink hover:text-gold-dark border-b border-line last:border-b-0 transition-colors ${
                   isRTL ? "text-right" : "text-left"
                 }`}
               >

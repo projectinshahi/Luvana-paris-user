@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 
-const GOLD = "#C9A24D";
+const GOLD = "#8B5E3C";
 
 /**
  * Payment Callback Page
@@ -57,9 +57,8 @@ export default function PaymentCallbackPage() {
         // if (finalStatus === "CAPTURED" || finalStatus === "AUTHORIZED") {
         if (
   finalStatus === "CAPTURED" ||
-  finalStatus === "AUTHORIZED" ||
-  finalStatus === "FAILED" ||
-  finalStatus === "DECLINED"
+  finalStatus === "AUTHORIZED" 
+
 ) {
           // Try to create the order — but NEVER let this block the success page
           if (pendingRaw) {
@@ -80,6 +79,13 @@ export default function PaymentCallbackPage() {
                 console.error("[PaymentCallback] Address creation failed", addrErr?.response?.data || addrErr.message);
                 throw new Error("Failed to create shipping address: " + (addrErr?.response?.data?.message || addrErr.message));
               }
+              const alreadyProcessed = sessionStorage.getItem(`order_${chargeId}`);
+
+if (alreadyProcessed) {
+  console.log("Order already processed, skipping...");
+  router.replace("/payment/success");
+  return;
+}
 
               const orderResponse = await api.post("/user/order", {
                 items: pending.cartItems,
@@ -153,7 +159,7 @@ export default function PaymentCallbackPage() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#0D0D0D",
+        background: "#FFFDF9",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -166,8 +172,8 @@ export default function PaymentCallbackPage() {
           color={GOLD}
           style={{ animation: "spin 1s linear infinite", marginBottom: 16 }}
         />
-        <p style={{ color: "#888", fontSize: 14 }}>Processing your payment…</p>
-        <p style={{ color: "#555", fontSize: 12, marginTop: 8 }}>
+        <p style={{ color: "#6D665F", fontSize: 14 }}>Processing your payment…</p>
+        <p style={{ color: "#918980", fontSize: 12, marginTop: 8 }}>
           Please wait while we confirm your payment.
         </p>
       </div>

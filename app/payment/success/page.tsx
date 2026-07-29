@@ -14,9 +14,9 @@ import {
 } from "lucide-react";
 import { useCurrency } from "@/contexts/CurrencyContext";
 
-const GOLD = "#C9A24D";
-const GOLD_LIGHT = "#E2C07A";
-const GOLD_DARK = "#A07C30";
+const GOLD = "#8B5E3C";
+const GOLD_LIGHT = "#9A6A44";
+const GOLD_DARK = "#714B2F";
 
 interface OrderDetails {
   customerName: string;
@@ -64,7 +64,7 @@ export default function PaymentSuccessPage() {
       <div
         style={{
           minHeight: "100vh",
-          background: "#0D0D0D",
+          background: "#FFFDF9",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -77,7 +77,7 @@ export default function PaymentSuccessPage() {
             color={GOLD}
             style={{ animation: "spin 1s linear infinite", marginBottom: 16 }}
           />
-          <p style={{ color: "#888", fontSize: 14 }}>Processing your payment...</p>
+          <p style={{ color: "#918980", fontSize: 14 }}>Processing your payment...</p>
         </div>
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
@@ -89,7 +89,7 @@ export default function PaymentSuccessPage() {
       <div
         style={{
           minHeight: "100vh",
-          background: "#0D0D0D",
+          background: "#FFFDF9",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -101,8 +101,8 @@ export default function PaymentSuccessPage() {
           style={{
             maxWidth: 500,
             textAlign: "center",
-            background: "#111",
-            border: "1px solid #1E1E1E",
+            background: "#FFFFFF",
+            border: "1px solid #E8DED2",
             borderRadius: 14,
             padding: "40px 24px",
           }}
@@ -112,8 +112,8 @@ export default function PaymentSuccessPage() {
               width: 60,
               height: 60,
               borderRadius: "50%",
-              background: "#2A0A0A",
-              border: "2px solid #FF444433",
+              background: "#FBEAEA",
+              border: "2px solid #E9B8B8",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -128,12 +128,12 @@ export default function PaymentSuccessPage() {
               fontSize: 24,
               fontWeight: 700,
               margin: "0 0 12px",
-              color: "#F5F5F5",
+              color: "#2E2A26",
             }}
           >
             Payment Error
           </h1>
-          <p style={{ color: "#888", fontSize: 14, margin: "0 0 24px", lineHeight: 1.6 }}>
+          <p style={{ color: "#918980", fontSize: 14, margin: "0 0 24px", lineHeight: 1.6 }}>
             {error}
           </p>
           <button
@@ -162,8 +162,8 @@ export default function PaymentSuccessPage() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#0D0D0D",
-        color: "#F5F5F5",
+        background: "#FFFDF9",
+        color: "#2E2A26",
         fontFamily: "'DM Sans', sans-serif",
         padding: "40px 20px",
       }}
@@ -182,8 +182,8 @@ export default function PaymentSuccessPage() {
           style={{
             textAlign: "center",
             marginBottom: 40,
-            background: "#111",
-            border: "1px solid #1E1E1E",
+            background: "#FFFFFF",
+            border: "1px solid #E8DED2",
             borderRadius: 14,
             padding: "40px 24px",
           }}
@@ -210,32 +210,32 @@ export default function PaymentSuccessPage() {
               fontSize: 32,
               fontWeight: 700,
               margin: "0 0 8px",
-              color: "#F5F5F5",
+              color: "#2E2A26",
             }}
           >
             Payment Successful
           </h1>
 
-          <p style={{ color: "#888", fontSize: 14, margin: "0 0 24px" }}>
+          <p style={{ color: "#918980", fontSize: 14, margin: "0 0 24px" }}>
             Thank you for your order. Your payment has been processed successfully.
           </p>
 
           <div
             style={{
               padding: "16px",
-              background: "#0A0A0A",
+              background: "#FAF6EF",
               borderRadius: 10,
               border: `1px solid ${GOLD}33`,
             }}
           >
-            <p style={{ margin: 0, fontSize: 12, color: "#666", letterSpacing: 1 }}>
+            <p style={{ margin: 0, fontSize: 12, color: "#918980", letterSpacing: 1 }}>
               CHARGE ID
             </p>
             <p
               style={{
                 margin: "6px 0 0",
                 fontSize: 13,
-                color: GOLD,
+                color: GOLD_DARK,
                 fontFamily: "'Courier New', monospace",
                 wordBreak: "break-all",
               }}
@@ -249,8 +249,8 @@ export default function PaymentSuccessPage() {
         <div
           className="success-card"
           style={{
-            background: "#111",
-            border: "1px solid #1E1E1E",
+            background: "#FFFFFF",
+            border: "1px solid #E8DED2",
             borderRadius: 14,
             padding: "28px 24px",
             marginBottom: 24,
@@ -262,7 +262,7 @@ export default function PaymentSuccessPage() {
               fontSize: 20,
               fontWeight: 700,
               margin: "0 0 20px",
-              color: "#F5F5F5",
+              color: "#2E2A26",
             }}
           >
             Order Details
@@ -294,10 +294,10 @@ export default function PaymentSuccessPage() {
                 <Mail size={18} color={GOLD} />
               </div>
               <div>
-                <p style={{ margin: 0, fontSize: 12, color: "#666", letterSpacing: 1 }}>
+                <p style={{ margin: 0, fontSize: 12, color: "#918980", letterSpacing: 1 }}>
                   CUSTOMER NAME
                 </p>
-                <p style={{ margin: "4px 0 0", fontSize: 14, color: "#F0F0F0" }}>
+                <p style={{ margin: "4px 0 0", fontSize: 14, color: "#2E2A26" }}>
                   {orderDetails.customerName}
                 </p>
               </div>
@@ -327,10 +327,10 @@ export default function PaymentSuccessPage() {
                 <Mail size={18} color={GOLD} />
               </div>
               <div>
-                <p style={{ margin: 0, fontSize: 12, color: "#666", letterSpacing: 1 }}>
+                <p style={{ margin: 0, fontSize: 12, color: "#918980", letterSpacing: 1 }}>
                   EMAIL
                 </p>
-                <p style={{ margin: "4px 0 0", fontSize: 14, color: "#F0F0F0" }}>
+                <p style={{ margin: "4px 0 0", fontSize: 14, color: "#2E2A26" }}>
                   {orderDetails.customerEmail}
                 </p>
               </div>
@@ -359,10 +359,10 @@ export default function PaymentSuccessPage() {
                 <MapPin size={18} color={GOLD} />
               </div>
               <div>
-                <p style={{ margin: 0, fontSize: 12, color: "#666", letterSpacing: 1 }}>
+                <p style={{ margin: 0, fontSize: 12, color: "#918980", letterSpacing: 1 }}>
                   DELIVERY ADDRESS
                 </p>
-                <p style={{ margin: "4px 0 0", fontSize: 14, color: "#F0F0F0" }}>
+                <p style={{ margin: "4px 0 0", fontSize: 14, color: "#2E2A26" }}>
                   {orderDetails.address}
                 </p>
               </div>
@@ -387,10 +387,10 @@ export default function PaymentSuccessPage() {
             }}
           >
             <div>
-              <p style={{ margin: 0, fontSize: 12, color: "#666", letterSpacing: 1 }}>
+              <p style={{ margin: 0, fontSize: 12, color: "#918980", letterSpacing: 1 }}>
                 ORDER TOTAL
               </p>
-              <p style={{ margin: "4px 0 0", fontSize: 13, color: "#888" }}>
+              <p style={{ margin: "4px 0 0", fontSize: 13, color: "#918980" }}>
                 Including all taxes & shipping
               </p>
             </div>
@@ -399,7 +399,7 @@ export default function PaymentSuccessPage() {
                 margin: 0,
                 fontSize: 28,
                 fontWeight: 700,
-                color: GOLD,
+                color: GOLD_DARK,
                 fontFamily: "'Cormorant Garamond', serif",
               }}
             >
@@ -412,8 +412,8 @@ export default function PaymentSuccessPage() {
         <div
           className="success-card"
           style={{
-            background: "#111",
-            border: "1px solid #1E1E1E",
+            background: "#FFFFFF",
+            border: "1px solid #E8DED2",
             borderRadius: 14,
             padding: "28px 24px",
             marginBottom: 24,
@@ -425,7 +425,7 @@ export default function PaymentSuccessPage() {
               fontSize: 16,
               fontWeight: 700,
               margin: "0 0 16px",
-              color: "#F5F5F5",
+              color: "#2E2A26",
             }}
           >
             What's Next?
@@ -455,17 +455,17 @@ export default function PaymentSuccessPage() {
                   display: "flex",
                   gap: 12,
                   padding: "12px",
-                  background: "#0A0A0A",
+                  background: "#FAF6EF",
                   borderRadius: 8,
-                  border: "1px solid #1A1A1A",
+                  border: "1px solid #E8DED2",
                 }}
               >
                 <span style={{ fontSize: 20 }}>{step.icon}</span>
                 <div>
-                  <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: "#F0F0F0" }}>
+                  <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: "#2E2A26" }}>
                     {step.title}
                   </p>
-                  <p style={{ margin: "4px 0 0", fontSize: 12, color: "#666" }}>
+                  <p style={{ margin: "4px 0 0", fontSize: 12, color: "#918980" }}>
                     {step.desc}
                   </p>
                 </div>
@@ -520,9 +520,9 @@ export default function PaymentSuccessPage() {
             style={{
               padding: "14px 20px",
               borderRadius: 10,
-              background: "#1A1A1A",
-              border: `1px solid #2A2A2A`,
-              color: "#F5F5F5",
+              background: "#FAF6EF",
+              border: `1px solid #E8DED2`,
+              color: "#2E2A26",
               fontWeight: 700,
               cursor: "pointer",
               fontSize: 13,
@@ -539,8 +539,8 @@ export default function PaymentSuccessPage() {
               (e.target as HTMLButtonElement).style.color = GOLD;
             }}
             onMouseLeave={(e) => {
-              (e.target as HTMLButtonElement).style.borderColor = "#2A2A2A";
-              (e.target as HTMLButtonElement).style.color = "#F5F5F5";
+              (e.target as HTMLButtonElement).style.borderColor = "#E8DED2";
+              (e.target as HTMLButtonElement).style.color = "#2E2A26";
             }}
           >
             <ArrowRight size={16} />
@@ -554,14 +554,14 @@ export default function PaymentSuccessPage() {
             textAlign: "center",
             marginTop: 32,
             padding: "20px",
-            borderTop: "1px solid #1A1A1A",
+            borderTop: "1px solid #E8DED2",
           }}
         >
-          <p style={{ margin: 0, fontSize: 12, color: "#666" }}>
+          <p style={{ margin: 0, fontSize: 12, color: "#918980" }}>
             Need help? Contact our support team at{" "}
             <a
               href="mailto:support@luvanaparis.com"
-              style={{ color: GOLD, textDecoration: "none" }}
+              style={{ color: GOLD_DARK, textDecoration: "none" }}
             >
               support@luvanaparis.com
             </a>

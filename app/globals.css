@@ -1,6 +1,66 @@
 @import "tailwindcss";
+
+/* ============================================================
+   LUVANA PARIS — LUXURY DESIGN SYSTEM
+   Warm off-white · champagne gold · charcoal  (Tailwind v4 tokens)
+   Generates utilities like: bg-cream, bg-champagne, bg-sand,
+   bg-card, text-ink, text-ink-soft, text-muted, bg-gold,
+   text-gold, border-line, shadow-luxury, ease-luxury, font-serif
+   ============================================================ */
+@theme {
+  /* Surfaces */
+  --color-cream: #fffdf9;      /* primary background */
+  --color-champagne: #faf6ef;  /* secondary background */
+  --color-sand: #f6f1e8;       /* section alternate */
+  --color-card: #ffffff;       /* cards */
+
+  /* Accent (warm mocha) — token names kept for stability */
+  --color-gold: #8b5e3c;       /* primary accent */
+  --color-gold-dark: #714b2f;  /* hover / text accent */
+  --color-gold-hover: #714b2f; /* button hover */
+
+  /* Ink / text */
+  --color-ink: #2e2a26;        /* primary text */
+  --color-ink-soft: #6d665f;   /* secondary text */
+  --color-muted: #918980;      /* muted text */
+
+  /* Lines */
+  --color-line: #e8ded2;
+
+  /* Semantic */
+  --color-success: #3b7b48;
+  --color-warning: #d69b2d;
+  --color-error: #c14b49;
+
+  /* Typography */
+  --font-serif: "Cactus_Classical_Serif", Georgia, "Times New Roman", serif;
+
+  /* Luxury shadows */
+  --shadow-luxury: 0 10px 30px -12px rgba(31, 31, 31, 0.12);
+  --shadow-luxury-lg: 0 22px 55px -20px rgba(31, 31, 31, 0.2);
+
+  /* Easing */
+  --ease-luxury: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Base luxury surface + typography */
 body {
   margin: 0;
+  background-color: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-geist-sans, system-ui, -apple-system, sans-serif);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  letter-spacing: 0.01em;
+}
+
+::selection {
+  background: var(--color-gold);
+  color: #fff;
 }
 @font-face {
   font-family: "Cactus_Classical_Serif";
@@ -470,10 +530,11 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Focus states for accessibility */
-*:focus {
-  outline: 2px solid #C9A24D;
+/* Focus states for accessibility — keyboard-visible only */
+*:focus-visible {
+  outline: 2px solid var(--color-gold);
   outline-offset: 2px;
+  border-radius: 2px;
 }
 
 /* High contrast mode support */
@@ -677,10 +738,13 @@ html {
 }
 
 /* Fix for white space issues */
+/* overflow-x: clip (not hidden) — hidden coerces overflow-y to `auto`, making
+   html/body a scroll container that breaks descendant position: sticky. clip
+   suppresses horizontal scroll without creating a scroll container. */
 html, body {
   width: 100%;
-  overflow-x: hidden;
-  background-color: #000000;
+  overflow-x: clip;
+  background-color: #fffdf9;
 }
 
 * {
@@ -980,3 +1044,162 @@ html, body {
 .pause-on-hover:hover .animate-scroll {
   animation-play-state: paused;
 }
+
+/* ============================================================
+   LUXURY COMPONENT UTILITIES
+   Reusable primitives so every surface shares one design system.
+   ============================================================ */
+
+/* Display / typography helpers */
+.font-display { font-family: var(--font-serif); }
+.tracking-luxury { letter-spacing: 0.18em; }
+.eyebrow {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-gold-dark);
+}
+
+/* Primary gold button */
+.btn-luxury {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 2rem;
+  border-radius: 9999px;
+  background: var(--color-gold);
+  color: #fffdf9;
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+  box-shadow: 0 8px 20px -10px rgba(139, 94, 60, 0.75);
+  transition: transform 0.25s var(--ease-luxury),
+    background-color 0.25s ease, box-shadow 0.25s ease;
+  cursor: pointer;
+}
+.btn-luxury:hover {
+  background: var(--color-gold-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px -12px rgba(139, 94, 60, 0.9);
+}
+.btn-luxury:active { transform: translateY(0); }
+
+/* Outline / ghost button */
+.btn-luxury-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.8rem 2rem;
+  border-radius: 9999px;
+  background: transparent;
+  border: 1px solid var(--color-gold);
+  color: var(--color-gold-dark);
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: all 0.25s var(--ease-luxury);
+  cursor: pointer;
+}
+.btn-luxury-outline:hover {
+  background: var(--color-gold);
+  color: #fffdf9;
+  transform: translateY(-2px);
+}
+
+/* Dark charcoal button (for use on light sections) */
+.btn-ink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.85rem 2rem;
+  border-radius: 9999px;
+  background: var(--color-ink);
+  color: var(--color-cream);
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: all 0.25s var(--ease-luxury);
+  cursor: pointer;
+}
+.btn-ink:hover { background: #000; transform: translateY(-2px); }
+
+/* Luxury card */
+.card-luxury {
+  background: var(--color-card);
+  border: 1px solid var(--color-line);
+  border-radius: 1rem;
+  box-shadow: var(--shadow-luxury);
+  transition: transform 0.3s var(--ease-luxury), box-shadow 0.3s var(--ease-luxury);
+}
+.card-luxury:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-luxury-lg);
+}
+
+/* Luxury input */
+.input-luxury {
+  width: 100%;
+  background: var(--color-card);
+  border: 1px solid var(--color-line);
+  border-radius: 0.7rem;
+  padding: 0.75rem 1rem;
+  color: var(--color-ink);
+  font-size: 0.95rem;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.input-luxury::placeholder { color: var(--color-muted); }
+.input-luxury:focus {
+  outline: none;
+  border-color: var(--color-gold);
+  box-shadow: 0 0 0 3px rgba(200, 168, 106, 0.18);
+}
+
+/* Animated gold underline link */
+.link-lux {
+  position: relative;
+  color: var(--color-ink-soft);
+  transition: color 0.25s ease;
+}
+.link-lux::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  height: 1px;
+  width: 100%;
+  background: var(--color-gold);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s var(--ease-luxury);
+}
+.link-lux:hover { color: var(--color-ink); }
+.link-lux:hover::after { transform: scaleX(1); transform-origin: left; }
+
+/* Section spacing helper */
+.section-luxury { padding-top: 4.5rem; padding-bottom: 4.5rem; }
+@media (max-width: 640px) {
+  .section-luxury { padding-top: 2.5rem; padding-bottom: 2.5rem; }
+}
+
+/* Cream skeleton */
+.skeleton-luxury {
+  background: linear-gradient(90deg, #f2ece1 25%, #faf6ef 50%, #f2ece1 75%);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 0.5rem;
+}
+
+/* Soft scale-in for cards/images */
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+.scale-in { animation: scaleIn 0.5s var(--ease-luxury); }

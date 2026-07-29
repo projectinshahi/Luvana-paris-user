@@ -192,7 +192,7 @@
 //                         {order.items.map((item, idx) => (
 //                           <div
 //                             key={idx}
-//                             className={`flex gap-4 ${isRTL ? 'flex-row-reverse' : 'flex-row'}`}
+//                             className={`flex gap-4 ${isRTL ? '' : 'flex-row'}`}
 //                           >
 //                             {/* Product Image */}
 //                             <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg overflow-hidden bg-[#0D0D0D] shrink-0">
@@ -497,7 +497,7 @@
 
 //                       <div
 //                         key={idx}
-//                         className={`flex gap-4 ${isRTL ? "flex-row-reverse" : ""}`}
+//                         className={`flex gap-4 ${isRTL ? "" : ""}`}
 //                       >
 
 //                         <div className="w-20 h-20 rounded-lg overflow-hidden bg-[#0D0D0D]">
@@ -577,11 +577,11 @@ interface Order {
 }
 
 const statusConfig: Record<string, { label: string; icon: any; classes: string; dot: string }> = {
-  delivered:  { label: "Delivered",  icon: CheckCircle2, classes: "text-emerald-400 bg-emerald-400/10 border-emerald-400/25", dot: "bg-emerald-400" },
-  shipped:    { label: "Shipped",    icon: Truck,         classes: "text-sky-400   bg-sky-400/10   border-sky-400/25",     dot: "bg-sky-400"     },
-  processing: { label: "Processing", icon: Loader2,       classes: "text-amber-400 bg-amber-400/10 border-amber-400/25",   dot: "bg-amber-400"   },
-  pending:    { label: "Pending",    icon: Clock,         classes: "text-amber-400 bg-amber-400/10 border-amber-400/25",   dot: "bg-amber-400"   },
-  cancelled:  { label: "Cancelled",  icon: XCircle,       classes: "text-red-400   bg-red-400/10   border-red-400/25",     dot: "bg-red-400"     },
+  delivered:  { label: "Delivered",  icon: CheckCircle2, classes: "text-green-700 bg-green-100 border-green-200", dot: "bg-green-600" },
+  shipped:    { label: "Shipped",    icon: Truck,         classes: "text-gold-dark bg-gold/15 border-gold/25",     dot: "bg-gold"     },
+  processing: { label: "Processing", icon: Loader2,       classes: "text-ink-soft bg-champagne border-line",   dot: "bg-gold-dark"   },
+  pending:    { label: "Pending",    icon: Clock,         classes: "text-ink-soft bg-champagne border-line",   dot: "bg-gold-dark"   },
+  cancelled:  { label: "Cancelled",  icon: XCircle,       classes: "text-red-600   bg-red-100   border-red-200",     dot: "bg-red-500"     },
 };
 
 export default function YourOrdersPage() {
@@ -638,13 +638,13 @@ export default function YourOrdersPage() {
   if (loading) {
     return (
       <ResponsiveLayout>
-        <div className="min-h-screen bg-[#080808] flex items-center justify-center">
+        <div className="min-h-screen bg-cream flex items-center justify-center">
           <div className="flex flex-col items-center gap-4">
             <div className="relative w-14 h-14">
-              <div className="absolute inset-0 rounded-full border-2 border-[#C9A24D]/20" />
-              <div className="absolute inset-0 rounded-full border-t-2 border-[#C9A24D] animate-spin" />
+              <div className="absolute inset-0 rounded-full border-2 border-gold/25" />
+              <div className="absolute inset-0 rounded-full border-t-2 border-gold animate-spin" />
             </div>
-            <p className="text-[#C9A24D]/60 text-sm tracking-[0.2em] uppercase font-light">Loading Orders</p>
+            <p className="text-gold-dark/70 text-sm tracking-[0.2em] uppercase font-light">Loading Orders</p>
           </div>
         </div>
       </ResponsiveLayout>
@@ -674,14 +674,14 @@ export default function YourOrdersPage() {
           transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
         }
         .card-hover:hover {
-          border-color: rgba(201,162,77,0.35) !important;
-          box-shadow: 0 0 0 1px rgba(201,162,77,0.12), 0 8px 40px rgba(0,0,0,0.5);
+          border-color: rgba(200,168,106,0.45) !important;
+          box-shadow: 0 0 0 1px rgba(200,168,106,0.15), 0 22px 55px -20px rgba(31,31,31,0.2);
           transform: translateY(-1px);
         }
 
         .status-badge { transition: opacity 0.2s; }
 
-        .filter-select option { background: #111; color: #e5e5e5; }
+        .filter-select option { background: #fffdf9; color: #1f1f1f; }
 
         .btn-gold {
           background: linear-gradient(135deg, #C9A24D 0%, #F0D080 50%, #9A7535 100%);
@@ -713,7 +713,7 @@ export default function YourOrdersPage() {
         }
       `}</style>
 
-      <div className="orders-root min-h-screen bg-[#080808] text-white pt-20 pb-24">
+      <div className="orders-root min-h-screen bg-cream text-ink pt-20 pb-24">
 
         {/* ── background texture ── */}
         <div className="fixed inset-0 pointer-events-none" style={{
@@ -724,24 +724,24 @@ export default function YourOrdersPage() {
 
           {/* ══ HEADER ══ */}
           <div className="mb-12">
-            <p className="text-[#C9A24D]/50 text-[10px] tracking-[0.35em] uppercase mb-3 font-light">Account / History</p>
+            <p className="text-gold-dark/70 text-[10px] tracking-[0.35em] uppercase mb-3 font-light">Account / History</p>
             <h1 className={`display-font text-5xl sm:text-6xl font-light leading-none mb-3 ${isRTL ? "text-right" : "text-left"}`}>
               <span className="gold-shimmer">{t("Your Orders")}</span>
             </h1>
-            <p className={`text-gray-500 text-sm tracking-wide font-light ${isRTL ? "text-right" : "text-left"}`}>
+            <p className={`text-muted text-sm tracking-wide font-light ${isRTL ? "text-right" : "text-left"}`}>
              {t("orders.historyCount", { count: orders.length })}
             </p>
             <div className="mt-6 divider-gold" />
           </div>
 
           {/* ══ SEARCH + FILTER ══ */}
-          <div className={`mb-8 flex flex-col sm:flex-row gap-3 ${isRTL ? "sm:flex-row-reverse" : ""}`}>
+          <div className={`mb-8 flex flex-col sm:flex-row gap-3 ${isRTL ? "sm:" : ""}`}>
 
             {/* search */}
             <div className="flex-1 relative group">
               <Search
                 size={15}
-                className={`absolute top-1/2 -translate-y-1/2 text-[#C9A24D]/40 group-focus-within:text-[#C9A24D]/80 transition-colors ${isRTL ? "right-4" : "left-4"}`}
+                className={`absolute top-1/2 -translate-y-1/2 text-gold-dark/50 group-focus-within:text-gold-dark transition-colors ${isRTL ? "right-4" : "left-4"}`}
               />
               <input
                 type="text"
@@ -749,7 +749,7 @@ export default function YourOrdersPage() {
                 placeholder={t("orders.searchPlaceholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className={`input-focus w-full bg-[#111] border border-white/8 rounded-lg py-3 text-sm text-white placeholder-gray-600 focus:outline-none transition-all ${
+                className={`input-focus w-full bg-card border border-line rounded-lg py-3 text-sm text-ink placeholder-muted focus:outline-none transition-all ${
                   isRTL ? "pr-11 pl-4 text-right" : "pl-11 pr-4 text-left"
                 }`}
               />
@@ -759,12 +759,12 @@ export default function YourOrdersPage() {
             <div className="relative group">
               <SlidersHorizontal
                 size={14}
-                className={`absolute top-1/2 -translate-y-1/2 text-[#C9A24D]/40 group-focus-within:text-[#C9A24D]/80 transition-colors z-10 ${isRTL ? "right-4" : "left-4"}`}
+                className={`absolute top-1/2 -translate-y-1/2 text-gold-dark/50 group-focus-within:text-gold-dark transition-colors z-10 ${isRTL ? "right-4" : "left-4"}`}
               />
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value)}
-                className={`input-focus filter-select bg-[#111] border border-white/8 rounded-lg py-3 text-sm text-gray-300 focus:outline-none appearance-none cursor-pointer transition-all ${
+                className={`input-focus filter-select bg-card border border-line rounded-lg py-3 text-sm text-ink-soft focus:outline-none appearance-none cursor-pointer transition-all ${
                   isRTL ? "pr-4 pl-10 text-right" : "pl-10 pr-8 text-left"
                 }`}
               >
@@ -775,18 +775,18 @@ export default function YourOrdersPage() {
                 <option value="delivered">{t("delivered")}</option>
                 <option value="cancelled">{t("cancelled")}</option>
               </select>
-              <ChevronRight size={12} className={`absolute top-1/2 -translate-y-1/2 text-gray-500 rotate-90 pointer-events-none ${isRTL ? "left-3" : "right-3"}`} />
+              <ChevronRight size={12} className={`absolute top-1/2 -translate-y-1/2 text-muted rotate-90 pointer-events-none ${isRTL ? "left-3" : "right-3"}`} />
             </div>
           </div>
 
           {/* ══ EMPTY STATE ══ */}
           {filtered.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-32 text-center">
-              <div className="w-20 h-20 rounded-full bg-[#C9A24D]/8 border border-[#C9A24D]/15 flex items-center justify-center mb-6">
-                <Package size={32} className="text-[#C9A24D]/40" />
+              <div className="w-20 h-20 rounded-full bg-gold/10 border border-gold/20 flex items-center justify-center mb-6">
+                <Package size={32} className="text-gold-dark/50" />
               </div>
-              <h3 className="display-font text-2xl font-light text-gray-300 mb-2">{t("orders.noOrders")}</h3>
-              <p className="text-gray-600 text-sm">{t("orders.tryAdjusting")}</p>
+              <h3 className="display-font text-2xl font-light text-ink mb-2">{t("orders.noOrders")}</h3>
+              <p className="text-muted text-sm">{t("orders.tryAdjusting")}</p>
             </div>
           ) : (
 
@@ -800,12 +800,12 @@ export default function YourOrdersPage() {
                 return (
                   <div
                     key={order.id}
-                    className="card-hover bg-[#0F0F0F] border border-white/6 rounded-2xl overflow-hidden order-row-enter"
+                    className="card-hover bg-card border border-line rounded-2xl overflow-hidden order-row-enter shadow-luxury"
                     style={{ animationDelay: `${idx * 60}ms` }}
                   >
                     {/* ── order header (always visible) ── */}
                     <button
-                      className={`w-full p-5 sm:p-6 flex items-center gap-5 text-left transition-colors hover:bg-white/2 ${isRTL ? "flex-row-reverse" : ""}`}
+                      className={`w-full p-5 sm:p-6 flex items-center gap-5 text-left transition-colors hover:bg-champagne ${isRTL ? "" : ""}`}
                       onClick={() => setExpanded(isOpen ? null : order.id)}
                     >
                       {/* status indicator */}
@@ -815,14 +815,14 @@ export default function YourOrdersPage() {
 
                       {/* order info */}
                       <div className={`flex-1 min-w-0 ${isRTL ? "text-right" : "text-left"}`}>
-                        <div className={`flex items-center gap-3 mb-1 flex-wrap ${isRTL ? "flex-row-reverse" : ""}`}>
-                          <span className="font-medium text-sm text-white truncate">{order.id}</span>
+                        <div className={`flex items-center gap-3 mb-1 flex-wrap ${isRTL ? "" : ""}`}>
+                          <span className="font-medium text-sm text-ink truncate">{order.id}</span>
                           <span className={`status-badge inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium border ${cfg.classes}`}>
                             <span className={`w-1.5 h-1.5 rounded-full ${cfg.dot}`} />
                              {t(cfg.label)}
                           </span>
                         </div>
-                        <p className="text-[11px] text-gray-600 font-light">
+                        <p className="text-[11px] text-muted font-light">
                           {new Date(order.date).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}
                           {" · "}
                           {order.items.length} item{order.items.length !== 1 ? "s" : ""}
@@ -830,14 +830,14 @@ export default function YourOrdersPage() {
                       </div>
 
                       {/* total + chevron */}
-                      <div className={`flex items-center gap-4 shrink-0 ${isRTL ? "flex-row-reverse" : ""}`}>
-                        <span className="display-font text-xl font-medium" style={{ color: "#C9A24D" }}>
+                      <div className={`flex items-center gap-4 shrink-0 ${isRTL ? "" : ""}`}>
+                        <span className="display-font text-xl font-medium" style={{ color: "#704b2f" }}>
                           {/* ₹{order.total.toLocaleString()} */}
                           {formatPrice(order.total)}
                         </span>
                         <ChevronRight
                           size={16}
-                          className="text-gray-600 transition-transform duration-300"
+                          className="text-muted transition-transform duration-300"
                           style={{ transform: isOpen ? "rotate(90deg)" : "rotate(0deg)" }}
                         />
                       </div>
@@ -857,21 +857,21 @@ export default function YourOrdersPage() {
                         {order.items.map((item, i) => (
                           <div
                             key={i}
-                            className={`flex gap-4 items-center ${isRTL ? "flex-row-reverse" : ""}`}
+                            className={`flex gap-4 items-center ${isRTL ? "" : ""}`}
                           >
                             {/* image */}
-                            <div className="w-16 h-16 sm:w-18 sm:h-18 shrink-0 rounded-xl overflow-hidden bg-[#1A1A1A] border border-white/6">
+                            <div className="w-16 h-16 sm:w-18 sm:h-18 shrink-0 rounded-xl overflow-hidden bg-champagne border border-line">
                               {item.image
                                 ? <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
-                                : <div className="w-full h-full flex items-center justify-center"><Package size={20} className="text-gray-700" /></div>
+                                : <div className="w-full h-full flex items-center justify-center"><Package size={20} className="text-muted" /></div>
                               }
                             </div>
 
                             {/* details */}
                             <div className={`flex-1 min-w-0 ${isRTL ? "text-right" : ""}`}>
-                              <p className="text-sm font-medium text-white truncate mb-0.5">{item.name}</p>
-                              <p className="text-[11px] text-gray-600">Qty: {item.quantity}</p>
-                              <p className="text-sm font-semibold mt-1" style={{ color: "#C9A24D" }}>{formatPrice(item.price)}</p>
+                              <p className="text-sm font-medium text-ink truncate mb-0.5">{item.name}</p>
+                              <p className="text-[11px] text-muted">Qty: {item.quantity}</p>
+                              <p className="text-sm font-semibold mt-1" style={{ color: "#704b2f" }}>{formatPrice(item.price)}</p>
                             </div>
 
                             {/* CTA */}
