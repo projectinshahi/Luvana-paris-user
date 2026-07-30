@@ -264,8 +264,14 @@ const getInstagramId = (url?: string) => {
   // ============= RENDER =============
   if (loading || !influencers.length) return null;
 
-  // Duplicate influencers for infinite loop - exactly 2x for seamless -50% animation
-  const duplicatedInfluencers = [...influencers, ...influencers];
+  // Repeat until one "set" is wide enough to fill even ultra-wide screens, then
+  // double it — so the full-bleed marquee never shows a left/right gap.
+  const CARD_W = 324; // w-75 (300px) + gap-6 (24px)
+  const copies = Math.max(1, Math.ceil(3900 / (influencers.length * CARD_W)));
+  const oneSet = Array.from({ length: copies }).flatMap(() => influencers);
+  const duplicatedInfluencers = [...oneSet, ...oneSet];
+  // Constant, gentle scroll speed regardless of how many cards there are.
+  const scrollDuration = Math.max(24, oneSet.length * 3);
 
   return (
     <>
@@ -291,27 +297,32 @@ const getInstagramId = (url?: string) => {
         }
       `}</style>
 
-      <section className="relative w-full py-10 bg-black overflow-hidden" dir="ltr">
+      <section className="relative w-full py-10 bg-cream overflow-hidden" dir="ltr">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-center gap-6 mb-6">
-            <div className="flex-1 h-px bg-linear-to-r from-transparent via-[#C9A24D]/50 to-[#C9A24D]" />
+            <div className="flex-1 h-px bg-linear-to-r from-transparent via-gold/50 to-gold" />
             <div className="flex flex-col items-center text-center">
-              <h2 className="text-[#C9A24D] text-2xl md:text-3xl font-light tracking-widest uppercase whitespace-nowrap">
+              <h2 className="text-gold-dark text-2xl md:text-3xl font-light tracking-widest uppercase whitespace-nowrap">
                 {isRTL ? "المؤثرون" : "Influencers"}
               </h2>
-              <span className="text-[#C9A24D]/60 text-sm mt-1">
+              <span className="text-gold-dark/60 text-sm mt-1">
                 {isRTL ? "الريلز" : "Scrolls"}
               </span>
             </div>
-            <div className="flex-1 h-px bg-linear-to-r from-[#C9A24D] via-[#C9A24D]/50 to-transparent" />
+            <div className="flex-1 h-px bg-linear-to-r from-gold via-gold/50 to-transparent" />
           </div>
+        </div>
 
-          <div
-            className="relative overflow-hidden cursor-grab active:cursor-grabbing"
+        {/* CAROUSEL — full-bleed, edge to edge (no left/right gap) */}
+        <div
+          className="relative overflow-hidden cursor-grab active:cursor-grabbing"
             onMouseEnter={() => setIsCarouselHovered(true)}
             onMouseLeave={() => setIsCarouselHovered(false)}
           >
-            <div className={`flex gap-6 carousel-track mt-5 mb-10 ${isCarouselHovered ? "paused" : ""}`}>
+            <div
+              className={`flex gap-4 sm:gap-6 carousel-track mt-5 mb-10 ${isCarouselHovered ? "paused" : ""}`}
+              style={{ animationDuration: `${scrollDuration}s` }}
+            >
               {duplicatedInfluencers.map((influencer, index) => {
                 const uniqueId = `${influencer._id}-${index}`;
                 // const isYouTube = influencer.videoUrl?.includes("youtube.com") || influencer.videoUrl?.includes("youtu.be");
@@ -328,10 +339,10 @@ const isInstagram =
                 return (
                   <div
                     key={uniqueId}
-                    className="shrink-0 w-75 group"
+                    className="shrink-0 w-44 sm:w-56 md:w-75 group"
                     onClick={() => handleCardClick(index)}
                   >
-                    <div className="relative w-75 h-133.25 rounded-xl overflow-hidden shadow-2xl border border-[rgba(197,160,89,0.3)] hover:border-[#C5A059] transition-all duration-500 cursor-pointer hover:scale-105 hover:shadow-[0_0_30px_rgba(197,160,89,0.4)]">
+                    <div className="relative w-44 h-78 sm:w-56 sm:h-99 md:w-75 md:h-133.25 rounded-2xl overflow-hidden shadow-luxury border border-line hover:border-gold transition-all duration-500 cursor-pointer hover:scale-105 hover:shadow-[0_0_30px_rgba(200,168,106,0.4)]">
                       {isYouTube ? (
                         (() => {
                           let videoId = '';
@@ -432,7 +443,7 @@ const isInstagram =
                           // <div className="space-y-3 text-left" dir="ltr">
                           <div
   className={`space-y-3 ${isRTL ? "text-right" : "text-left"}`}
-  dir={isRTL ? "rtl" : "ltr"}
+  dir="ltr"
 >
                             {/* <h3 className="text-white text-sm font-medium line-clamp-2 text-left"> */}
                             <h3
@@ -473,7 +484,6 @@ const isInstagram =
               })}
             </div>
           </div>
-        </div>
       </section>
 
       {selectedIndex !== null && (

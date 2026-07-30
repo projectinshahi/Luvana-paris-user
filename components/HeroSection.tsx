@@ -2,6 +2,7 @@
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 const heroSlides = [
   {
@@ -46,14 +47,16 @@ export default function HeroSection() {
       {heroSlides.map((slide, index) => (
         <div
           key={slide.id}
-          className={`absolute inset-0 transition-opacity duration-1000 ${
-            index === current ? "opacity-100" : "opacity-0"
-          }`}
+          className={`absolute inset-0 transition-opacity duration-1000 ${index === current ? "opacity-100" : "opacity-0"
+            }`}
         >
-          <img
+          <Image
             src={slide.image}
             alt={slide.title}
-            className="w-full h-full object-cover"
+            fill
+            sizes="100vw"
+            priority={index === 0}
+            className="object-cover"
           />
           {/* Overlay */}
           <div className="absolute inset-0 bg-black/40"></div>
@@ -62,7 +65,7 @@ export default function HeroSection() {
           <div className="absolute inset-0 flex flex-col justify-center items-center text-center text-white px-4">
             <h1 className="text-4xl md:text-6xl font-bold mb-4">{slide.title}</h1>
             <p className="text-lg md:text-xl mb-8 max-w-2xl">{slide.subtitle}</p>
-            <button className="bg-[#C9A24D] text-black px-8 py-3 rounded-full font-semibold hover:bg-[#B8922A] transition">
+            <button className="bg-[#C9A24D] text-black px-8 py-3 rounded-full font-semibold hover:bg-[#B8922A] transition focus-visible:ring-2 focus-visible:ring-white focus:outline-none">
               {slide.cta}
             </button>
           </div>
@@ -72,26 +75,28 @@ export default function HeroSection() {
       {/* Navigation Buttons */}
       <button
         onClick={prev}
-        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white/30 hover:bg-white/50 text-white p-2 rounded-full z-10 transition"
+        aria-label="Previous slide"
+        className="absolute start-4 top-1/2 transform -translate-y-1/2 bg-white/30 hover:bg-white/50 text-white p-2 rounded-full z-10 transition focus-visible:ring-2 focus-visible:ring-white focus:outline-none"
       >
-        <ChevronLeft size={32} />
+        <ChevronLeft size={32} className="rtl:rotate-180" />
       </button>
       <button
         onClick={next}
-        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white/30 hover:bg-white/50 text-white p-2 rounded-full z-10 transition"
+        aria-label="Next slide"
+        className="absolute end-4 top-1/2 transform -translate-y-1/2 bg-white/30 hover:bg-white/50 text-white p-2 rounded-full z-10 transition focus-visible:ring-2 focus-visible:ring-white focus:outline-none"
       >
-        <ChevronRight size={32} />
+        <ChevronRight size={32} className="rtl:rotate-180" />
       </button>
 
       {/* Dots */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
+      <div className="hidden md:flex absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
         {heroSlides.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrent(index)}
-            className={`w-3 h-3 rounded-full transition ${
-              index === current ? "bg-[#C9A24D]" : "bg-white/50"
-            }`}
+            aria-label={`Go to slide ${index + 1}`}
+            className={`w-3 h-3 rounded-full transition focus-visible:ring-2 focus-visible:ring-white focus:outline-none ${index === current ? "bg-[#C9A24D]" : "bg-white/50"
+              }`}
           />
         ))}
       </div>

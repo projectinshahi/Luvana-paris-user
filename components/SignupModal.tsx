@@ -26,9 +26,15 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [capsOn, setCapsOn] = useState(false);
 
   const { t } = useTranslation("common");
   const { isRTL } = useLanguage();
+
+  // Password strength (0–4), display only — does not affect validation
+  const pwScore = password
+    ? [password.length >= 8, /[A-Z]/.test(password), /\d/.test(password), /[^A-Za-z0-9]/.test(password)].filter(Boolean).length
+    : 0;
 
   useEffect(() => {
     if (error) {
@@ -104,16 +110,16 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
   return (
     <>
       {/* Backdrop - starts below complete navbar (offer bar + main navbar) */}
-      <div 
-        className="fixed top-18 sm:top-20 left-0 right-0 bottom-0 backdrop-blur-sm transition-opacity duration-300"
-        style={{ backgroundColor: '#24232380', zIndex: 45 }}
+      <div
+        className="fixed top-18 sm:top-20 left-0 right-0 bottom-0 bg-ink/50 backdrop-blur-sm transition-opacity duration-300"
+        style={{ zIndex: 45 }}
         onClick={onClose}
       />
       
       {/* Modal with slide-in from right animation */}
       <div className="fixed pt-20 inset-0 flex items-center justify-center pointer-events-none" style={{ zIndex: 45 }}>
         <div 
-          className="relative bg-[#2423380] rounded-2xl w-full max-w-md mx-4 p-8 shadow-2xl border border-gray-800 pointer-events-auto max-h-[90vh] overflow-y-auto animate-slide-in-right scrollbar-hide"
+          className="relative bg-card rounded-2xl w-full max-w-md mx-4 p-6 sm:p-8 shadow-luxury-lg border border-line pointer-events-auto max-h-[90vh] overflow-y-auto animate-slide-in-right scrollbar-hide"
           onClick={(e) => e.stopPropagation()}
           style={{
             scrollbarWidth: 'none', /* Firefox */
@@ -123,18 +129,19 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 hover:bg-gray-800 rounded-full transition"
+          aria-label="Close"
+          className="absolute top-4 right-4 p-2 hover:bg-champagne rounded-full transition focus:outline-none focus-visible:ring-2 focus-visible:ring-gold"
         >
-          <X size={20} className="text-gray-400" />
+          <X size={20} className="text-muted hover:text-ink" />
         </button>
 
         {/* Title */}
-        <h2 className="text-2xl font-semibold text-white text-center mb-8">
+        <h2 className="text-2xl font-semibold text-ink text-center mb-8">
           Sign Up
         </h2>
 
         {/* Signup Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-5">
           {/* Name Input */}
           <div>
             <input
@@ -142,7 +149,8 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
               placeholder="Full Name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className={`w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none  transition ${
+              autoComplete="name"
+              className={`w-full px-4 py-3 bg-card border border-line rounded-lg text-ink placeholder:text-muted focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 transition ${
                 isRTL ? 'text-right' : 'text-left'
               }`}
               dir={isRTL ? 'rtl' : 'ltr'}
@@ -158,7 +166,8 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
               placeholder="Email address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className={`w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none  transition ${
+              autoComplete="email"
+              className={`w-full px-4 py-3 bg-card border border-line rounded-lg text-ink placeholder:text-muted focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 transition ${
                 isRTL ? 'text-right' : 'text-left'
               }`}
               dir={isRTL ? 'rtl' : 'ltr'}
@@ -174,7 +183,8 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
               placeholder="Phone number (optional)"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className={`w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none  transition ${
+              autoComplete="tel"
+              className={`w-full px-4 py-3 bg-card border border-line rounded-lg text-ink placeholder:text-muted focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 transition ${
                 isRTL ? 'text-right' : 'text-left'
               }`}
               dir={isRTL ? 'rtl' : 'ltr'}
@@ -189,7 +199,9 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className={`w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none  transition ${
+              onKeyUp={(e) => setCapsOn(e.getModifierState("CapsLock"))}
+              autoComplete="new-password"
+              className={`w-full px-4 py-3 bg-card border border-line rounded-lg text-ink placeholder:text-muted focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 transition ${
                 isRTL ? 'text-right pr-12' : 'text-left pr-12'
               }`}
               dir={isRTL ? 'rtl' : 'ltr'}
@@ -199,12 +211,32 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className={`absolute top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-white transition ${
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              className={`absolute top-1/2 -translate-y-1/2 p-2.5 text-muted hover:text-ink transition rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-gold ${
                 isRTL ? 'left-2' : 'right-2'
               }`}
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
+          </div>
+
+          {/* Password strength + Caps Lock — display only, fixed height (no CLS) */}
+          <div className="min-h-[18px] -mt-3">
+            {password && (
+              <div className="grid grid-cols-4 gap-1" aria-hidden="true">
+                {[0, 1, 2, 3].map((i) => (
+                  <span
+                    key={i}
+                    className={`h-1 rounded-full transition-colors duration-300 ${
+                      i < pwScore
+                        ? pwScore <= 1 ? "bg-red-400" : pwScore === 2 ? "bg-warning" : pwScore === 3 ? "bg-gold" : "bg-success"
+                        : "bg-line"
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
+            {capsOn && <p className="text-[11px] text-warning mt-1">Caps Lock is on</p>}
           </div>
 
           {/* Confirm Password Input */}
@@ -214,7 +246,8 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
               placeholder="Confirm Password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className={`w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none  transition ${
+              autoComplete="new-password"
+              className={`w-full px-4 py-3 bg-card border border-line rounded-lg text-ink placeholder:text-muted focus:outline-none focus:border-gold focus:ring-2 focus:ring-gold/30 transition ${
                 isRTL ? 'text-right pr-12' : 'text-left pr-12'
               }`}
               dir={isRTL ? 'rtl' : 'ltr'}
@@ -224,7 +257,8 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
             <button
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className={`absolute top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-white transition ${
+              aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+              className={`absolute top-1/2 -translate-y-1/2 p-2.5 text-muted hover:text-ink transition rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-gold ${
                 isRTL ? 'left-2' : 'right-2'
               }`}
             >
@@ -236,24 +270,25 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 bg-[#C9A24D] hover:bg-[#B8934C] text-black font-semibold rounded-lg transition duration-300 mt-6 disabled:opacity-60"
+            className="w-full py-3 bg-gold hover:bg-gold-dark text-cream font-semibold uppercase tracking-wide rounded-full transition duration-300 mt-6 disabled:opacity-60 disabled:cursor-not-allowed active:scale-[.99] flex items-center justify-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-card"
           >
+            {loading && <span className="inline-block w-4 h-4 border-2 border-cream/40 border-t-cream rounded-full animate-spin" />}
             {loading ? "Creating Account..." : "Continue"}
           </button>
         </form>
 
         {/* Divider */}
         <div className="flex items-center gap-4 my-6">
-          <div className="flex-1 h-px bg-gray-700" />
-          <span className="text-gray-500 text-sm">or</span>
-          <div className="flex-1 h-px bg-gray-700" />
+          <div className="flex-1 h-px bg-line" />
+          <span className="text-muted text-sm">or</span>
+          <div className="flex-1 h-px bg-line" />
         </div>
 
         {/* Google Sign Up */}
         <button
           type="button"
           onClick={() => toast.info("Google Sign Up coming soon!")}
-          className="w-full py-3 bg-gray-800/50 hover:bg-gray-800 border border-gray-700 text-white rounded-lg transition duration-300 flex items-center justify-center gap-3"
+          className="w-full py-3 bg-card hover:bg-champagne border border-line text-ink rounded-lg transition duration-300 flex items-center justify-center gap-3 active:scale-[.99] focus:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-card"
         >
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M17.64 9.20443C17.64 8.56625 17.5827 7.95262 17.4764 7.36353H9V10.8449H13.8436C13.635 11.9699 13.0009 12.9231 12.0477 13.5613V15.8194H14.9564C16.6582 14.2526 17.64 11.9453 17.64 9.20443Z" fill="#4285F4"/>
@@ -263,13 +298,10 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
           </svg>
           Sign up with google
         </button>
-         <div className="flex items-center gap-4 my-2">
-         
-        </div>
        <button
   type="button"
   onClick={() => toast.info("Apple Sign Up coming soon!")}
-  className="w-full py-3 bg-black hover:bg-gray-900 border border-gray-700 text-white rounded-lg transition duration-300 flex items-center justify-center gap-3"
+  className="w-full py-3 mt-3 bg-black hover:bg-gray-900 border border-line text-white rounded-lg transition duration-300 flex items-center justify-center gap-3 active:scale-[.99] focus:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-card"
 >
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -322,11 +354,11 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
         {/* </div> */}
 
         {/* Login Link */}
-        <p className="text-center text-gray-400 text-sm mt-6">
+        <p className="text-center text-muted text-sm mt-6">
           Already have an account?{" "}
-          <button 
+          <button
             onClick={onSwitchToLogin}
-            className="text-[#C9A24D] hover:text-[#B8934C] font-medium transition"
+            className="text-gold-dark hover:text-gold font-medium transition rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-gold px-1"
           >
             Login
           </button>

@@ -1165,7 +1165,7 @@ const handleImageMouseMove = useCallback(
 
   if (loading || !product) {
     return (
-      <div className="pt-20 min-h-screen bg-[#0D0D0D] text-white flex justify-center items-center">
+      <div className="pt-20 min-h-screen bg-cream text-ink flex justify-center items-center">
         Loading Product...
       </div>
     );
@@ -1213,7 +1213,7 @@ const handleImageMouseMove = useCallback(
   // ================= UI =================
 
   return (
-    <div dir="ltr" className="pt-20 pb-16 min-h-screen bg-[#0D0D0D] text-white">
+    <div dir="ltr" className="pt-20 pb-16 min-h-screen bg-cream text-ink">
       <div className="max-w-7xl mx-auto px-4">
 
         {/* ================= MAIN SECTION ================= */}
@@ -1222,7 +1222,7 @@ const handleImageMouseMove = useCallback(
           {/* ================= IMAGES ================= */}
           <div className="relative">
         
-<div className="relative bg-[#1A1A1A] rounded-xl overflow-visible aspect-square select-none group">
+<div className="relative bg-champagne rounded-2xl border border-line overflow-visible aspect-square select-none group">
 
   <img
     key={`${selectedVariant}-${selectedImage}`}
@@ -1270,8 +1270,8 @@ const handleImageMouseMove = useCallback(
   {isZooming && (
   <div 
     className="absolute top-1/2 -translate-y-1/2 left-full ml-8 
-    w-105 h-105 
-    bg-center rounded-lg overflow-hidden shadow-2xl z-9999 border-2 border-[#C9A24D]/50"
+    w-105 h-105
+    bg-center rounded-lg overflow-hidden shadow-2xl z-9999 border-2 border-gold/50"
     style={{
       backgroundImage: `url(${productImages?.[selectedImage]})`,
       backgroundRepeat: "no-repeat",
@@ -1279,7 +1279,7 @@ const handleImageMouseMove = useCallback(
       backgroundPosition: `${zoomBg.x}% ${zoomBg.y}%`,
     }}
   >
-    <div className="absolute inset-0 rounded-lg ring-1 ring-inset ring-[#C9A24D]/30 pointer-events-none" />
+    <div className="absolute inset-0 rounded-lg ring-1 ring-inset ring-gold/30 pointer-events-none" />
   </div>
 )}
   {/* LEFT CHEVRON */}
@@ -1289,9 +1289,9 @@ const handleImageMouseMove = useCallback(
         prev > 0 ? prev - 1 : productImages.length - 1
       )
     }
-    className="absolute left-4 top-1/2 -translate-y-1/2 
-    bg-black/60 hover:bg-[#C9A24D] 
-    w-10 h-10 rounded-full flex items-center justify-center 
+    className="absolute left-4 top-1/2 -translate-y-1/2
+    bg-black/60 text-white hover:bg-gold
+    w-10 h-10 rounded-full flex items-center justify-center
     transition z-30"
   >
     <ChevronLeft size={20} />
@@ -1303,9 +1303,9 @@ const handleImageMouseMove = useCallback(
       setSelectedImage((prev) =>
         prev < productImages.length - 1 ? prev + 1 : 0)
     }
-    className="absolute right-4 top-1/2 -translate-y-1/2 
-    bg-black/60 hover:bg-[#C9A24D] 
-    w-10 h-10 rounded-full flex items-center justify-center 
+    className="absolute right-4 top-1/2 -translate-y-1/2
+    bg-black/60 text-white hover:bg-gold
+    w-10 h-10 rounded-full flex items-center justify-center
     transition z-30"
   >
     <ChevronRight size={20} />
@@ -1331,10 +1331,10 @@ const handleImageMouseMove = useCallback(
                   key={`${selectedVariant}-thumb-${idx}`}
                   onClick={() => setSelectedImage(idx)}
                   onDoubleClick={() => openLightbox(idx)}
-                  className={`rounded-lg overflow-hidden border-2 transition aspect-square ${
+                  className={`bg-champagne rounded-lg overflow-hidden border-2 transition aspect-square ${
                     selectedImage === idx
-                      ? "border-[#C9A24D]"
-                      : "border-[#2A2A2A] hover:border-[#C9A24D]/50"
+                      ? "border-gold ring-2 ring-gold"
+                      : "border-line hover:border-gold"
                   }`}
                 >
                   <img 
@@ -1353,11 +1353,11 @@ const handleImageMouseMove = useCallback(
           {/* ================= DETAILS ================= */}
           <div className={isRTL ? "text-right" : "text-left"}>
 
-            <p className="text-sm text-gray-400 mb-2">{brandName}</p>
+            <p className="eyebrow text-gold-dark mb-2">{brandName}</p>
 
-            <h1 className="text-3xl font-bold mb-2">{productName}</h1>
+            <h1 className="text-3xl font-serif font-bold text-ink mb-2">{productName}</h1>
 
-            <p className="text-gray-400 mb-4">{shortDescription}</p>
+            <p className="text-ink-soft mb-4">{shortDescription}</p>
 
             {/* Rating */}
             {/* <div className="flex gap-1 mb-4">
@@ -1368,10 +1368,10 @@ const handleImageMouseMove = useCallback(
 
             {/* Price */}
             <div className="flex items-center gap-4 mb-6">
-              <span className="text-3xl font-bold text-[#C9A24D]">
+              <span className="text-3xl font-serif font-semibold text-ink">
                 {formatPrice(selectedVariantData?.price || product.minPrice)}
               </span>
-              <span className="line-through text-gray-500">
+              <span className="line-through text-muted">
                 {product.maxPrice ? formatPrice(selectedVariantData?.mrp || product.maxPrice) : ""}
               </span>
             </div>
@@ -1382,7 +1382,7 @@ const handleImageMouseMove = useCallback(
                 <h3 className="mb-3 font-semibold">
                   {isRTL ? "الألوان" : "Colors"}
                   {selectedVariantData && (
-                    <span className="text-sm text-gray-400 font-normal ml-2">
+                    <span className="text-sm text-muted font-normal ml-2">
                       - {currentLanguage === "ar" 
                         ? selectedVariantData.nameArabic || selectedVariantData.nameEnglish
                         : selectedVariantData.nameEnglish || selectedVariantData.nameArabic}
@@ -1407,8 +1407,8 @@ const handleImageMouseMove = useCallback(
                         title={variantName}
                         className={`relative w-16 h-16 rounded-lg border-2 overflow-hidden transition-all ${
                           selectedVariant === idx
-                            ? "border-[#C9A24D] scale-110 shadow-lg shadow-[#C9A24D]/30"
-                            : "border-[#2A2A2A] hover:border-[#C9A24D]/50"
+                            ? "border-gold ring-2 ring-gold ring-offset-2 scale-110"
+                            : "border-line hover:border-gold"
                         }`}
                       >
                         {variantPreviewImage ? (
@@ -1424,8 +1424,8 @@ const handleImageMouseMove = useCallback(
                           />
                         )}
                         {selectedVariant === idx && (
-                          <div className="absolute inset-0 bg-[#C9A24D]/20 flex items-center justify-center">
-                            <div className="w-4 h-4 rounded-full bg-[#C9A24D] border-2 border-white" />
+                          <div className="absolute inset-0 bg-gold/20 flex items-center justify-center">
+                            <div className="w-4 h-4 rounded-full bg-gold border-2 border-white" />
                           </div>
                         )}
                       </button>
@@ -1437,19 +1437,19 @@ const handleImageMouseMove = useCallback(
 
             {/* Quantity + Cart */}
             <div className="flex items-center gap-4">
-              <div className="flex border border-[#2A2A2A] rounded-lg">
+              <div className="flex border border-line rounded-lg">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="px-4 py-2"
+                  className="px-4 py-2 text-ink hover:bg-champagne transition"
                 >
                   -
                 </button>
-                <span className="px-6 py-2 border-x border-[#2A2A2A]">
+                <span className="px-6 py-2 border-x border-line text-ink">
                   {quantity}
                 </span>
                 <button
                   onClick={() => setQuantity(quantity + 1)}
-                  className="px-4 py-2"
+                  className="px-4 py-2 text-ink hover:bg-champagne transition"
                 >
                   +
                 </button>
@@ -1457,14 +1457,14 @@ const handleImageMouseMove = useCallback(
 
               <button
                onClick={handleAddToCart}
-              className="flex-1 bg-[#C9A24D] text-black py-3 rounded-lg flex justify-center items-center gap-2">
+              className="flex-1 bg-gold text-cream py-3 rounded-full uppercase tracking-wide hover:bg-gold-dark transition flex justify-center items-center gap-2">
                 <ShoppingCart size={18} />
                 Add To Cart
               </button>
             </div>
 
             {/* Description Sections */}
-            <div className="border-t border-[#2A2A2A] mt-8 pt-6">
+            <div className="border-t border-line mt-8 pt-6">
               {product.description?.map((section: any) => (
                 <div key={section._id} className="mb-6">
                   <h3 className="font-semibold mb-2">
@@ -1473,7 +1473,7 @@ const handleImageMouseMove = useCallback(
                       : section.titleEnglish}
                   </h3>
 
-                  <ul className="space-y-2 text-gray-400">
+                  <ul className="space-y-2 text-ink-soft">
                     {(currentLanguage === "ar"
                       ? section.descriptionArabic
                       : section.descriptionEnglish
@@ -1488,7 +1488,7 @@ const handleImageMouseMove = useCallback(
         </div>
 
         {/* ================= SIMILAR PRODUCTS ================= */}
-        <div className="border-t border-[#2A2A2A] pt-10">
+        <div className="border-t border-line pt-10">
           <h2 className="text-2xl font-bold mb-6">
             You May Also Like
           </h2>
@@ -1506,7 +1506,7 @@ const handleImageMouseMove = useCallback(
                 //   className="bg-[#1A1A1A] rounded-lg overflow-hidden"
                 //  key={productId}
                 //       onClick={() => router.push(`/brands/${productId}`)}
-                  className="bg-[#1A1A1A] rounded-lg overflow-hidden cursor-pointer hover:shadow-lg hover:shadow-[#C9A24D]/30 transition"
+                  className="card-luxury overflow-hidden cursor-pointer"
                   onClick={() => router.push(`/brands/${item._id}`)}
                 >
                   <img
@@ -1514,12 +1514,12 @@ const handleImageMouseMove = useCallback(
                     className="w-full aspect-square object-cover"
                   />
                   <div className="p-4">
-                    <h3 className="text-sm font-semibold mb-2">
+                    <h3 className="text-sm font-semibold text-ink mb-2">
                       {currentLanguage === "ar"
                         ? item.nameArabic
                         : item.nameEnglish}
                     </h3>
-                    <p className="text-[#C9A24D] font-bold">
+                    <p className="text-gold font-bold">
                       {formatPrice(item.minPrice)}
                     </p>
                   </div>

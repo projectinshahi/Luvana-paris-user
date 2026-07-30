@@ -16,21 +16,21 @@ interface Product {
 }
 
 /* ─── Gold theme constants ───────────────────────────────────────────────── */
-const GOLD = "#C9A24D";
-const GOLD_LIGHT = "#E2C07A";
-const GOLD_DARK = "#A07C30";
+const GOLD = "#8B5E3C";
+const GOLD_LIGHT = "#A9764F";
+const GOLD_DARK = "#714B2F";
 
 /* ─── Skeleton card ──────────────────────────────────────────────────────── */
 function SkeletonCard() {
   return (
     <div className="lux-card rounded-2xl overflow-hidden animate-pulse">
-      <div className="w-full aspect-[3/4] bg-[#1E1E1E]" />
+      <div className="w-full aspect-[3/4] skeleton-luxury" />
       <div className="p-4 space-y-3">
-        <div className="h-2.5 bg-[#1E1E1E] rounded w-1/3" />
-        <div className="h-4 bg-[#1E1E1E] rounded w-3/4" />
-        <div className="h-3 bg-[#1E1E1E] rounded w-full" />
-        <div className="h-5 bg-[#1E1E1E] rounded w-1/4 mt-2" />
-        <div className="h-10 bg-[#1E1E1E] rounded-xl mt-3" />
+        <div className="h-2.5 skeleton-luxury rounded w-1/3" />
+        <div className="h-4 skeleton-luxury rounded w-3/4" />
+        <div className="h-3 skeleton-luxury rounded w-full" />
+        <div className="h-5 skeleton-luxury rounded w-1/4 mt-2" />
+        <div className="h-10 skeleton-luxury rounded-xl mt-3" />
       </div>
     </div>
   );
@@ -163,11 +163,11 @@ export default function ToolsBrushesPage() {
           className="w-full h-1 rounded-full appearance-none cursor-pointer"
           style={{
             accentColor: GOLD,
-            background: `linear-gradient(to right, ${GOLD} 0%, ${GOLD} ${(priceRange / 5000) * 100}%, #2A2A2A ${(priceRange / 5000) * 100}%, #2A2A2A 100%)`,
+            background: `linear-gradient(to right, ${GOLD} 0%, ${GOLD} ${(priceRange / 5000) * 100}%, #E8DED2 ${(priceRange / 5000) * 100}%, #E8DED2 100%)`,
           }}
         />
         <div className="flex justify-between mt-3">
-          <span className="text-xs text-white/30">0</span>
+          <span className="text-xs text-muted">0</span>
           <span className="text-xs font-semibold" style={{ color: GOLD }}>
             {formatPrice(priceRange)}
           </span>
@@ -203,7 +203,7 @@ export default function ToolsBrushesPage() {
                   }
                   className="w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 transition-all duration-200"
                   style={{
-                    borderColor: active ? GOLD : "#3A3A3A",
+                    borderColor: active ? GOLD : "#E8DED2",
                     background: active ? `${GOLD}20` : "transparent",
                   }}
                 >
@@ -213,7 +213,7 @@ export default function ToolsBrushesPage() {
                 </div>
                 <span
                   className={`text-sm transition-colors duration-200 ${
-                    active ? "text-white" : "text-white/50 group-hover:text-white/80"
+                    active ? "text-ink" : "text-muted group-hover:text-ink-soft"
                   }`}
                 >
                   {cat}
@@ -253,7 +253,7 @@ export default function ToolsBrushesPage() {
                   }
                   className="w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 transition-all duration-200"
                   style={{
-                    borderColor: active ? GOLD : "#3A3A3A",
+                    borderColor: active ? GOLD : "#E8DED2",
                     background: active ? `${GOLD}20` : "transparent",
                   }}
                 >
@@ -263,7 +263,7 @@ export default function ToolsBrushesPage() {
                 </div>
                 <span
                   className={`text-sm transition-colors duration-200 ${
-                    active ? "text-white" : "text-white/50 group-hover:text-white/80"
+                    active ? "text-ink" : "text-muted group-hover:text-ink-soft"
                   }`}
                 >
                   {brand}
@@ -301,18 +301,18 @@ export default function ToolsBrushesPage() {
         .lux-page { font-family: 'DM Sans', -apple-system, sans-serif; }
 
         .lux-card {
-          background: #111;
-          border: 1px solid rgba(255,255,255,0.06);
+          background: #FFFFFF;
+          border: 1px solid #E8DED2;
           transition: border-color 0.35s ease, box-shadow 0.35s ease, transform 0.25s ease;
         }
         .lux-card:hover {
-          border-color: rgba(201,162,77,0.3);
-          box-shadow: 0 0 0 1px rgba(201,162,77,0.08), 0 12px 48px rgba(0,0,0,0.6);
+          border-color: rgba(139,94,60,0.3);
+          box-shadow: 0 0 0 1px rgba(139,94,60,0.08), 0 22px 55px -20px rgba(31,31,31,0.2);
           transform: translateY(-3px);
         }
 
         .lux-btn-cart {
-          border: 1px solid rgba(201,162,77,0.5);
+          border: 1px solid rgba(139,94,60,0.5);
           color: ${GOLD};
           background: transparent;
           transition: all 0.25s ease;
@@ -320,26 +320,26 @@ export default function ToolsBrushesPage() {
         .lux-btn-cart:hover {
           background: linear-gradient(135deg, ${GOLD_DARK}, ${GOLD}, ${GOLD_LIGHT});
           border-color: transparent;
-          color: #000;
-          box-shadow: 0 4px 20px rgba(201,162,77,0.3);
+          color: #FFFDF9;
+          box-shadow: 0 4px 20px rgba(139,94,60,0.3);
         }
 
         .lux-btn-filter {
           background: linear-gradient(135deg, ${GOLD_DARK}, ${GOLD});
-          color: #000;
+          color: #FFFDF9;
           font-weight: 600;
           letter-spacing: 0.05em;
           transition: all 0.25s ease;
         }
         .lux-btn-filter:hover {
           background: linear-gradient(135deg, ${GOLD}, ${GOLD_LIGHT});
-          box-shadow: 0 4px 20px rgba(201,162,77,0.35);
+          box-shadow: 0 4px 20px rgba(139,94,60,0.35);
           transform: translateY(-1px);
         }
 
         .lux-select {
-          background: #111;
-          border: 1px solid rgba(201,162,77,0.25);
+          background: #FAF6EF;
+          border: 1px solid rgba(139,94,60,0.25);
           color: ${GOLD};
           font-size: 11px;
           font-weight: 600;
@@ -347,11 +347,11 @@ export default function ToolsBrushesPage() {
           transition: border-color 0.2s, box-shadow 0.2s;
         }
         .lux-select:focus {
-          border-color: rgba(201,162,77,0.6);
-          box-shadow: 0 0 0 2px rgba(201,162,77,0.1);
+          border-color: rgba(139,94,60,0.6);
+          box-shadow: 0 0 0 2px rgba(139,94,60,0.1);
           outline: none;
         }
-        .lux-select option { background: #0D0D0D; color: #ccc; }
+        .lux-select option { background: #FFFFFF; color: #2E2A26; }
 
         @keyframes slideInLeft {
           from { transform: translateX(-100%); opacity: 0; }
@@ -370,31 +370,32 @@ export default function ToolsBrushesPage() {
           width: 16px; height: 16px;
           border-radius: 50%;
           background: ${GOLD};
-          border: 2px solid #000;
+          border: 2px solid #FFFDF9;
           cursor: pointer;
-          box-shadow: 0 0 8px rgba(201,162,77,0.5);
+          box-shadow: 0 0 8px rgba(139,94,60,0.5);
         }
         input[type=range]::-moz-range-thumb {
           width: 16px; height: 16px;
           border-radius: 50%;
           background: ${GOLD};
-          border: 2px solid #000;
+          border: 2px solid #FFFDF9;
           cursor: pointer;
         }
       `}</style>
 
-      <div className="lux-page pt-6 sm:pt-10 pb-20 min-h-screen bg-[#0D0D0D] text-white overflow-x-hidden">
+      <div className="lux-page pt-6 sm:pt-10 pb-20 min-h-screen bg-cream text-ink overflow-x-hidden">
         <div className="max-w-7xl mx-auto px-3 sm:px-5 lg:px-8">
 
           {/* ── Page heading ── */}
           <div className="mb-6">
+            <p className="eyebrow mb-2">Luvana Paris</p>
             <h1
               className="text-2xl sm:text-3xl font-semibold tracking-wide"
-              style={{ color: GOLD }}
+              style={{ color: "#2E2A26" }}
             >
               Tools &amp; Brushes
             </h1>
-            <p className="text-xs text-white/30 mt-1 tracking-widest uppercase">
+            <p className="text-xs text-muted mt-1 tracking-widest uppercase">
               Professional-grade artistry essentials
             </p>
           </div>
@@ -434,9 +435,9 @@ export default function ToolsBrushesPage() {
                 <span
                   className="ml-0.5 w-4 h-4 rounded-full flex items-center justify-center text-[9px] font-bold"
                   style={{
-                    background: "rgba(0,0,0,0.35)",
-                    color: "#000",
-                    border: "1px solid rgba(0,0,0,0.25)",
+                    background: "rgba(255,253,249,0.3)",
+                    color: "#FFFDF9",
+                    border: "1px solid rgba(255,253,249,0.45)",
                   }}
                 >
                   {activeFilterCount}
@@ -445,7 +446,7 @@ export default function ToolsBrushesPage() {
             </button>
 
             {/* Item count — pushed to the right */}
-            <span className="ml-auto text-[11px] text-white/25 whitespace-nowrap">
+            <span className="ml-auto text-[11px] text-muted whitespace-nowrap">
               {filteredProducts.length} item{filteredProducts.length !== 1 ? "s" : ""}
             </span>
           </div>
@@ -458,8 +459,8 @@ export default function ToolsBrushesPage() {
               <div
                 className="sticky top-24 rounded-2xl p-5"
                 style={{
-                  background: "#111",
-                  border: "1px solid rgba(255,255,255,0.06)",
+                  background: "#FFFFFF",
+                  border: "1px solid #E8DED2",
                 }}
               >
                 {/* Sidebar header */}
@@ -503,10 +504,10 @@ export default function ToolsBrushesPage() {
                   >
                     <Sparkles size={24} style={{ color: `${GOLD}80` }} />
                   </div>
-                  <h3 className="text-lg font-semibold text-white/70 mb-2">
+                  <h3 className="text-lg font-semibold text-ink mb-2">
                     No products found
                   </h3>
-                  <p className="text-sm text-white/30 mb-6">
+                  <p className="text-sm text-muted mb-6">
                     Try adjusting your filters
                   </p>
                   <button
@@ -527,7 +528,7 @@ export default function ToolsBrushesPage() {
                       <div className="lux-card group relative rounded-2xl overflow-hidden cursor-pointer flex flex-col">
 
                         {/* Image */}
-                        <div className="relative w-full aspect-[3/4] overflow-hidden bg-[#111]">
+                        <div className="relative w-full aspect-[3/4] overflow-hidden bg-champagne">
                           <img
                             src={product.image}
                             alt={product.name}
@@ -537,19 +538,20 @@ export default function ToolsBrushesPage() {
                             }}
                           />
                           {/* Gradient overlay */}
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-[#2E2A26]/25 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                           {/* Wishlist */}
                           <button
                             className="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0"
                             style={{
-                              background: "rgba(0,0,0,0.7)",
+                              background: "rgba(255,253,249,0.85)",
                               backdropFilter: "blur(8px)",
+                              color: "#6D665F",
                             }}
                             onMouseEnter={(e) => {
                               e.currentTarget.style.background = GOLD;
                             }}
                             onMouseLeave={(e) => {
-                              e.currentTarget.style.background = "rgba(0,0,0,0.7)";
+                              e.currentTarget.style.background = "rgba(255,253,249,0.85)";
                             }}
                           >
                             <Heart size={15} strokeWidth={2} />
@@ -565,18 +567,18 @@ export default function ToolsBrushesPage() {
                             {product.brand}
                           </p>
 
-                          <h3 className="font-semibold text-xs sm:text-sm leading-snug mb-1.5 text-white/90 group-hover:text-white transition-colors line-clamp-2">
+                          <h3 className="font-medium text-xs sm:text-sm leading-snug mb-1.5 text-ink group-hover:text-gold transition-colors line-clamp-2">
                             {product.name}
                           </h3>
 
-                          <p className="text-[11px] text-white/35 line-clamp-2 mb-2 flex-1 leading-relaxed hidden sm:block">
+                          <p className="text-[11px] text-muted line-clamp-2 mb-2 flex-1 leading-relaxed hidden sm:block">
                             {product.description}
                           </p>
 
                           <div className="mb-3">
                             <span
-                              className="text-sm sm:text-base font-bold"
-                              style={{ color: GOLD }}
+                              className="text-sm sm:text-base font-semibold"
+                              style={{ color: "#2E2A26" }}
                             >
                               {formatPrice(product.price)}
                             </span>
@@ -603,12 +605,12 @@ export default function ToolsBrushesPage() {
           <>
             {/* Backdrop */}
             <div
-              className="fixed inset-0 bg-black/70 z-40 backdrop-blur-sm"
+              className="fixed inset-0 bg-[#2E2A26]/40 z-40 backdrop-blur-sm"
               onClick={() => setIsFilterOpen(false)}
             />
             {/* Drawer */}
             <div
-              className="filter-drawer fixed top-0 left-0 h-full w-[85vw] max-w-sm bg-[#0D0D0D] z-50 flex flex-col shadow-2xl"
+              className="filter-drawer fixed top-0 left-0 h-full w-[85vw] max-w-sm bg-cream z-50 flex flex-col shadow-2xl"
               style={{ borderRight: `1px solid ${GOLD}20` }}
             >
               {/* Header */}
@@ -628,12 +630,12 @@ export default function ToolsBrushesPage() {
                 <button
                   onClick={() => setIsFilterOpen(false)}
                   className="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
-                  style={{ background: "rgba(255,255,255,0.05)" }}
+                  style={{ background: "rgba(46,42,38,0.06)" }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.background = `${GOLD}20`;
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.background = "rgba(255,255,255,0.05)";
+                    e.currentTarget.style.background = "rgba(46,42,38,0.06)";
                   }}
                 >
                   <X size={16} />

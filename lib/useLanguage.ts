@@ -18,7 +18,8 @@ export const useLanguage = () => {
       
       if (typeof window !== 'undefined') {
         document.documentElement.lang = langCode;
-        document.documentElement.dir = langCode === 'ar' ? 'rtl' : 'ltr';
+        // Layout always stays LTR — only text content is translated to Arabic.
+        document.documentElement.dir = 'ltr';
         localStorage.setItem('language', langCode);
         
         // Update body class for RTL styling

@@ -11,9 +11,9 @@ import {
   Mail,
 } from "lucide-react";
 
-const GOLD = "#C9A24D";
-const GOLD_LIGHT = "#E2C07A";
-const GOLD_DARK = "#A07C30";
+const GOLD = "#8B5E3C";
+const GOLD_LIGHT = "#9A6A44";
+const GOLD_DARK = "#714B2F";
 
 interface FailureDetails {
   reason?: string;
@@ -59,7 +59,7 @@ export default function PaymentFailedPage() {
       <div
         style={{
           minHeight: "100vh",
-          background: "#0D0D0D",
+          background: "#FFFDF9",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -72,13 +72,13 @@ export default function PaymentFailedPage() {
               width: 40,
               height: 40,
               borderRadius: "50%",
-              border: `3px solid #2A2A2A`,
+              border: `3px solid #E8DED2`,
               borderTopColor: GOLD,
               animation: "spin 1s linear infinite",
               margin: "0 auto 16px",
             }}
           />
-          <p style={{ color: "#888", fontSize: 14 }}>Loading...</p>
+          <p style={{ color: "#918980", fontSize: 14 }}>Loading...</p>
         </div>
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
@@ -89,8 +89,8 @@ export default function PaymentFailedPage() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#0D0D0D",
-        color: "#F5F5F5",
+        background: "#FFFDF9",
+        color: "#2E2A26",
         fontFamily: "'DM Sans', sans-serif",
         padding: "40px 20px",
       }}
@@ -111,8 +111,8 @@ export default function PaymentFailedPage() {
           style={{
             textAlign: "center",
             marginBottom: 40,
-            background: "#111",
-            border: "1px solid #1E1E1E",
+            background: "#FFFFFF",
+            border: "1px solid #E8DED2",
             borderRadius: 14,
             padding: "40px 24px",
           }}
@@ -122,15 +122,15 @@ export default function PaymentFailedPage() {
               width: 80,
               height: 80,
               borderRadius: "50%",
-              background: "#2A0A0A",
-              border: "2px solid #FF444433",
+              background: "#FBEAEA",
+              border: "2px solid #E9B8B8",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               margin: "0 auto 20px",
             }}
           >
-            <AlertCircle size={40} color="#FF6B6B" strokeWidth={1.5} />
+            <AlertCircle size={40} color="#C14B49" strokeWidth={1.5} />
           </div>
 
           <h1
@@ -139,32 +139,32 @@ export default function PaymentFailedPage() {
               fontSize: 32,
               fontWeight: 700,
               margin: "0 0 8px",
-              color: "#F5F5F5",
+              color: "#2E2A26",
             }}
           >
             Payment Failed
           </h1>
 
-          <p style={{ color: "#888", fontSize: 14, margin: "0 0 24px" }}>
+          <p style={{ color: "#918980", fontSize: 14, margin: "0 0 24px" }}>
             Unfortunately, your payment could not be processed.
           </p>
 
           <div
             style={{
               padding: "16px",
-              background: "#0A0A0A",
+              background: "#FAF6EF",
               borderRadius: 10,
-              border: "1px solid #FF444433",
+              border: "1px solid #E9B8B8",
             }}
           >
-            <p style={{ margin: 0, fontSize: 12, color: "#666", letterSpacing: 1 }}>
+            <p style={{ margin: 0, fontSize: 12, color: "#918980", letterSpacing: 1 }}>
               REASON
             </p>
             <p
               style={{
                 margin: "6px 0 0",
                 fontSize: 14,
-                color: "#FF8888",
+                color: "#C14B49",
                 fontWeight: 600,
               }}
             >
@@ -177,8 +177,8 @@ export default function PaymentFailedPage() {
         <div
           className="error-card"
           style={{
-            background: "#111",
-            border: "1px solid #1E1E1E",
+            background: "#FFFFFF",
+            border: "1px solid #E8DED2",
             borderRadius: 14,
             padding: "28px 24px",
             marginBottom: 24,
@@ -190,7 +190,7 @@ export default function PaymentFailedPage() {
               fontSize: 20,
               fontWeight: 700,
               margin: "0 0 20px",
-              color: "#F5F5F5",
+              color: "#2E2A26",
             }}
           >
             What Happened?
@@ -220,17 +220,17 @@ export default function PaymentFailedPage() {
                   display: "flex",
                   gap: 12,
                   padding: "12px",
-                  background: "#0A0A0A",
+                  background: "#FAF6EF",
                   borderRadius: 8,
-                  border: "1px solid #1A1A1A",
+                  border: "1px solid #E8DED2",
                 }}
               >
                 <span style={{ fontSize: 20 }}>{item.icon}</span>
                 <div>
-                  <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: "#F0F0F0" }}>
+                  <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: "#2E2A26" }}>
                     {item.title}
                   </p>
-                  <p style={{ margin: "4px 0 0", fontSize: 12, color: "#666" }}>
+                  <p style={{ margin: "4px 0 0", fontSize: 12, color: "#918980" }}>
                     {item.desc}
                   </p>
                 </div>
@@ -243,8 +243,8 @@ export default function PaymentFailedPage() {
         <div
           className="error-card"
           style={{
-            background: "#111",
-            border: "1px solid #1E1E1E",
+            background: "#FFFFFF",
+            border: "1px solid #E8DED2",
             borderRadius: 14,
             padding: "28px 24px",
             marginBottom: 24,
@@ -256,7 +256,7 @@ export default function PaymentFailedPage() {
               fontSize: 16,
               fontWeight: 700,
               margin: "0 0 16px",
-              color: "#F5F5F5",
+              color: "#2E2A26",
               display: "flex",
               alignItems: "center",
               gap: 8,
@@ -280,9 +280,9 @@ export default function PaymentFailedPage() {
                   display: "flex",
                   gap: 12,
                   padding: "12px",
-                  background: "#0A0A0A",
+                  background: "#FAF6EF",
                   borderRadius: 8,
-                  border: "1px solid #1A1A1A",
+                  border: "1px solid #E8DED2",
                 }}
               >
                 <span
@@ -297,13 +297,13 @@ export default function PaymentFailedPage() {
                     justifyContent: "center",
                     fontSize: 12,
                     fontWeight: 700,
-                    color: GOLD,
+                    color: GOLD_DARK,
                     flexShrink: 0,
                   }}
                 >
                   {i + 1}
                 </span>
-                <p style={{ margin: 0, fontSize: 13, color: "#D0D0D0", lineHeight: 1.5 }}>
+                <p style={{ margin: 0, fontSize: 13, color: "#6D665F", lineHeight: 1.5 }}>
                   {step}
                 </p>
               </div>
@@ -358,9 +358,9 @@ export default function PaymentFailedPage() {
             style={{
               padding: "14px 20px",
               borderRadius: 10,
-              background: "#1A1A1A",
-              border: `1px solid #2A2A2A`,
-              color: "#F5F5F5",
+              background: "#FAF6EF",
+              border: `1px solid #E8DED2`,
+              color: "#2E2A26",
               fontWeight: 700,
               cursor: "pointer",
               fontSize: 13,
@@ -377,8 +377,8 @@ export default function PaymentFailedPage() {
               (e.target as HTMLButtonElement).style.color = GOLD;
             }}
             onMouseLeave={(e) => {
-              (e.target as HTMLButtonElement).style.borderColor = "#2A2A2A";
-              (e.target as HTMLButtonElement).style.color = "#F5F5F5";
+              (e.target as HTMLButtonElement).style.borderColor = "#E8DED2";
+              (e.target as HTMLButtonElement).style.color = "#2E2A26";
             }}
           >
             <ArrowLeft size={16} />
@@ -390,8 +390,8 @@ export default function PaymentFailedPage() {
         <div
           className="error-card"
           style={{
-            background: "#111",
-            border: "1px solid #1E1E1E",
+            background: "#FFFFFF",
+            border: "1px solid #E8DED2",
             borderRadius: 14,
             padding: "28px 24px",
           }}
@@ -402,7 +402,7 @@ export default function PaymentFailedPage() {
               fontSize: 16,
               fontWeight: 700,
               margin: "0 0 16px",
-              color: "#F5F5F5",
+              color: "#2E2A26",
             }}
           >
             Still Need Help?
@@ -416,7 +416,7 @@ export default function PaymentFailedPage() {
                 alignItems: "center",
                 gap: 12,
                 padding: "12px 16px",
-                background: "#0A0A0A",
+                background: "#FAF6EF",
                 borderRadius: 8,
                 border: `1px solid ${GOLD}33`,
                 textDecoration: "none",
@@ -433,10 +433,10 @@ export default function PaymentFailedPage() {
             >
               <Mail size={18} color={GOLD} />
               <div>
-                <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: "#F0F0F0" }}>
+                <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: "#2E2A26" }}>
                   Email Support
                 </p>
-                <p style={{ margin: "2px 0 0", fontSize: 12, color: "#666" }}>
+                <p style={{ margin: "2px 0 0", fontSize: 12, color: "#918980" }}>
                   support@luvanaparis.com
                 </p>
               </div>
@@ -449,7 +449,7 @@ export default function PaymentFailedPage() {
                 alignItems: "center",
                 gap: 12,
                 padding: "12px 16px",
-                background: "#0A0A0A",
+                background: "#FAF6EF",
                 borderRadius: 8,
                 border: `1px solid ${GOLD}33`,
                 textDecoration: "none",
@@ -466,10 +466,10 @@ export default function PaymentFailedPage() {
             >
               <Phone size={18} color={GOLD} />
               <div>
-                <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: "#F0F0F0" }}>
+                <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: "#2E2A26" }}>
                   Call Us
                 </p>
-                <p style={{ margin: "2px 0 0", fontSize: 12, color: "#666" }}>
+                <p style={{ margin: "2px 0 0", fontSize: 12, color: "#918980" }}>
                   +965 9999 9999
                 </p>
               </div>
@@ -483,10 +483,10 @@ export default function PaymentFailedPage() {
             textAlign: "center",
             marginTop: 32,
             padding: "20px",
-            borderTop: "1px solid #1A1A1A",
+            borderTop: "1px solid #E8DED2",
           }}
         >
-          <p style={{ margin: 0, fontSize: 12, color: "#666" }}>
+          <p style={{ margin: 0, fontSize: 12, color: "#918980" }}>
             Your cart has been saved. You can continue shopping anytime.
           </p>
         </div>

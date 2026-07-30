@@ -6,6 +6,7 @@ import { useLanguage } from "@/lib/useLanguage";
 import { useEffect, useState } from "react";
 import api from "@/lib/axios";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import Image from "next/image";
 
 interface WishlistItem {
   _id: string;
@@ -112,7 +113,7 @@ export default function WishlistSidebar({
       {/* Backdrop */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-45"
+          className="fixed inset-0 bg-ink/40 backdrop-blur-sm z-45"
           onClick={onClose}
         />
       )}
@@ -121,7 +122,7 @@ export default function WishlistSidebar({
       <div
         className={`fixed top-16 bottom-0 ${
           isRTL ? "left-0" : "right-0"
-        } w-80 sm:w-96 bg-[#1A1A1A] text-white z-50 transform transition-transform duration-300 ${
+        } w-80 sm:w-96 bg-cream text-ink border-s border-line shadow-luxury-lg z-50 transform transition-transform duration-300 ${
           isOpen
             ? "translate-x-0"
             : isRTL
@@ -130,14 +131,18 @@ export default function WishlistSidebar({
         } flex flex-col`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-[#2A2A2A]">
+        <div className="flex items-center justify-between p-4 border-b border-line">
           <div className="flex items-center gap-2">
-            <Heart size={20} className="text-[#C9A24D] fill-[#C9A24D]" />
+            <Heart size={20} className="text-gold fill-gold" />
             <h2 className="text-lg font-semibold">
               {t("wishlistLabel")}
             </h2>
           </div>
-          <button onClick={onClose}>
+          <button
+            onClick={onClose}
+            aria-label="Close wishlist sidebar"
+            className="p-2 hover:bg-champagne rounded-full transition focus-visible:ring-2 focus-visible:ring-gold focus:outline-none"
+          >
             <X size={20} />
           </button>
         </div>
@@ -145,13 +150,13 @@ export default function WishlistSidebar({
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {loading ? (
-            <p className="text-center text-gray-400">Loading...</p>
+            <p className="text-center text-muted">Loading...</p>
           ) : wishlistItems.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full gap-4">
-              <div className="w-16 h-16 rounded-full bg-[#2A2A2A] flex items-center justify-center">
-                <Heart size={28} className="text-gray-600" />
+              <div className="w-16 h-16 rounded-full bg-champagne flex items-center justify-center">
+                <Heart size={28} className="text-muted" />
               </div>
-              <p className="text-center text-gray-400">
+              <p className="text-center text-muted">
                 {t("empty wishlist")}
               </p>
             </div>
@@ -172,13 +177,15 @@ export default function WishlistSidebar({
               return (
                 <div
                   key={item._id}
-                  className="flex gap-3 bg-[#0D0D0D] p-3 rounded-lg border border-[#2A2A2A]"
+                  className="flex gap-3 bg-card p-3 rounded-xl border border-line"
                 >
-                  <div className="w-20 h-20 shrink-0 rounded-lg overflow-hidden bg-[#2A2A2A] relative">
-                    <img
+                  <div className="relative w-20 h-20 shrink-0 rounded-lg overflow-hidden bg-champagne">
+                    <Image
                       src={imageUrl}
                       alt={name}
-                      className={`w-full h-full object-cover ${
+                      fill
+                      sizes="5rem"
+                      className={`object-cover ${
                         !inStock ? "opacity-50" : ""
                       }`}
                     />
@@ -198,12 +205,12 @@ export default function WishlistSidebar({
 
                     {item.variant && (
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="font-bold text-white">
+                        <span className="font-semibold text-ink">
                           {formatPrice(price)}
                         </span>
                         {mrp > price && (
                           <>
-                            <span className="text-xs line-through text-gray-500">
+                            <span className="text-xs line-through text-muted">
                               {formatPrice(mrp)}
                             </span>
                             <span className="text-xs text-green-500 font-semibold">
@@ -218,10 +225,11 @@ export default function WishlistSidebar({
                       <button
                         onClick={() => moveToCart(item)}
                         disabled={!inStock || !item.variant}
-                        className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold transition ${
+                        aria-label="Move item to cart"
+                        className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide transition focus-visible:ring-2 focus-visible:ring-gold focus:outline-none ${
                           inStock && item.variant
-                            ? "bg-[#C9A24D] hover:bg-[#B8934C] text-black"
-                            : "bg-[#2A2A2A] text-gray-500 cursor-not-allowed"
+                            ? "bg-gold hover:bg-gold-dark text-cream"
+                            : "bg-champagne text-muted cursor-not-allowed"
                         }`}
                       >
                         <ShoppingCart size={12} />
@@ -230,7 +238,8 @@ export default function WishlistSidebar({
 
                       <button
                         onClick={() => removeItem(item._id)}
-                        className="text-red-500 hover:text-red-400 transition"
+                        aria-label="Remove item"
+                        className="text-muted hover:text-red-500 transition focus-visible:ring-2 focus-visible:ring-gold focus:outline-none rounded p-1"
                       >
                         <Trash2 size={14} />
                       </button>
@@ -244,16 +253,16 @@ export default function WishlistSidebar({
 
         {/* Footer */}
         {wishlistItems.length > 0 && (
-          <div className="border-t border-[#2A2A2A] p-4 space-y-2">
+          <div className="border-t border-line p-4 space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-gray-400">{t("Total product")}</span>
-              <span className="text-white font-medium">
+              <span className="text-muted">{t("Total product")}</span>
+              <span className="text-ink font-medium">
                 {wishlistItems.length}
               </span>
             </div>
             {totalSavings > 0 && (
               <div className="flex justify-between text-sm">
-                <span className="text-gray-400">{t("Total Savings")}</span>
+                <span className="text-muted">{t("Total Savings")}</span>
                 <span className="text-green-500 font-medium">
                   {formatPrice(totalSavings)}
                 </span>

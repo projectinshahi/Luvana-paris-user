@@ -276,7 +276,7 @@
 //         <div className="flex items-center justify-between navbar-flex w-full">
 //           {/* Left Section - Logo */}
 //           <div className="flex items-center gap-1 sm:gap-3 md:gap-4 flex-no-reverse shrink-0" style={{ order: 1 }}>
-        
+
 //             {/* <div className="text-yellow-400 font-bold text-xs sm:text-sm md:text-lg whitespace-nowrap">
 //               {t("navbar.logo")}
 //             </div> */}
@@ -363,7 +363,7 @@
 //             <button className="p-1 sm:p-1.5 hover:bg-gray-700 rounded transition-colors" onClick={() => setShowCart(true)}>
 //               <ShoppingCart className="cursor-pointer hover:text-gray-300 transition-colors" size={14} />
 //             </button>
-            
+
 //             <button
 //               onClick={() => setShowSettings(!showSettings)}
 //               className="p-1 sm:p-1.5 hover:bg-gray-700 rounded transition-colors ml-0.5"
@@ -414,7 +414,7 @@
 //       </nav> */}
 //       <nav className="sm:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-40">
 //   <div className="flex items-center gap-6 px-6 py-3 rounded-full bg-[#2a2a2a]/90 backdrop-blur-md shadow-lg">
-    
+
 //     {/* HOME (ACTIVE) */}
 //     <button className="w-10 h-10 flex items-center justify-center rounded-full bg-[#C9A24D] text-black">
 //       <Home size={20} />
@@ -648,7 +648,7 @@
 //     onClick={() => setShowWishlist(true)}
 //   />
 
- 
+
 //   <div className="relative">
 //   <User
 //     className="cursor-pointer hover:text-gray-300 transition"
@@ -664,7 +664,7 @@
 
 //   {isLoggedIn && showUserDropdown && (
 //     <div className="absolute right-0 mt-2 w-40 bg-[#1a1a1a] border border-gray-700 rounded-lg shadow-lg">
-      
+
 //       {/* Profile */}
 //       <button
 //         className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700"
@@ -754,6 +754,8 @@
 // }
 
 "use client";
+
+import Image from "next/image";
 
 import { useState, useEffect, useRef } from "react";
 import {
@@ -848,70 +850,70 @@ export default function Navbar() {
     fetchPromotions();
   }, [isRTL]);
 
-// useEffect(() => {
-//   const fetchCountries = async () => {
-//     try {
-//       const API_URL =
-//         process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+  // useEffect(() => {
+  //   const fetchCountries = async () => {
+  //     try {
+  //       const API_URL =
+  //         process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
-//       const res = await fetch(`${API_URL}/user/country`, {
-//         cache: "no-store",
-//       });
+  //       const res = await fetch(`${API_URL}/user/country`, {
+  //         cache: "no-store",
+  //       });
 
-//       const data = await res.json();
+  //       const data = await res.json();
 
-//       if (data?.countries) {
-//         const formattedCountries = data.countries.map(
-//           (country: CountryFromBackend) => ({
-//             code: country._id,
-//             name: isRTL ? country.nameArabic : country.nameEnglish,
-//             flag: country.flagUrl,
-//             currency: country.abbreviation,
-//             currencySymbol: country.abbreviation,
-//             currencyValue: country.currencyValue,
-//           })
-//         );
+  //       if (data?.countries) {
+  //         const formattedCountries = data.countries.map(
+  //           (country: CountryFromBackend) => ({
+  //             code: country._id,
+  //             name: isRTL ? country.nameArabic : country.nameEnglish,
+  //             flag: country.flagUrl,
+  //             currency: country.abbreviation,
+  //             currencySymbol: country.abbreviation,
+  //             currencyValue: country.currencyValue,
+  //           })
+  //         );
 
-//         setCountries(formattedCountries);
-        
+  //         setCountries(formattedCountries);
 
-//         // ✅ Default Kuwait
-//         // const kuwait = formattedCountries.find(
-//         //   (country) => country.name === "Kuwait"
-//         // );
 
-//         // if (kuwait) {
-//         //   setSelectedCountry(kuwait);
-//         //   localStorage.setItem("selectedCountry", JSON.stringify(kuwait));
-//         // }
-//         // check if already saved
-// const saved = localStorage.getItem("selectedCountry");
+  //         // ✅ Default Kuwait
+  //         // const kuwait = formattedCountries.find(
+  //         //   (country) => country.name === "Kuwait"
+  //         // );
 
-// if (saved) {
-//   const parsed = JSON.parse(saved);
-//   setSelectedCountry(parsed);
-// } else {
-//   // const kuwait = formattedCountries.find(
-//   //   (country) => country.name === "Kuwait"
-//   // );
-//   const kuwait = formattedCountries.find(
-//   (country:any) => country.currency === "KWD"
-// );
+  //         // if (kuwait) {
+  //         //   setSelectedCountry(kuwait);
+  //         //   localStorage.setItem("selectedCountry", JSON.stringify(kuwait));
+  //         // }
+  //         // check if already saved
+  // const saved = localStorage.getItem("selectedCountry");
 
-//   if (kuwait) {
-//     setSelectedCountry(kuwait);
-//     localStorage.setItem("selectedCountry", JSON.stringify(kuwait));
-//   }
-// }
-//       }
-//     } catch (error) {
-//       console.error("Country fetch error:", error);
-//     }
-//   };
+  // if (saved) {
+  //   const parsed = JSON.parse(saved);
+  //   setSelectedCountry(parsed);
+  // } else {
+  //   // const kuwait = formattedCountries.find(
+  //   //   (country) => country.name === "Kuwait"
+  //   // );
+  //   const kuwait = formattedCountries.find(
+  //   (country:any) => country.currency === "KWD"
+  // );
 
-//   fetchCountries();
-// }, [isRTL]);
-// Removed redundant country fetching, now handled by CurrencyContext
+  //   if (kuwait) {
+  //     setSelectedCountry(kuwait);
+  //     localStorage.setItem("selectedCountry", JSON.stringify(kuwait));
+  //   }
+  // }
+  //       }
+  //     } catch (error) {
+  //       console.error("Country fetch error:", error);
+  //     }
+  //   };
+
+  //   fetchCountries();
+  // }, [isRTL]);
+  // Removed redundant country fetching, now handled by CurrencyContext
   // ✅ AUTO ROTATION
   useEffect(() => {
     if (!offers.length) return;
@@ -971,51 +973,63 @@ export default function Navbar() {
 
   return (
     <>
-      <div className="fixed top-0 left-0 right-0 z-50">
-        
+      {/* dir="ltr" pins the navbar chrome so it never mirrors in Arabic —
+          logo stays left, utility icons stay right; only text renders RTL. */}
+      <div dir="ltr" className="fixed top-0 left-0 right-0 z-50">
+
         {/* 🔥 PROMOTION BAR */}
         {/* <div className="bg-[#0A0A0A] text-white text-center text-xs sm:text-sm py-4">
           <span className="block text-[10px] sm:text-xs">
             {offers.length > 0 ? offers[offerIndex] : "Loading..."}
           </span>
         </div>     */}
-        <div className="bg-[#0A0A0A] border-b border-white/5 text-[#E3C6A8] text-center py-2.5 shadow-sm">
-  <span className="block text-xs sm:text-sm font-medium tracking-widest uppercase">
-    {offers.length > 0 ? offers[offerIndex] : "Loading..."}
-  </span>
-</div>
+        <div className="bg-ink text-champagne text-center py-2.5">
+          <span className="block text-[11px] sm:text-xs font-medium tracking-[0.2em] uppercase">
+            {offers.length > 0 ? offers[offerIndex] : "Loading..."}
+          </span>
+        </div>
 
         {/* DESKTOP NAVBAR */}
         <nav
-          dir="ltr"
-          className="hidden sm:flex items-center justify-between bg-[#0D0D0D]/95 backdrop-blur-lg border-b border-white/5 text-white px-4 md:px-10 py-3.5 transition-all duration-300"
+          className="hidden sm:flex items-center justify-between bg-cream/85 backdrop-blur-xl border-b border-line text-ink px-4 md:px-10 py-3.5 transition-all duration-300"
         >
           <div
             onClick={() => router.push("/")}
-            className="text-yellow-400 font-bold text-lg cursor-pointer"
+            className="cursor-pointer shrink-0"
           >
-            {t("navbar.logo")}
+            <Image
+              src="/images/final.png"
+              alt="Luvana Paris"
+              width={116}
+              height={38}
+              className="h-9 w-auto object-contain"
+            />
           </div>
 
           <div className="flex items-center gap-5">
 
-            <Search size={19} onClick={() => setShowSearch(true)} className="cursor-pointer text-gray-300 hover:text-[#C5A059] transition-colors duration-300" />
-            <Heart size={19} onClick={() => setShowWishlist(true)} className="cursor-pointer text-gray-300 hover:text-[#C5A059] transition-colors duration-300" />
+            <button aria-label="Search" onClick={() => setShowSearch(true)} className="p-1.5 rounded-full focus-visible:ring-2 focus-visible:ring-gold focus:outline-none">
+              <Search size={19} className="cursor-pointer text-ink-soft hover:text-gold transition-colors duration-300" />
+            </button>
+            <button aria-label="Wishlist" onClick={() => setShowWishlist(true)} className="p-1.5 rounded-full focus-visible:ring-2 focus-visible:ring-gold focus:outline-none">
+              <Heart size={19} className="cursor-pointer text-ink-soft hover:text-gold transition-colors duration-300" />
+            </button>
 
             <div className="relative" ref={userDropdownRef}>
-              <User
-                size={19}
-                className="cursor-pointer text-gray-300 hover:text-[#C5A059] transition-colors duration-300"
-                onClick={() => {
-                  if (!isAuthenticated) setShowLogin(true);
-                  else setShowUserDropdown(!showUserDropdown);
-                }}
-              />
+              <button aria-label="User Account" onClick={() => {
+                if (!isAuthenticated) setShowLogin(true);
+                else setShowUserDropdown(!showUserDropdown);
+              }} className="p-1.5 rounded-full focus-visible:ring-2 focus-visible:ring-gold focus:outline-none">
+                <User
+                  size={19}
+                  className="cursor-pointer text-ink-soft hover:text-gold transition-colors duration-300"
+                />
+              </button>
 
               {isAuthenticated && showUserDropdown && (
-                <div className="absolute right-0 mt-2 w-40 bg-[#1a1a1a] border border-gray-700 rounded-lg shadow-lg z-100">
+                <div className="absolute end-0 mt-2 w-44 bg-card border border-line rounded-xl shadow-luxury overflow-hidden z-100">
                   <button
-                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition rounded-t-lg"
+                    className="w-full text-left px-4 py-2.5 text-sm text-ink hover:bg-champagne hover:text-gold-dark transition"
                     onClick={() => {
                       setShowUserDropdown(false);
                       router.push("/myprofile");
@@ -1024,7 +1038,7 @@ export default function Navbar() {
                     Your Profile
                   </button>
                   <button
-                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700 transition rounded-t-lg"
+                    className="w-full text-left px-4 py-2.5 text-sm text-ink hover:bg-champagne hover:text-gold-dark transition"
                     onClick={() => {
                       setShowUserDropdown(false);
                       router.push("/myorders");
@@ -1034,7 +1048,7 @@ export default function Navbar() {
                   </button>
 
                   <button
-                    className="w-full text-left px-4 py-2 text-sm hover:bg-gray-700 text-red-400 transition rounded-b-lg"
+                    className="w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition"
                     onClick={handleLogout}
                   >
                     Logout
@@ -1043,34 +1057,36 @@ export default function Navbar() {
               )}
             </div>
 
-            <ShoppingCart size={19} onClick={() => setShowCart(true)} className="cursor-pointer text-gray-300 hover:text-[#C5A059] transition-colors duration-300" />
+            <button aria-label="Shopping Cart" onClick={() => setShowCart(true)} className="p-1.5 rounded-full focus-visible:ring-2 focus-visible:ring-gold focus:outline-none">
+              <ShoppingCart size={19} className="cursor-pointer text-ink-soft hover:text-gold transition-colors duration-300" />
+            </button>
 
             {/* COUNTRY & LANGUAGE GROUP */}
-            <div className="flex items-center gap-2 pl-2 border-l border-white/10">
-              
+            <div className="flex items-center gap-2 ps-4 border-s border-line">
+
               {/* COUNTRY SELECTOR */}
               <div className="relative" ref={countryDropdownRef}>
                 <button
                   onClick={() => setShowCountryDropdown(!showCountryDropdown)}
-                  className="flex items-center gap-2 px-2 py-1.5 hover:bg-gray-700 rounded-lg transition-colors"
+                  className="flex items-center gap-2 px-2 py-1.5 hover:bg-champagne rounded-lg transition-colors"
                   title={isRTL ? selectedCountry?.nameArabic : selectedCountry?.nameEnglish}
                 >
                   {selectedCountry?.flagUrl && (
                     <img
                       src={selectedCountry.flagUrl}
                       alt={selectedCountry.nameEnglish}
-                      className="w-5 h-5 rounded-full object-cover border border-gray-600"
+                      className="w-5 h-5 rounded-full object-cover border border-line"
                     />
                   )}
                   <div className="hidden sm:flex flex-col items-start leading-none gap-0.5">
-                    <span className="text-[10px] text-gray-400 font-semibold tracking-wider">
+                    <span className="text-[10px] text-muted font-semibold tracking-wider">
                       {selectedCountry?.abbreviation}
                     </span>
                   </div>
                 </button>
 
                 {showCountryDropdown && (
-                  <div className="absolute right-0 mt-2 bg-[#1a1a1a] rounded-lg shadow-lg z-50 min-w-50 border border-gray-700 max-h-64 overflow-y-auto">
+                  <div className="absolute end-0 mt-2 bg-card rounded-xl shadow-luxury z-50 min-w-50 border border-line max-h-64 overflow-y-auto">
                     {countries.map((country: any) => (
                       <button
                         key={country._id}
@@ -1078,20 +1094,19 @@ export default function Navbar() {
                           setSelectedCountry(country);
                           setShowCountryDropdown(false);
                         }}
-                        className={`w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-gray-700 first:rounded-t-lg last:rounded-b-lg transition-colors ${
-                          selectedCountry?._id === country._id ? 'bg-gray-700 text-yellow-400' : 'text-gray-200'
-                        }`}
+                        className={`w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-champagne first:rounded-t-xl last:rounded-b-xl transition-colors ${selectedCountry?._id === country._id ? 'bg-champagne text-gold-dark' : 'text-ink'
+                          }`}
                       >
                         <img
                           src={country.flagUrl}
                           alt={country.nameEnglish}
-                          className="w-5 h-5 rounded-full object-cover border border-gray-600"
+                          className="w-5 h-5 rounded-full object-cover border border-line"
                         />
                         <div className="flex flex-col">
                           <span className="text-sm font-medium">
                             {isRTL ? country.nameArabic : country.nameEnglish}
                           </span>
-                          <span className="text-xs text-gray-400">
+                          <span className="text-xs text-muted">
                             {country.abbreviation}
                           </span>
                         </div>
@@ -1105,14 +1120,14 @@ export default function Navbar() {
               <div className="relative" ref={languageDropdownRef}>
                 <button
                   onClick={() => setShowLanguageDropdown(!showLanguageDropdown)}
-                  className="flex items-center justify-center p-1.5 hover:text-gray-300 hover:bg-gray-700 rounded-lg transition-colors text-sm cursor-pointer"
+                  className="flex items-center justify-center p-1.5 hover:bg-champagne rounded-lg transition-colors text-sm cursor-pointer"
                   title={currentLang.name}
                 >
-                  <span className="text-xs font-bold uppercase">{currentLang.name}</span>
+                  <span className="text-xs font-bold uppercase tracking-wider text-ink-soft">{currentLang.name}</span>
                 </button>
 
                 {showLanguageDropdown && (
-                  <div className="absolute right-0 mt-2 bg-[#1a1a1a] rounded-lg shadow-lg z-50 min-w-max border border-gray-700 max-h-64 overflow-y-auto">
+                  <div className="absolute end-0 mt-2 bg-card rounded-xl shadow-luxury z-50 min-w-max border border-line max-h-64 overflow-y-auto">
                     {languages.map((lang) => (
                       <button
                         key={lang.code}
@@ -1120,9 +1135,8 @@ export default function Navbar() {
                           changeLanguage(lang.code);
                           setShowLanguageDropdown(false);
                         }}
-                        className={`w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-gray-700 first:rounded-t-lg last:rounded-b-lg transition-colors ${
-                          currentLang.code === lang.code ? 'bg-gray-700 text-yellow-400' : 'text-gray-200'
-                        }`}
+                        className={`w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-champagne first:rounded-t-xl last:rounded-b-xl transition-colors ${currentLang.code === lang.code ? 'bg-champagne text-gold-dark' : 'text-ink'
+                          }`}
                       >
                         <img
                           src={lang.flag}
@@ -1144,29 +1158,38 @@ export default function Navbar() {
 
         {/* MOBILE NAVBAR */}
         <nav
-          dir="ltr"
-          className="sm:hidden flex items-center justify-between bg-[#0D0D0D]/95 backdrop-blur-lg border-b border-white/5 text-white px-5 py-3.5 transition-all duration-300"
+          className="sm:hidden flex items-center justify-between bg-cream/90 backdrop-blur-xl border-b border-line text-ink px-4 py-2.5 transition-all duration-300"
         >
-          <Menu size={24} onClick={() => setMobileMenuOpen(true)} className="cursor-pointer text-gray-300 hover:text-[#C5A059] transition-colors" />
+          <button aria-label="Open Menu" onClick={() => setMobileMenuOpen(true)} className="p-1.5 rounded-full focus-visible:ring-2 focus-visible:ring-gold focus:outline-none">
+            <Menu size={23} className="cursor-pointer text-ink-soft hover:text-gold transition-colors" />
+          </button>
           <div
             onClick={() => router.push("/")}
-            className="text-[#C5A059] font-bold text-xl tracking-wide cursor-pointer"
+            className="cursor-pointer shrink-0"
           >
-            {t("navbar.logo")}
+            <Image
+              src="/images/final.png"
+              alt="Luvana Paris"
+              width={96}
+              height={30}
+              className="h-8 w-auto object-contain"
+            />
           </div>
-          <Settings size={22} onClick={() => setShowSettings(true)} className="cursor-pointer text-gray-300 hover:text-[#C5A059] transition-colors" />
+          <button aria-label="Settings" onClick={() => setShowSettings(true)} className="p-1.5 rounded-full focus-visible:ring-2 focus-visible:ring-gold focus:outline-none">
+            <Settings size={21} className="cursor-pointer text-ink-soft hover:text-gold transition-colors" />
+          </button>
         </nav>
       </div>
 
       {/* MOBILE BOTTOM NAV */}
       <nav
         dir="ltr"
-        className="sm:hidden fixed bottom-0 left-0 w-full z-40 bg-gradient-to-t from-[#0A0A0A] to-[#111111]/95 backdrop-blur-xl border-t border-[#D4AF37]/20 rounded-t-[24px] shadow-[0_-8px_30px_rgba(0,0,0,0.8)]"
+        className="sm:hidden fixed bottom-0 inset-x-0 w-full z-40 bg-card/95 backdrop-blur-xl border-t border-line rounded-t-[24px] shadow-[0_-8px_30px_rgba(31,31,31,0.1)]"
         style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
         <div className="flex items-center justify-between px-6 py-2">
-          
-          <button 
+
+          <button
             onClick={() => {
               setShowWishlist(false);
               setShowCart(false);
@@ -1174,72 +1197,72 @@ export default function Navbar() {
               setShowLogin(false);
               setShowUserDropdown(false);
               router.push("/");
-            }} 
+            }}
             className="relative flex flex-col items-center justify-center p-2 w-14 h-14 group tap-highlight-transparent"
           >
-            <span className={`absolute top-0 w-8 h-1 rounded-full transition-all duration-300 ${pathname === "/" && !showWishlist && !showCart && !showSearch && !showLogin && !showUserDropdown ? "bg-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.8)] scale-100" : "bg-transparent scale-0"}`} />
-            <Home 
-              size={24} 
+            <span className={`absolute top-0 w-8 h-1 rounded-full transition-all duration-300 ${pathname === "/" && !showWishlist && !showCart && !showSearch && !showLogin && !showUserDropdown ? "bg-gold shadow-[0_0_12px_rgba(200,168,106,0.55)] scale-100" : "bg-transparent scale-0"}`} />
+            <Home
+              size={24}
               strokeWidth={pathname === "/" && !showWishlist && !showCart && !showSearch && !showLogin && !showUserDropdown ? 2 : 1.5}
-              className={`transition-all duration-300 mt-1 ${pathname === "/" && !showWishlist && !showCart && !showSearch && !showLogin && !showUserDropdown ? "text-[#D4AF37] drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]" : "text-[#777] group-hover:text-[#D4AF37]/70"}`} 
+              className={`transition-all duration-300 mt-1 ${pathname === "/" && !showWishlist && !showCart && !showSearch && !showLogin && !showUserDropdown ? "text-gold-dark" : "text-muted group-hover:text-gold"}`}
             />
           </button>
 
-          <button 
+          <button
             onClick={() => {
               setShowCart(false);
               setShowSearch(false);
               setShowLogin(false);
               setShowUserDropdown(false);
               setShowWishlist(true);
-            }} 
+            }}
             className="relative flex flex-col items-center justify-center p-2 w-14 h-14 group tap-highlight-transparent"
           >
-            <span className={`absolute top-0 w-8 h-1 rounded-full transition-all duration-300 ${showWishlist ? "bg-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.8)] scale-100" : "bg-transparent scale-0"}`} />
-            <Heart 
-              size={24} 
+            <span className={`absolute top-0 w-8 h-1 rounded-full transition-all duration-300 ${showWishlist ? "bg-gold shadow-[0_0_12px_rgba(200,168,106,0.55)] scale-100" : "bg-transparent scale-0"}`} />
+            <Heart
+              size={24}
               strokeWidth={showWishlist ? 2 : 1.5}
-              className={`transition-all duration-300 mt-1 ${showWishlist ? "text-[#D4AF37] drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]" : "text-[#777] group-hover:text-[#D4AF37]/70"}`} 
+              className={`transition-all duration-300 mt-1 ${showWishlist ? "text-gold-dark" : "text-muted group-hover:text-gold"}`}
             />
           </button>
 
-          <button 
+          <button
             onClick={() => {
               setShowWishlist(false);
               setShowSearch(false);
               setShowLogin(false);
               setShowUserDropdown(false);
               setShowCart(true);
-            }} 
+            }}
             className="relative flex flex-col items-center justify-center p-2 w-14 h-14 group tap-highlight-transparent"
           >
-            <span className={`absolute top-0 w-8 h-1 rounded-full transition-all duration-300 ${showCart ? "bg-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.8)] scale-100" : "bg-transparent scale-0"}`} />
-            <ShoppingCart 
-              size={24} 
+            <span className={`absolute top-0 w-8 h-1 rounded-full transition-all duration-300 ${showCart ? "bg-gold shadow-[0_0_12px_rgba(200,168,106,0.55)] scale-100" : "bg-transparent scale-0"}`} />
+            <ShoppingCart
+              size={24}
               strokeWidth={showCart ? 2 : 1.5}
-              className={`transition-all duration-300 mt-1 ${showCart ? "text-[#D4AF37] drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]" : "text-[#777] group-hover:text-[#D4AF37]/70"}`} 
+              className={`transition-all duration-300 mt-1 ${showCart ? "text-gold-dark" : "text-muted group-hover:text-gold"}`}
             />
           </button>
 
-          <button 
+          <button
             onClick={() => {
               setShowWishlist(false);
               setShowCart(false);
               setShowLogin(false);
               setShowUserDropdown(false);
               setShowSearch(true);
-            }} 
+            }}
             className="relative flex flex-col items-center justify-center p-2 w-14 h-14 group tap-highlight-transparent"
           >
-            <span className={`absolute top-0 w-8 h-1 rounded-full transition-all duration-300 ${showSearch ? "bg-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.8)] scale-100" : "bg-transparent scale-0"}`} />
-            <Search 
-              size={24} 
+            <span className={`absolute top-0 w-8 h-1 rounded-full transition-all duration-300 ${showSearch ? "bg-gold shadow-[0_0_12px_rgba(200,168,106,0.55)] scale-100" : "bg-transparent scale-0"}`} />
+            <Search
+              size={24}
               strokeWidth={showSearch ? 2 : 1.5}
-              className={`transition-all duration-300 mt-1 ${showSearch ? "text-[#D4AF37] drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]" : "text-[#777] group-hover:text-[#D4AF37]/70"}`} 
+              className={`transition-all duration-300 mt-1 ${showSearch ? "text-gold-dark" : "text-muted group-hover:text-gold"}`}
             />
           </button>
 
-          <button 
+          <button
             onClick={() => {
               setShowWishlist(false);
               setShowCart(false);
@@ -1249,11 +1272,11 @@ export default function Navbar() {
             }}
             className="relative flex flex-col items-center justify-center p-2 w-14 h-14 group tap-highlight-transparent"
           >
-            <span className={`absolute top-0 w-8 h-1 rounded-full transition-all duration-300 ${(showLogin || showUserDropdown) ? "bg-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.8)] scale-100" : "bg-transparent scale-0"}`} />
-            <User 
-              size={24} 
+            <span className={`absolute top-0 w-8 h-1 rounded-full transition-all duration-300 ${(showLogin || showUserDropdown) ? "bg-gold shadow-[0_0_12px_rgba(200,168,106,0.55)] scale-100" : "bg-transparent scale-0"}`} />
+            <User
+              size={24}
               strokeWidth={(showLogin || showUserDropdown) ? 2 : 1.5}
-              className={`transition-all duration-300 mt-1 ${(showLogin || showUserDropdown) ? "text-[#D4AF37] drop-shadow-[0_0_8px_rgba(212,175,55,0.4)]" : "text-[#777] group-hover:text-[#D4AF37]/70"}`} 
+              className={`transition-all duration-300 mt-1 ${(showLogin || showUserDropdown) ? "text-gold-dark" : "text-muted group-hover:text-gold"}`}
             />
           </button>
 

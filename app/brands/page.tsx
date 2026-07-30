@@ -34,22 +34,22 @@ interface Product {
 }
 
 /* ─── Gold theme constants ───────────────────────────────────────────────── */
-const GOLD = "#C9A24D";
-const GOLD_LIGHT = "#E2C07A";
-const GOLD_DARK = "#A07C30";
+const GOLD = "#8B5E3C";
+const GOLD_LIGHT = "#A87749";
+const GOLD_DARK = "#714B2F";
 
 /* ─── Skeleton card ──────────────────────────────────────────────────────── */
 function SkeletonCard() {
   return (
     <div className="lux-card rounded-2xl overflow-hidden animate-pulse">
-      <div className="w-full aspect-[3/4] bg-[#1E1E1E]" />
+      <div className="w-full aspect-[3/4] bg-champagne" />
       <div className="p-4 space-y-3">
-        <div className="h-2.5 bg-[#1E1E1E] rounded w-1/3" />
-        <div className="h-4 bg-[#1E1E1E] rounded w-3/4" />
-        <div className="h-3 bg-[#1E1E1E] rounded w-full" />
-        <div className="h-3 bg-[#1E1E1E] rounded w-2/3" />
-        <div className="h-5 bg-[#1E1E1E] rounded w-1/4 mt-2" />
-        <div className="h-10 bg-[#1E1E1E] rounded-xl mt-3" />
+        <div className="h-2.5 bg-champagne rounded w-1/3" />
+        <div className="h-4 bg-champagne rounded w-3/4" />
+        <div className="h-3 bg-champagne rounded w-full" />
+        <div className="h-3 bg-champagne rounded w-2/3" />
+        <div className="h-5 bg-champagne rounded w-1/4 mt-2" />
+        <div className="h-10 bg-champagne rounded-xl mt-3" />
       </div>
     </div>
   );
@@ -98,24 +98,25 @@ function ProductCard({
       className="lux-card group relative rounded-2xl overflow-hidden cursor-pointer flex flex-col"
     >
       {/* ── Image ── */}
-      <div className="relative w-full aspect-[3/4] overflow-hidden bg-[#111]">
+      <div className="relative w-full aspect-[3/4] overflow-hidden bg-champagne">
         <img
           src={image || "/placeholder.png"}
           alt={name}
+          loading="lazy"
           className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
           onError={(e) => { e.currentTarget.src = "/placeholder.png"; }}
         />
 
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#2E2A26]/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
         {/* Wishlist */}
         <button
           onClick={onWishlist}
-          className="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0"
-          style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}
-          onMouseEnter={(e) => { e.currentTarget.style.background = GOLD; }}
-          onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(0,0,0,0.7)"; }}
+          className="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 text-ink-soft hover:text-gold"
+          style={{ background: "rgba(255,253,249,0.9)", backdropFilter: "blur(8px)" }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = "#FAF6EF"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,253,249,0.9)"; }}
         >
           <Heart size={15} strokeWidth={2} />
         </button>
@@ -128,17 +129,17 @@ function ProductCard({
           {brandName}
         </p>
 
-        <h3 className="font-semibold text-xs sm:text-sm leading-snug mb-1.5 text-white/90 group-hover:text-white transition-colors line-clamp-2">
+        <h3 className="font-semibold text-xs sm:text-sm leading-snug mb-1.5 text-ink group-hover:text-gold-dark transition-colors line-clamp-2">
           {name}
         </h3>
 
-        <p className="text-[11px] text-white/35 line-clamp-2 mb-2 flex-1 leading-relaxed hidden sm:block">
+        <p className="text-[11px] text-muted line-clamp-2 mb-2 flex-1 leading-relaxed hidden sm:block">
           {desc}
         </p>
 
         {/* Price — clean, no strike-through */}
         <div className="mb-3">
-          <span className="text-sm sm:text-base font-bold" style={{ color: GOLD }}>
+          <span className="text-sm sm:text-base font-bold" style={{ color: "#2E2A26" }}>
             {formatPrice(price)}
           </span>
         </div>
@@ -150,8 +151,8 @@ function ProductCard({
         >
           <ShoppingCart size={12} strokeWidth={2.5} className="sm:hidden" />
           <ShoppingCart size={14} strokeWidth={2.5} className="hidden sm:block" />
-          <span className="sm:hidden">Cart</span>
-          <span className="hidden sm:inline">Add to Cart</span>
+          <span className="sm:hidden">{isArabic ? "السلة" : "Cart"}</span>
+          <span className="hidden sm:inline">{isArabic ? "أضف إلى السلة" : "Add to Cart"}</span>
         </button>
       </div>
     </div>
@@ -164,11 +165,11 @@ export default function BrandsPage() {
   const searchParams = useSearchParams();
   const { t, currentLanguage } = useLanguage();
   const isArabic = currentLanguage === "ar";
-  const { formatPrice } = useCurrency();
+  const { formatPrice, convertPrice, selectedCountry } = useCurrency();
 
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedVariants, setSelectedVariants] = useState<{ [key: string]: string }>({});
-  const [priceRange, setPriceRange] = useState(5000);
+  const [priceRange, setPriceRange] = useState(Infinity); // Infinity = full range (no filter)
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
@@ -210,7 +211,6 @@ export default function BrandsPage() {
         const params: any = { page: 1, limit: 50, search: searchQuery };
         if (cat) params.category = cat;
         if (brand) params.brand = brand;
-        if (priceRange < 5000) params.maxPrice = priceRange;
         const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.luvanaparis.com";
         const res = await axios.get(`${API_URL}/user/product`, { params });
         const data = res.data.items || res.data.products || res.data || [];
@@ -219,7 +219,7 @@ export default function BrandsPage() {
       finally { setLoading(false); }
     };
     fetchProducts();
-  }, [searchParams, priceRange, searchQuery]);
+  }, [searchParams, searchQuery]); // price filtering is client-side (see dynamicMax / sortedProducts)
 
   /* ── Handlers ── */
   const updateURL = (cats: string[], brands: string[]) => {
@@ -257,14 +257,24 @@ export default function BrandsPage() {
     }
   };
 
-  /* ── Sort ── */
+  /* ── Dynamic price range (from live products, in the ACTIVE currency) ── */
+  const basePrice = (p: Product) => p.variants?.[0]?.price ?? p.minPrice ?? 0;
+  const abbr = selectedCountry?.abbreviation || "KWD";
+  const dynamicMax = useMemo(
+    () => Math.ceil(Math.max(0, ...products.map((p) => convertPrice(basePrice(p))))) || 0,
+    [products, selectedCountry]
+  );
+  const rangeVal = Math.min(priceRange, dynamicMax); // slider value, clamped to current max
+  // Reset to full range when currency changes (a finite range is currency-specific)
+  useEffect(() => { setPriceRange(Infinity); }, [selectedCountry?._id]);
+
+  /* ── Filter by price (active currency) + sort ── */
   const sortedProducts = useMemo(() => {
-    const sorted = [...products];
-    const getPrice = (p: Product) => p.variants?.[0]?.price ?? p.minPrice ?? 0;
-    if (sortBy === "low") sorted.sort((a, b) => getPrice(a) - getPrice(b));
-    if (sortBy === "high") sorted.sort((a, b) => getPrice(b) - getPrice(a));
-    return sorted;
-  }, [products, sortBy]);
+    const filtered = products.filter((p) => convertPrice(basePrice(p)) <= priceRange);
+    if (sortBy === "low") filtered.sort((a, b) => basePrice(a) - basePrice(b));
+    if (sortBy === "high") filtered.sort((a, b) => basePrice(b) - basePrice(a));
+    return filtered;
+  }, [products, sortBy, priceRange, selectedCountry]);
 
   /* ── Filter panel content ── */
   const FilterPanel = () => (
@@ -276,15 +286,17 @@ export default function BrandsPage() {
         </h3>
         <div className="relative">
           <input
-            type="range" min="0" max="5000" value={priceRange}
+            type="range" min={0} max={dynamicMax || 0} value={rangeVal} step={1}
             onChange={(e) => setPriceRange(Number(e.target.value))}
+            aria-label="Maximum price"
+            aria-valuetext={`${abbr} ${rangeVal.toLocaleString()}`}
             className="w-full h-1 rounded-full appearance-none cursor-pointer"
-            style={{ accentColor: GOLD, background: `linear-gradient(to right, ${GOLD} 0%, ${GOLD} ${(priceRange/5000)*100}%, #2A2A2A ${(priceRange/5000)*100}%, #2A2A2A 100%)` }}
+            style={{ accentColor: GOLD, background: `linear-gradient(to right, ${GOLD} 0%, ${GOLD} ${(rangeVal/(dynamicMax||1))*100}%, #E8DED2 ${(rangeVal/(dynamicMax||1))*100}%, #E8DED2 100%)` }}
           />
         </div>
         <div className="flex justify-between mt-3">
-          <span className="text-xs text-white/30">KWD 0</span>
-          <span className="text-xs font-semibold" style={{ color: GOLD }}>KWD {priceRange.toLocaleString()}</span>
+          <span className="text-xs text-muted">{abbr} 0</span>
+          <span className="text-xs font-semibold" style={{ color: GOLD }}>{abbr} {rangeVal.toLocaleString()}</span>
         </div>
       </div>
 
@@ -311,13 +323,13 @@ export default function BrandsPage() {
                     }}
                     className="w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 transition-all duration-200"
                     style={{
-                      borderColor: active ? GOLD : "#3A3A3A",
+                      borderColor: active ? GOLD : "#E8DED2",
                       background: active ? `${GOLD}20` : "transparent",
                     }}
                   >
                     {active && <div className="w-2 h-2 rounded-sm" style={{ background: GOLD }} />}
                   </div>
-                  <span className={`text-sm transition-colors duration-200 ${active ? "text-white" : "text-white/50 group-hover:text-white/80"}`}>
+                  <span className={`text-sm transition-colors duration-200 ${active ? "text-ink" : "text-ink-soft group-hover:text-ink"}`}>
                     {isArabic ? cat.nameArabic : cat.nameEnglish}
                   </span>
                 </label>
@@ -350,13 +362,13 @@ export default function BrandsPage() {
                     }}
                     className="w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 transition-all duration-200"
                     style={{
-                      borderColor: active ? GOLD : "#3A3A3A",
+                      borderColor: active ? GOLD : "#E8DED2",
                       background: active ? `${GOLD}20` : "transparent",
                     }}
                   >
                     {active && <div className="w-2 h-2 rounded-sm" style={{ background: GOLD }} />}
                   </div>
-                  <span className={`text-sm transition-colors duration-200 ${active ? "text-white" : "text-white/50 group-hover:text-white/80"}`}>
+                  <span className={`text-sm transition-colors duration-200 ${active ? "text-ink" : "text-ink-soft group-hover:text-ink"}`}>
                     {isArabic ? brand.nameArabic : brand.nameEnglish}
                   </span>
                 </label>
@@ -367,9 +379,9 @@ export default function BrandsPage() {
       )}
 
       {/* Reset */}
-      {(selectedCategories.length > 0 || selectedBrands.length > 0 || priceRange < 5000) && (
+      {(selectedCategories.length > 0 || selectedBrands.length > 0 || priceRange < dynamicMax) && (
         <button
-          onClick={() => { setPriceRange(5000); updateURL([], []); }}
+          onClick={() => { setPriceRange(Infinity); updateURL([], []); }}
           className="w-full py-2.5 rounded-xl text-xs font-semibold tracking-wide border transition-all duration-200"
           style={{ borderColor: `${GOLD}40`, color: GOLD }}
           onMouseEnter={(e) => { e.currentTarget.style.background = `${GOLD}15`; }}
@@ -381,7 +393,7 @@ export default function BrandsPage() {
     </div>
   );
 
-  const activeFilterCount = selectedCategories.length + selectedBrands.length + (priceRange < 5000 ? 1 : 0);
+  const activeFilterCount = selectedCategories.length + selectedBrands.length + (priceRange < dynamicMax ? 1 : 0);
 
   return (
     <>
@@ -393,40 +405,40 @@ export default function BrandsPage() {
 
         /* Product card */
         .lux-card {
-          background: #111;
-          border: 1px solid rgba(255,255,255,0.06);
+          background: #FFFFFF;
+          border: 1px solid #E8DED2;
           transition: border-color 0.35s ease, box-shadow 0.35s ease, transform 0.25s ease;
         }
         .lux-card:hover {
-          border-color: rgba(201,162,77,0.3);
-          box-shadow: 0 0 0 1px rgba(201,162,77,0.08), 0 12px 48px rgba(0,0,0,0.6);
+          border-color: rgba(139,94,60,0.3);
+          box-shadow: 0 0 0 1px rgba(139,94,60,0.08), 0 22px 55px -20px rgba(31,31,31,0.18);
           transform: translateY(-3px);
         }
 
         /* Cart button */
         .lux-btn-cart {
-          border: 1px solid rgba(201,162,77,0.5);
+          border: 1px solid rgba(139,94,60,0.5);
           color: ${GOLD};
           background: transparent;
         }
         .lux-btn-cart:hover {
           background: linear-gradient(135deg, ${GOLD_DARK}, ${GOLD}, ${GOLD_LIGHT});
           border-color: transparent;
-          color: #000;
-          box-shadow: 0 4px 20px rgba(201,162,77,0.3);
+          color: #FFFDF9;
+          box-shadow: 0 4px 20px rgba(139,94,60,0.3);
         }
 
         /* Customize / Filter button — gold, not orange */
         .lux-btn-filter {
           background: linear-gradient(135deg, ${GOLD_DARK}, ${GOLD});
-          color: #000;
+          color: #FFFDF9;
           font-weight: 600;
           letter-spacing: 0.05em;
           transition: all 0.25s ease;
         }
         .lux-btn-filter:hover {
           background: linear-gradient(135deg, ${GOLD}, ${GOLD_LIGHT});
-          box-shadow: 0 4px 20px rgba(201,162,77,0.35);
+          box-shadow: 0 4px 20px rgba(139,94,60,0.35);
           transform: translateY(-1px);
         }
 
@@ -435,15 +447,15 @@ export default function BrandsPage() {
           border-radius: 10px;
         }
         .lux-search:focus {
-          border-color: rgba(201,162,77,0.45) !important;
-          box-shadow: 0 0 0 2px rgba(201,162,77,0.07);
+          border-color: rgba(139,94,60,0.45) !important;
+          box-shadow: 0 0 0 2px rgba(139,94,60,0.07);
         }
 
         /* Sort select — compact, auto width */
         .lux-select {
-          background: #111;
-          border: 1px solid rgba(201,162,77,0.25);
-          color: #C9A24D;
+          background: #FFFFFF;
+          border: 1px solid #E8DED2;
+          color: #2E2A26;
           font-size: 11px;
           font-weight: 600;
           letter-spacing: 0.04em;
@@ -451,11 +463,11 @@ export default function BrandsPage() {
           width: auto;
         }
         .lux-select:focus {
-          border-color: rgba(201,162,77,0.6);
-          box-shadow: 0 0 0 2px rgba(201,162,77,0.1);
+          border-color: rgba(139,94,60,0.6);
+          box-shadow: 0 0 0 2px rgba(139,94,60,0.1);
           outline: none;
         }
-        .lux-select option { background: #0D0D0D; color: #ccc; }
+        .lux-select option { background: #FFFFFF; color: #2E2A26; }
 
         /* Filter drawer slide-in */
         @keyframes slideInLeft {
@@ -477,26 +489,26 @@ export default function BrandsPage() {
           width: 16px; height: 16px;
           border-radius: 50%;
           background: ${GOLD};
-          border: 2px solid #000;
+          border: 2px solid #FFFFFF;
           cursor: pointer;
-          box-shadow: 0 0 8px rgba(201,162,77,0.5);
+          box-shadow: 0 0 8px rgba(139,94,60,0.5);
         }
         input[type=range]::-moz-range-thumb {
           width: 16px; height: 16px;
           border-radius: 50%;
           background: ${GOLD};
-          border: 2px solid #000;
+          border: 2px solid #FFFFFF;
           cursor: pointer;
         }
 
         /* Scrollbar */
         ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #0D0D0D; }
-        ::-webkit-scrollbar-thumb { background: #2A2A2A; border-radius: 2px; }
+        ::-webkit-scrollbar-track { background: #FAF6EF; }
+        ::-webkit-scrollbar-thumb { background: #E8DED2; border-radius: 2px; }
       `}</style>
 
-      <div className="lux-page pt-27 sm:pt-28 pb-20 min-h-screen bg-[#0D0D0D] text-white overflow-x-hidden">
-        <div className="max-w-7xl mx-auto px-3 sm:px-5 lg:px-8">
+      <div dir="ltr" className="lux-page pt-27 sm:pt-28 pb-20 min-h-screen bg-cream text-ink overflow-x-hidden">
+        <div className="max-w-[1600px] mx-auto px-3 sm:px-5 lg:px-8">
 
           {/* ══ SINGLE-ROW TOOLBAR ══
                [ Search ──────── ] [ Sort By ▾ ] [ Customize ]
@@ -518,7 +530,7 @@ export default function BrandsPage() {
                 placeholder={t("brandsPage.searchProducts") || "Search…"}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="lux-search w-full bg-[#111] border border-white/8 rounded-lg pl-8 pr-3 py-2 text-xs text-white placeholder-white/25 outline-none transition-all"
+                className="lux-search w-full bg-card border border-line rounded-lg pl-8 pr-3 py-2 text-xs text-ink placeholder-muted outline-none transition-all"
               />
             </div>
 
@@ -551,7 +563,7 @@ export default function BrandsPage() {
               {activeFilterCount > 0 && (
                 <span
                   className="w-3.5 h-3.5 rounded-full flex items-center justify-center text-[8px] font-bold flex-shrink-0"
-                  style={{ background: "rgba(0,0,0,0.35)", color: "#000" }}
+                  style={{ background: "rgba(255,253,249,0.3)", color: "#FFFDF9" }}
                 >
                   {activeFilterCount}
                 </span>
@@ -563,8 +575,8 @@ export default function BrandsPage() {
           <div className="flex gap-6 lg:gap-8 items-start">
 
             {/* ── Desktop Filter Sidebar ── */}
-            <aside className="hidden lg:block w-56 xl:w-64 flex-shrink-0">
-              <div className="sticky top-24 bg-[#111] border border-white/6 rounded-2xl p-5">
+            <aside className="hidden lg:block w-80 flex-shrink-0">
+              <div className="sticky top-24 bg-card border border-line rounded-2xl p-5">
                 <div className="flex items-center justify-between mb-5">
                   <div className="flex items-center gap-2">
                     <SlidersHorizontal size={14} style={{ color: GOLD }} />
@@ -589,7 +601,7 @@ export default function BrandsPage() {
             <main className="flex-1 min-w-0">
 
               {loading ? (
-                <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-5">
+                <div className="grid grid-cols-1 min-[360px]:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
                   {[...Array(6)].map((_, i) => <SkeletonCard key={i} />)}
                 </div>
               ) : sortedProducts.length === 0 ? (
@@ -598,17 +610,17 @@ export default function BrandsPage() {
                     style={{ background: `${GOLD}10`, border: `1px solid ${GOLD}25` }}>
                     <Sparkles size={24} style={{ color: `${GOLD}80` }} />
                   </div>
-                  <h3 className="text-lg font-semibold text-white/70 mb-2">No products found</h3>
-                  <p className="text-sm text-white/30 mb-6">Try adjusting your filters or search</p>
+                  <h3 className="text-lg font-semibold text-ink mb-2">No products found</h3>
+                  <p className="text-sm text-muted mb-6">Try adjusting your filters or search</p>
                   <button
-                    onClick={() => { setSearchQuery(""); setPriceRange(5000); updateURL([], []); }}
+                    onClick={() => { setSearchQuery(""); setPriceRange(Infinity); updateURL([], []); }}
                     className="lux-btn-filter px-6 py-2.5 rounded-full text-sm"
                   >
                     Reset Filters
                   </button>
                 </div>
               ) : (
-                <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-5">
+                <div className="grid grid-cols-1 min-[360px]:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
                   {sortedProducts.map((product, idx) => (
                     <div
                       key={product._id}
@@ -636,10 +648,10 @@ export default function BrandsPage() {
         {isFilterOpen && (
           <>
             <div
-              className="fixed inset-0 bg-black/70 z-40 backdrop-blur-sm"
+              className="fixed inset-0 bg-[#2E2A26]/40 z-40 backdrop-blur-sm"
               onClick={() => setIsFilterOpen(false)}
             />
-            <div className="filter-drawer fixed top-0 left-0 h-full w-[85vw] max-w-sm bg-[#0D0D0D] z-50 flex flex-col shadow-2xl"
+            <div className="filter-drawer fixed top-0 left-0 h-full w-[85vw] max-w-sm bg-cream z-50 flex flex-col shadow-2xl"
               style={{ borderRight: `1px solid ${GOLD}20` }}>
 
               {/* Drawer header */}
@@ -654,9 +666,9 @@ export default function BrandsPage() {
                 <button
                   onClick={() => setIsFilterOpen(false)}
                   className="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
-                  style={{ background: "rgba(255,255,255,0.05)" }}
+                  style={{ background: "rgba(46,42,38,0.06)" }}
                   onMouseEnter={(e) => { e.currentTarget.style.background = `${GOLD}20`; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.05)"; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(46,42,38,0.06)"; }}
                 >
                   <X size={16} />
                 </button>

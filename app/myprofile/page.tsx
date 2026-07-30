@@ -322,18 +322,18 @@ export default function ProfilePage() {
 
   if (fetching) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#C9A24D]"></div>
+      <div className="min-h-screen bg-cream text-ink flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-black text-white py-27 px-4"  dir={isArabic ? "rtl" : "ltr"}>
+    <div className="min-h-screen bg-cream text-ink py-27 px-4" dir="ltr">
       <div className="max-w-7xl mx-auto">
         <div className="mb-14">
-          <h1 className="text-4xl font-bold">{t("My Profile")}</h1>
-          <p className="text-gray-400 mt-2">
+          <h1 className="text-4xl font-bold text-ink">{t("My Profile")}</h1>
+          <p className="text-muted mt-2">
             Manage your account settings and addresses
           </p>
         </div>
@@ -342,17 +342,17 @@ export default function ProfilePage() {
           {/* LEFT SIDE */}
           <div className="lg:col-span-2 space-y-10">
             {/* PROFILE INFORMATION */}
-            <div className="bg-[#111] border border-white/10 rounded-2xl p-8">
+            <div className="bg-card border border-line rounded-2xl shadow-luxury p-8">
               <div className="flex justify-between items-center mb-8">
                 <div className="flex items-center gap-3">
-                  <User size={20} className="text-[#C9A24D]" />
+                  <User size={20} className="text-gold" />
                   <h2 className="text-xl font-semibold">Profile Information</h2>
                 </div>
 
                 {!editMode ? (
                   <button
                     onClick={() => setEditMode(true)}
-                    className="flex items-center gap-2 px-4 py-2 rounded-full border border-[#C9A24D] text-[#C9A24D] hover:bg-[#C9A24D] hover:text-black transition"
+                    className="flex items-center gap-2 px-4 py-2 rounded-full border border-gold text-gold-dark hover:bg-gold hover:text-cream transition"
                   >
                     <Edit size={16} />
                     Edit
@@ -362,7 +362,7 @@ export default function ProfilePage() {
                     <button
                       onClick={handleSave}
                       disabled={loading}
-                      className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#C9A24D] text-black font-semibold hover:bg-[#B8934C] transition disabled:opacity-50"
+                      className="flex items-center gap-2 px-4 py-2 rounded-full bg-gold text-cream font-semibold hover:bg-gold-dark transition disabled:opacity-50"
                     >
                       <Save size={16} />
                       {loading ? "Saving..." : "Save"}
@@ -372,7 +372,7 @@ export default function ProfilePage() {
                         setEditMode(false);
                         fetchProfile();
                       }}
-                      className="p-2 border border-white/20 rounded-full hover:bg-white/10 transition"
+                      className="p-2 border border-line rounded-full hover:bg-champagne transition"
                     >
                       <X size={16} />
                     </button>
@@ -383,18 +383,18 @@ export default function ProfilePage() {
               <div className="grid sm:grid-cols-2 gap-6">
                 {/* Name */}
                 <div>
-                  <p className="text-sm text-gray-500 mb-2">Full Name *</p>
+                  <p className="text-sm text-ink-soft mb-2">Full Name *</p>
                   {editMode ? (
                     <input
                       name="name"
                       value={user.name}
                       onChange={handleChange}
                        dir={isArabic ? "rtl" : "ltr"}
-                      className="w-full bg-black border border-white/20 rounded-lg p-3 focus:border-[#C9A24D] focus:outline-none transition"
+                      className="w-full bg-card text-ink placeholder:text-muted border border-line rounded-lg p-3 focus:border-gold focus:outline-none transition"
                       placeholder="Enter your name"
                     />
                   ) : (
-                    <p className="text-white font-medium">
+                    <p className="text-ink font-medium">
                       {user.name || "Not set"}
                     </p>
                   )}
@@ -402,7 +402,7 @@ export default function ProfilePage() {
 
                 {/* Email */}
                 <div>
-                  <p className="text-sm text-gray-500 mb-2">Email Address *</p>
+                  <p className="text-sm text-ink-soft mb-2">Email Address *</p>
                   {editMode ? (
                     <input
                       name="email"
@@ -410,17 +410,17 @@ export default function ProfilePage() {
                       value={user.email}
                       onChange={handleChange}
                        dir={isArabic ? "rtl" : "ltr"}
-                      className="w-full bg-black border border-white/20 rounded-lg p-3 focus:border-[#C9A24D] focus:outline-none transition"
+                      className="w-full bg-card text-ink placeholder:text-muted border border-line rounded-lg p-3 focus:border-gold focus:outline-none transition"
                       placeholder="Enter your email"
                     />
                   ) : (
-                    <p className="text-gray-300">{user.email || "Not set"}</p>
+                    <p className="text-ink">{user.email || "Not set"}</p>
                   )}
                 </div>
 
                 {/* Phone */}
                 <div>
-                  <p className="text-sm text-gray-500 mb-2">Phone Number</p>
+                  <p className="text-sm text-ink-soft mb-2">Phone Number</p>
                   {editMode ? (
                     <input
                       name="phone"
@@ -428,21 +428,21 @@ export default function ProfilePage() {
                       value={user.phone}
                       onChange={handleChange}
                        dir={isArabic ? "rtl" : "ltr"}
-                      className="w-full bg-black border border-white/20 rounded-lg p-3 focus:border-[#C9A24D] focus:outline-none transition"
+                      className="w-full bg-card text-ink placeholder:text-muted border border-line rounded-lg p-3 focus:border-gold focus:outline-none transition"
                       placeholder="+1234567890"
                     />
                   ) : (
-                    <p className="text-gray-300">{user.phone || "Not set"}</p>
+                    <p className="text-ink">{user.phone || "Not set"}</p>
                   )}
                 </div>
               </div>
             </div>
 
             {/* ADDRESSES */}
-            <div className="bg-[#111] border border-white/10 rounded-2xl p-8">
+            <div className="bg-card border border-line rounded-2xl shadow-luxury p-8">
               <div className="flex justify-between items-center mb-6">
                 <div className="flex items-center gap-3">
-                  <MapPin size={20} className="text-[#C9A24D]" />
+                  <MapPin size={20} className="text-gold" />
                   <h2 className="text-xl font-semibold">Saved Addresses</h2>
                 </div>
 
@@ -453,7 +453,7 @@ export default function ProfilePage() {
                       setShowAddressForm(true);
                       setEditingAddress(null);
                     }}
-                    className="flex items-center gap-2 px-4 py-2 rounded-full border border-[#C9A24D] text-[#C9A24D] hover:bg-[#C9A24D] hover:text-black transition"
+                    className="flex items-center gap-2 px-4 py-2 rounded-full border border-gold text-gold-dark hover:bg-gold hover:text-cream transition"
                   >
                     <Plus size={16} />
                     Add Address
@@ -463,7 +463,7 @@ export default function ProfilePage() {
 
               {/* ADDRESS FORM */}
               {showAddressForm && (
-                <div className="mb-6 p-6 bg-black/50 border border-white/10 rounded-lg">
+                <div className="mb-6 p-6 bg-champagne border border-line rounded-lg">
                   <h3 className="text-lg font-semibold mb-4">
                     {editingAddress ? "Edit Address" : "New Address"}
                   </h3>
@@ -471,7 +471,7 @@ export default function ProfilePage() {
                   <div className="grid sm:grid-cols-2 gap-4">
                     {/* Type */}
                     <div>
-                      <label className="text-sm text-gray-400 mb-2 block">
+                      <label className="text-sm text-ink-soft mb-2 block">
                         Address Type *
                       </label>
                       <select
@@ -479,7 +479,7 @@ export default function ProfilePage() {
                         onChange={(e) =>
                           setAddressForm({ ...addressForm, type: e.target.value })
                         }
-                        className="w-full bg-[#1A1A1A] border border-white/20 rounded-lg p-3 focus:border-[#C9A24D] focus:outline-none"
+                        className="w-full bg-card text-ink placeholder:text-muted border border-line rounded-lg p-3 focus:border-gold focus:outline-none"
                       >
                         <option value="home">Home</option>
                         <option value="work">Work</option>
@@ -489,7 +489,7 @@ export default function ProfilePage() {
 
                     {/* Name */}
                     <div>
-                      <label className="text-sm text-gray-400 mb-2 block">
+                      <label className="text-sm text-ink-soft mb-2 block">
                         Full Name *
                       </label>
                       <input
@@ -497,19 +497,19 @@ export default function ProfilePage() {
                         onChange={(e) =>
                           setAddressForm({ ...addressForm, name: e.target.value })
                         }
-                        className={`w-full bg-[#1A1A1A] border ${
-                          errors.name ? "border-red-500" : "border-white/20"
-                        } rounded-lg p-3 focus:border-[#C9A24D] focus:outline-none`}
+                        className={`w-full bg-card text-ink placeholder:text-muted border ${
+                          errors.name ? "border-red-500" : "border-line"
+                        } rounded-lg p-3 focus:border-gold focus:outline-none`}
                         placeholder="John Doe"
                       />
                       {errors.name && (
-                        <p className="text-red-500 text-xs mt-1">{errors.name}</p>
+                        <p className="text-error text-xs mt-1">{errors.name}</p>
                       )}
                     </div>
 
                     {/* Phone */}
                     <div>
-                      <label className="text-sm text-gray-400 mb-2 block">
+                      <label className="text-sm text-ink-soft mb-2 block">
                         Phone Number *
                       </label>
                       <input
@@ -518,19 +518,19 @@ export default function ProfilePage() {
                         onChange={(e) =>
                           setAddressForm({ ...addressForm, phone: e.target.value })
                         }
-                        className={`w-full bg-[#1A1A1A] border ${
-                          errors.phone ? "border-red-500" : "border-white/20"
-                        } rounded-lg p-3 focus:border-[#C9A24D] focus:outline-none`}
+                        className={`w-full bg-card text-ink placeholder:text-muted border ${
+                          errors.phone ? "border-red-500" : "border-line"
+                        } rounded-lg p-3 focus:border-gold focus:outline-none`}
                         placeholder="+1234567890"
                       />
                       {errors.phone && (
-                        <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
+                        <p className="text-error text-xs mt-1">{errors.phone}</p>
                       )}
                     </div>
 
                     {/* Email */}
                     <div>
-                      <label className="text-sm text-gray-400 mb-2 block">
+                      <label className="text-sm text-ink-soft mb-2 block">
                         Email (Optional)
                       </label>
                       <input
@@ -539,19 +539,19 @@ export default function ProfilePage() {
                         onChange={(e) =>
                           setAddressForm({ ...addressForm, email: e.target.value })
                         }
-                        className={`w-full bg-[#1A1A1A] border ${
-                          errors.email ? "border-red-500" : "border-white/20"
-                        } rounded-lg p-3 focus:border-[#C9A24D] focus:outline-none`}
+                        className={`w-full bg-card text-ink placeholder:text-muted border ${
+                          errors.email ? "border-red-500" : "border-line"
+                        } rounded-lg p-3 focus:border-gold focus:outline-none`}
                         placeholder="john@example.com"
                       />
                       {errors.email && (
-                        <p className="text-red-500 text-xs mt-1">{errors.email}</p>
+                        <p className="text-error text-xs mt-1">{errors.email}</p>
                       )}
                     </div>
 
                     {/* Address Line 1 */}
                     <div className="sm:col-span-2">
-                      <label className="text-sm text-gray-400 mb-2 block">
+                      <label className="text-sm text-ink-soft mb-2 block">
                         Address Line 1 *
                       </label>
                       <input
@@ -562,13 +562,13 @@ export default function ProfilePage() {
                             addressLine1: e.target.value,
                           })
                         }
-                        className={`w-full bg-[#1A1A1A] border ${
-                          errors.addressLine1 ? "border-red-500" : "border-white/20"
-                        } rounded-lg p-3 focus:border-[#C9A24D] focus:outline-none`}
+                        className={`w-full bg-card text-ink placeholder:text-muted border ${
+                          errors.addressLine1 ? "border-red-500" : "border-line"
+                        } rounded-lg p-3 focus:border-gold focus:outline-none`}
                         placeholder="Street address, P.O. box"
                       />
                       {errors.addressLine1 && (
-                        <p className="text-red-500 text-xs mt-1">
+                        <p className="text-error text-xs mt-1">
                           {errors.addressLine1}
                         </p>
                       )}
@@ -576,7 +576,7 @@ export default function ProfilePage() {
 
                     {/* Address Line 2 */}
                     <div className="sm:col-span-2">
-                      <label className="text-sm text-gray-400 mb-2 block">
+                      <label className="text-sm text-ink-soft mb-2 block">
                         Address Line 2 (Optional)
                       </label>
                       <input
@@ -587,14 +587,14 @@ export default function ProfilePage() {
                             addressLine2: e.target.value,
                           })
                         }
-                        className="w-full bg-[#1A1A1A] border border-white/20 rounded-lg p-3 focus:border-[#C9A24D] focus:outline-none"
+                        className="w-full bg-card text-ink placeholder:text-muted border border-line rounded-lg p-3 focus:border-gold focus:outline-none"
                         placeholder="Apartment, suite, unit, building, floor, etc."
                       />
                     </div>
 
                     {/* City */}
                     <div>
-                      <label className="text-sm text-gray-400 mb-2 block">
+                      <label className="text-sm text-ink-soft mb-2 block">
                         City *
                       </label>
                       <input
@@ -603,19 +603,19 @@ export default function ProfilePage() {
                           setAddressForm({ ...addressForm, city: e.target.value })
                         }
                         dir={isArabic ? "rtl" : "ltr"}
-                        className={`w-full bg-[#1A1A1A] border ${
-                          errors.city ? "border-red-500" : "border-white/20"
-                        } rounded-lg p-3 focus:border-[#C9A24D] focus:outline-none`}
+                        className={`w-full bg-card text-ink placeholder:text-muted border ${
+                          errors.city ? "border-red-500" : "border-line"
+                        } rounded-lg p-3 focus:border-gold focus:outline-none`}
                         placeholder="New York"
                       />
                       {errors.city && (
-                        <p className="text-red-500 text-xs mt-1">{errors.city}</p>
+                        <p className="text-error text-xs mt-1">{errors.city}</p>
                       )}
                     </div>
 
                     {/* State */}
                     <div>
-                      <label className="text-sm text-gray-400 mb-2 block">
+                      <label className="text-sm text-ink-soft mb-2 block">
                         State/Province (Optional)
                       </label>
                       <input
@@ -623,14 +623,14 @@ export default function ProfilePage() {
                         onChange={(e) =>
                           setAddressForm({ ...addressForm, state: e.target.value })
                         }
-                        className="w-full bg-[#1A1A1A] border border-white/20 rounded-lg p-3 focus:border-[#C9A24D] focus:outline-none"
+                        className="w-full bg-card text-ink placeholder:text-muted border border-line rounded-lg p-3 focus:border-gold focus:outline-none"
                         placeholder="NY"
                       />
                     </div>
 
                     {/* Country */}
                     <div>
-                      <label className="text-sm text-gray-400 mb-2 block">
+                      <label className="text-sm text-ink-soft mb-2 block">
                         Country *
                       </label>
                       <input
@@ -638,19 +638,19 @@ export default function ProfilePage() {
                         onChange={(e) =>
                           setAddressForm({ ...addressForm, country: e.target.value })
                         }
-                        className={`w-full bg-[#1A1A1A] border ${
-                          errors.country ? "border-red-500" : "border-white/20"
-                        } rounded-lg p-3 focus:border-[#C9A24D] focus:outline-none`}
+                        className={`w-full bg-card text-ink placeholder:text-muted border ${
+                          errors.country ? "border-red-500" : "border-line"
+                        } rounded-lg p-3 focus:border-gold focus:outline-none`}
                         placeholder="United States"
                       />
                       {errors.country && (
-                        <p className="text-red-500 text-xs mt-1">{errors.country}</p>
+                        <p className="text-error text-xs mt-1">{errors.country}</p>
                       )}
                     </div>
 
                     {/* Postal Code */}
                     <div>
-                      <label className="text-sm text-gray-400 mb-2 block">
+                      <label className="text-sm text-ink-soft mb-2 block">
                         Postal Code *
                       </label>
                       <input
@@ -661,13 +661,13 @@ export default function ProfilePage() {
                             postalCode: e.target.value,
                           })
                         }
-                        className={`w-full bg-[#1A1A1A] border ${
-                          errors.postalCode ? "border-red-500" : "border-white/20"
-                        } rounded-lg p-3 focus:border-[#C9A24D] focus:outline-none`}
+                        className={`w-full bg-card text-ink placeholder:text-muted border ${
+                          errors.postalCode ? "border-red-500" : "border-line"
+                        } rounded-lg p-3 focus:border-gold focus:outline-none`}
                         placeholder="10001"
                       />
                       {errors.postalCode && (
-                        <p className="text-red-500 text-xs mt-1">
+                        <p className="text-error text-xs mt-1">
                           {errors.postalCode}
                         </p>
                       )}
@@ -685,9 +685,9 @@ export default function ProfilePage() {
                               isDefault: e.target.checked,
                             })
                           }
-                          className="w-4 h-4 accent-[#C9A24D]"
+                          className="w-4 h-4 accent-gold"
                         />
-                        <span className="text-sm text-gray-300">
+                        <span className="text-sm text-ink-soft">
                           Set as default address
                         </span>
                       </label>
@@ -699,7 +699,7 @@ export default function ProfilePage() {
                     <button
                       onClick={handleSaveAddress}
                       disabled={loading}
-                      className="flex items-center gap-2 px-6 py-2 rounded-full bg-[#C9A24D] text-black font-semibold hover:bg-[#B8934C] transition disabled:opacity-50"
+                      className="flex items-center gap-2 px-6 py-2 rounded-full bg-gold text-cream font-semibold hover:bg-gold-dark transition disabled:opacity-50"
                     >
                       <Save size={16} />
                       {loading ? "Saving..." : "Save Address"}
@@ -710,7 +710,7 @@ export default function ProfilePage() {
                         setEditingAddress(null);
                         resetAddressForm();
                       }}
-                      className="px-6 py-2 rounded-full border border-white/20 hover:bg-white/10 transition"
+                      className="btn-luxury-outline px-6 py-2 rounded-full transition"
                     >
                       Cancel
                     </button>
@@ -721,7 +721,7 @@ export default function ProfilePage() {
               {/* ADDRESS LIST */}
               <div className="space-y-4">
                 {addresses.length === 0 ? (
-                  <div className="text-center py-8 text-gray-400">
+                  <div className="text-center py-8 text-muted">
                     <MapPin size={48} className="mx-auto mb-4 opacity-50" />
                     <p>No addresses saved yet</p>
                     <p className="text-sm mt-2">Add your first address to get started</p>
@@ -730,15 +730,15 @@ export default function ProfilePage() {
                   addresses.map((address) => (
                     <div
                       key={address._id}
-                      className={`p-4 rounded-lg border ${
+                      className={`p-4 rounded-xl border ${
                         address.isDefault
-                          ? "border-[#C9A24D] bg-[#C9A24D]/5"
-                          : "border-white/10 bg-black/30"
+                          ? "border-gold ring-1 ring-gold bg-gold/5"
+                          : "border-line bg-card"
                       } relative`}
                     >
                       {address.isDefault && (
                         <div className="absolute top-4 right-4">
-                          <span className="flex items-center gap-1 text-xs bg-[#C9A24D] text-black px-2 py-1 rounded-full font-semibold">
+                          <span className="flex items-center gap-1 text-xs bg-gold/15 text-gold-dark px-2 py-1 rounded-full font-semibold">
                             <Check size={12} />
                             Default
                           </span>
@@ -747,25 +747,25 @@ export default function ProfilePage() {
 
                       <div className="mb-3">
                         <div className="flex items-center gap-2 mb-2">
-                          <span className="text-xs bg-white/10 px-2 py-1 rounded capitalize">
+                          <span className="text-xs bg-champagne text-ink-soft px-2 py-1 rounded capitalize">
                             {address.type}
                           </span>
-                          <h3 className="font-semibold">{address.name}</h3>
+                          <h3 className="font-semibold text-ink">{address.name}</h3>
                         </div>
-                        <p className="text-sm text-gray-300">
+                        <p className="text-sm text-ink-soft">
                           {address.addressLine1}
                           {address.addressLine2 && `, ${address.addressLine2}`}
                         </p>
-                        <p className="text-sm text-gray-300">
+                        <p className="text-sm text-ink-soft">
                           {address.city}
                           {address.state && `, ${address.state}`} {address.postalCode}
                         </p>
-                        <p className="text-sm text-gray-300">{address.country}</p>
-                        <p className="text-sm text-gray-400 mt-2">
+                        <p className="text-sm text-ink-soft">{address.country}</p>
+                        <p className="text-sm text-muted mt-2">
                           Phone: {address.phone}
                         </p>
                         {address.email && (
-                          <p className="text-sm text-gray-400">
+                          <p className="text-sm text-muted">
                             Email: {address.email}
                           </p>
                         )}
@@ -775,20 +775,20 @@ export default function ProfilePage() {
                         {!address.isDefault && (
                           <button
                             onClick={() => handleSetDefault(address._id)}
-                            className="text-xs px-3 py-1.5 rounded-full border border-white/20 hover:bg-white/10 transition"
+                            className="text-xs px-3 py-1.5 rounded-full border border-line text-ink-soft hover:bg-champagne transition"
                           >
                             Set as Default
                           </button>
                         )}
                         <button
                           onClick={() => handleEditAddress(address)}
-                          className="text-xs px-3 py-1.5 rounded-full border border-[#C9A24D] text-[#C9A24D] hover:bg-[#C9A24D] hover:text-black transition"
+                          className="text-xs px-3 py-1.5 rounded-full border border-gold text-gold-dark hover:bg-gold hover:text-cream transition"
                         >
                           Edit
                         </button>
                         <button
                           onClick={() => handleDeleteAddress(address._id)}
-                          className="text-xs px-3 py-1.5 rounded-full border border-red-500 text-red-500 hover:bg-red-500 hover:text-white transition"
+                          className="text-xs px-3 py-1.5 rounded-full border border-red-200 text-error hover:bg-red-50 transition"
                         >
                           <Trash2 size={12} className="inline" />
                         </button>
@@ -803,16 +803,16 @@ export default function ProfilePage() {
           {/* RIGHT SIDE */}
           <div className="space-y-6">
             {/* Member Since */}
-            <div className="bg-[#111] border border-white/10 rounded-2xl p-6">
-              <p className="text-sm text-gray-500 mb-2">Member Since</p>
-              <p className="text-white font-semibold">{user.memberSince}</p>
+            <div className="bg-card border border-line rounded-2xl shadow-luxury p-6">
+              <p className="text-sm text-ink-soft mb-2">Member Since</p>
+              <p className="text-ink font-semibold">{user.memberSince}</p>
             </div>
 
             {/* Logout */}
-            <div className="bg-[#111] border border-white/10 rounded-2xl p-6">
+            <div className="bg-card border border-line rounded-2xl shadow-luxury p-6">
               <button
                 onClick={handleLogout}
-                className="w-full py-3 rounded-full bg-[#C9A24D] text-black font-semibold flex items-center justify-center gap-2 hover:bg-[#B8934C] transition"
+                className="w-full py-3 rounded-full border border-red-200 text-error font-semibold flex items-center justify-center gap-2 hover:bg-red-50 transition"
               >
                 <LogOut size={18} />
                 Sign Out

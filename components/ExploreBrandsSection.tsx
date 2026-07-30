@@ -181,12 +181,9 @@
 
 import Image from "next/image";
 import { useEffect, useState, useRef, useCallback } from "react";
-import { Charm } from "next/font/google";
 import { useTranslation } from "react-i18next";
 import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import { useRouter } from "next/navigation";
-
-const charm = Charm({ subsets: ["latin"], weight: "400" });
 
 type BrandFromBackend = {
   _id: string;
@@ -206,6 +203,10 @@ export default function ExploreBrandsSection() {
   const { t, i18n } = useTranslation("common");
   const isRTL = i18n.language === "ar";
 
+  const brandsSubheading = isRTL
+    ? "أرقى المختارات."
+    : "More Luxury Brand Style.";
+
   const [slides, setSlides] = useState<Slide[]>([]);
   const [current, setCurrent] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
@@ -213,9 +214,21 @@ export default function ExploreBrandsSection() {
   const [progress, setProgress] = useState(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const touchStartX = useRef(0);
 const router = useRouter();
   const SLIDE_DURATION = 5000;
   const PROGRESS_UPDATE_INTERVAL = 50;
+  const CROSSFADE_MS = 900;
+
+  // ── Luxury crossfade: two persistent, load-gated image layers ──────────────
+  // slotIdx[s] = which slide each layer shows. `topSlot` is the layer on top.
+  // The bottom layer stays fully opaque (shows the outgoing slide) until the
+  // top layer has LOADED and faded in — so the background is never revealed.
+  const [slotIdx, setSlotIdx] = useState<[number, number]>([0, 0]);
+  const [topSlot, setTopSlot] = useState<0 | 1>(0);
+  const [topOpacity, setTopOpacity] = useState(1);
+  const [topLoaded, setTopLoaded] = useState(true);
+  const [crossfading, setCrossfading] = useState(false);
 
   // ✅ FETCH BRANDS FROM BACKEND
   useEffect(() => {
@@ -249,13 +262,17 @@ const router = useRouter();
   }, [i18n.language]);
 
   // ✅ SMOOTH SLIDE TRANSITION
+  // const goToSlide = useCallback((index: number) => {
+  //   if (isTransitioning) return;
+  //   setIsTransitioning(true);
+  //   setCurrent(index);
+  //   setProgress(0);
+  //   setTimeout(() => setIsTransitioning(false), 300);
+  // }, [isTransitioning]);
   const goToSlide = useCallback((index: number) => {
-    if (isTransitioning) return;
-    setIsTransitioning(true);
     setCurrent(index);
     setProgress(0);
-    setTimeout(() => setIsTransitioning(false), 300);
-  }, [isTransitioning]);
+}, []);
 
   const goNext = useCallback(() => {
     if (!slides.length) return;
@@ -312,82 +329,165 @@ const router = useRouter();
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [goNext, goPrev]);
 
+  // 1) When `current` points to a slide not yet on top, mount it into the
+  //    OTHER (incoming) layer at opacity 0. The current image keeps showing.
+  useEffect(() => {
+    if (!slides.length || crossfading) return;
+    if (slotIdx[topSlot] === current) return;
+    const incoming: 0 | 1 = topSlot === 0 ? 1 : 0;
+    setSlotIdx((prev) => {
+      const next: [number, number] = [prev[0], prev[1]];
+      next[incoming] = current;
+      return next;
+    });
+    setTopSlot(incoming);
+    setTopOpacity(0);
+    setTopLoaded(false);
+    setCrossfading(true);
+  }, [current, slides.length, crossfading, topSlot, slotIdx]);
+
+  // 2) Once the incoming (top) image has fully loaded, fade it in next frame.
+  useEffect(() => {
+    if (!crossfading || !topLoaded) return;
+    const raf = requestAnimationFrame(() => setTopOpacity(1));
+    return () => cancelAnimationFrame(raf);
+  }, [crossfading, topLoaded]);
+
+  // 3) Safety: if a load event is missed (cache/edge cases), don't stall.
+  useEffect(() => {
+    if (!crossfading || topLoaded) return;
+    const t = setTimeout(() => setTopLoaded(true), 1500);
+    return () => clearTimeout(t);
+  }, [crossfading, topLoaded]);
+
+  // 4) Commit once the fade completes (timeout backs up onTransitionEnd).
+  useEffect(() => {
+    if (!crossfading || topOpacity !== 1) return;
+    const t = setTimeout(() => setCrossfading(false), CROSSFADE_MS);
+    return () => clearTimeout(t);
+  }, [crossfading, topOpacity]);
+
   const currentSlide = slides[current];
+
+  // ── Premium section heading (lives ABOVE the slider, in the container). ──────
+  // Mirrors naturally for RTL via inherited dir; no layout branching needed.
+  const heading = (
+    <div className="w-full bg-cream">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 pt-16 md:pt-20 pb-10 md:pb-12">
+        {/* TITLE — matches BestSellers / ExploreMore section headings */}
+        <div className={`text-center ${isRTL ? "font-arabic" : ""}`}>
+          <div
+            className={`flex items-center justify-center gap-6 mb-6 ${
+              isRTL ? "" : ""
+            }`}
+          >
+            <div className="w-32 h-px bg-linear-to-r from-transparent to-gold" />
+            <h2
+              className="text-gold-dark text-4xl md:text-5xl font-normal tracking-wide whitespace-nowrap"
+              style={{ fontFamily: "'Cactus Classical Serif', serif" }}
+            >
+              {t("exploreBrands")}
+            </h2>
+          </div>
+          <p
+            className="text-muted text-base md:text-lg tracking-wider font-normal"
+            style={{ fontFamily: "'Cactus Classical Serif', serif" }}
+          >
+            {brandsSubheading}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 
   if (!slides.length) {
     return (
-      <section
-        className="relative w-full overflow-hidden bg-black animate-pulse"
-        style={{ height: "682px" }}
-      >
-        <div className="absolute inset-0 bg-linear-to-br from-gray-900 to-black" />
-      </section>
+      <>
+        {heading}
+        <section
+          className="relative w-full overflow-hidden bg-champagne animate-pulse"
+          style={{ height: "682px" }}
+        >
+          <div className="absolute inset-0 skeleton-luxury" />
+        </section>
+      </>
     );
   }
 
   return (
-    <section
-      className="relative w-full overflow-hidden bg-black group"
-      style={{ height: "682px" }}
-    >
-      {/* BACKGROUND IMAGE WITH SMOOTH TRANSITION */}
-      <div className="absolute inset-0">
-        <Image
-          key={currentSlide._id}
-          src={currentSlide.src}
-          alt="Brand"
-          fill
-          className={`object-cover transition-opacity duration-800 ease-out ${
-            isTransitioning ? "opacity-0" : "opacity-100"
-          }`}
-          priority={current === 0}
-          unoptimized
-        />
+    <>
+      {heading}
+      <section
+        className="relative w-full overflow-hidden bg-cream group"
+        style={{ height: "682px" }}
+        onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
+        onTouchEnd={(e) => {
+          const dx = e.changedTouches[0].clientX - touchStartX.current;
+          if (Math.abs(dx) > 50) (dx < 0 ? goNext : goPrev)();
+        }}
+      >
+      {/* BACKGROUND — LUXURY CROSSFADE (two persistent, load-gated layers).
+          `isolate` keeps these layers' z-order local so the overlay stays on top. */}
+      <div className="absolute inset-0 isolate">
+        {([0, 1] as const).map((s) => {
+          const idx = Math.min(Math.max(slotIdx[s], 0), slides.length - 1);
+          const slide = slides[idx];
+          const isTop = s === topSlot;
+          return (
+            <Image
+              key={`hero-slot-${s}`}
+              src={slide.src}
+              alt={slide?.nameEnglish || "Brand"}
+              fill
+              sizes="100vw"
+              unoptimized
+              priority={idx === 0}
+              draggable={false}
+              onLoad={() => {
+                if (isTop && crossfading) setTopLoaded(true);
+              }}
+              onError={() => {
+                if (isTop && crossfading) setTopLoaded(true);
+              }}
+              onTransitionEnd={(e) => {
+                if (e.propertyName === "opacity" && isTop && topOpacity === 1) {
+                  setCrossfading(false);
+                }
+              }}
+              className="object-cover"
+              style={{
+                opacity: isTop ? topOpacity : 1,
+                zIndex: isTop ? 2 : 1,
+                transition: `opacity ${CROSSFADE_MS}ms cubic-bezier(0.4, 0, 0.2, 1)`,
+                willChange: "opacity",
+              }}
+            />
+          );
+        })}
       </div>
 
       {/* DARK OVERLAY */}
-      <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/30 to-transparent pointer-events-none" />
+      {/* <div className="absolute inset-0 bg-linear-to-t from-cream/80 via-cream/30 to-transparent pointer-events-none" /> */}
+      <div className="absolute inset-0 bg-black/20 pointer-events-none" />
 
-      {/* TOP TEXT WITH FADE-IN ANIMATION */}
-      <div
-        className={`absolute top-10 z-20 transition-all duration-800 ease-out ${
-          isRTL ? "left-10 text-left" : "right-10 text-right"
-        } ${isTransitioning ? "opacity-0 translate-y-6" : "opacity-100 translate-y-0"}`}
-        style={{ maxWidth: "475px" }}
-      >
-        <h2
-          className={`font-normal text-[#C5A059] text-[50px] leading-none mb-2 transition-all duration-900 ease-out ${
-            isRTL ? "font-arabic" : ""
-          } ${isTransitioning ? "translate-y-4 opacity-0" : "translate-y-0 opacity-100"}`}
-        >
-          {t("exploreBrands")}
-        </h2>
-
-        <p
-          className={`${charm.className} font-normal text-[#C5A059] text-[32px] transition-all duration-1000 ease-out ${
-            isRTL ? "font-arabic" : ""
-          } ${isTransitioning ? "translate-y-4 opacity-0" : "translate-y-0 opacity-100"}`}
-        >
-          {t("brands.luxuryFavorites")}
-        </p>
-      </div>
+      {/* Heading + subheading now live ABOVE the slider (see `heading`). */}
 
       {/* NAVIGATION ARROWS - VISIBLE ON HOVER */}
       {slides.length > 1 && (
         <>
           <button
             onClick={goPrev}
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-[#C9A24D] hover:border-[#C9A24D] transition-all duration-400 ease-out opacity-0 group-hover:opacity-100 hover:scale-110 active:scale-95"
+            className="absolute start-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-card/70 backdrop-blur-sm border border-line shadow-luxury flex items-center justify-center text-ink hover:bg-gold hover:border-gold transition-all duration-400 ease-out opacity-0 group-hover:opacity-100 hover:scale-110 active:scale-95 focus-visible:ring-2 focus-visible:ring-gold focus:outline-none"
             aria-label="Previous slide"
           >
-            <ChevronLeft size={24} />
+            <ChevronLeft size={24} className="rtl:rotate-180" />
           </button>
           <button
             onClick={goNext}
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 flex items-center justify-center text-white hover:bg-[#C9A24D] hover:border-[#C9A24D] transition-all duration-400 ease-out opacity-0 group-hover:opacity-100 hover:scale-110 active:scale-95"
+            className="absolute end-4 top-1/2 -translate-y-1/2 z-30 w-12 h-12 rounded-full bg-card/70 backdrop-blur-sm border border-line shadow-luxury flex items-center justify-center text-ink hover:bg-gold hover:border-gold transition-all duration-400 ease-out opacity-0 group-hover:opacity-100 hover:scale-110 active:scale-95 focus-visible:ring-2 focus-visible:ring-gold focus:outline-none"
             aria-label="Next slide"
           >
-            <ChevronRight size={24} />
+            <ChevronRight size={24} className="rtl:rotate-180" />
           </button>
         </>
       )}
@@ -405,18 +505,17 @@ const router = useRouter();
 
       {/* SHOP NOW BUTTON WITH ANIMATION */}
       <div
-        className={`absolute bottom-10 z-20 transition-all duration-800 ease-out ${
-          isRTL ? "left-10" : "right-10"
+        className={`absolute bottom-6 sm:bottom-10 z-20 transition-all duration-800 ease-out ${
+          isRTL ? "left-6 sm:left-10" : "right-6 sm:right-10"
         } ${isTransitioning ? "opacity-0 translate-y-6" : "opacity-100 translate-y-0"}`}
       >
         <button
           onClick={() => {
             router.push(`/brands?brand=${currentSlide._id}`);
           }}
-          className={`rounded-[25px] bg-linear-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] text-black font-semibold hover:shadow-[0_0_30px_rgba(212,175,55,0.5)] hover:scale-105 transition-all duration-500 ease-out active:scale-95 ${
+          className={`inline-flex items-center justify-center whitespace-nowrap rounded-full px-7 sm:px-10 py-2.5 sm:py-3.5 text-sm sm:text-base bg-linear-to-b from-[#F7E7B4] via-[#D4AF37] to-[#8C6B1F] text-ink font-semibold shadow-luxury hover:shadow-[0_0_30px_rgba(200,168,106,0.45)] hover:scale-105 transition-all duration-500 ease-out active:scale-95 focus-visible:ring-2 focus-visible:ring-gold focus:outline-none ${
             isRTL ? "font-arabic" : ""
           }`}
-          style={{ width: "185px", height: "69px" }}
         >
           {t("brands.shopNow")}
         </button>
@@ -433,13 +532,13 @@ const router = useRouter();
               aria-label={`Go to slide ${index + 1}`}
             >
               {/* Progress bar background */}
-              <div className={`rounded-full overflow-hidden transition-all duration-400 ease-out bg-white/30 group-hover/dot:bg-white/50 ${
+              <div className={`rounded-full overflow-hidden transition-all duration-400 ease-out bg-ink/20 group-hover/dot:bg-ink/40 ${
                 current === index ? "w-16 h-1.5" : "w-12 h-1"
               }`}>
                 {/* Active progress fill */}
                 {current === index && isPlaying && (
                   <div
-                    className="h-full bg-white rounded-full transition-[width]"
+                    className="h-full bg-gold rounded-full transition-[width]"
                     style={{
                       width: `${progress}%`,
                       transitionDuration: "75ms",
@@ -449,7 +548,7 @@ const router = useRouter();
                 )}
                 {/* Static fill for current slide when paused */}
                 {current === index && !isPlaying && (
-                  <div className="h-full bg-white rounded-full w-full transition-all duration-300" />
+                  <div className="h-full bg-gold rounded-full w-full transition-all duration-300" />
                 )}
               </div>
             </button>
@@ -458,9 +557,10 @@ const router = useRouter();
       )}
 
       {/* SLIDE COUNTER */}
-      <div className="absolute top-4 right-4 z-20 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-sm border border-white/20 text-white text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-400 ease-out">
+      <div className="absolute top-4 right-4 z-20 px-3 py-1.5 rounded-full bg-card/70 backdrop-blur-sm border border-line shadow-luxury text-ink text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-400 ease-out">
         {current + 1} / {slides.length}
       </div>
-    </section>
+      </section>
+    </>
   );
 }

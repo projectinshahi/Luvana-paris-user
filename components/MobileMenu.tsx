@@ -112,20 +112,20 @@ const [brands, setBrands] = useState<Brand[]>([]);
   return (
     <>
       {/* Overlay */}
-      <div 
-        className="fixed inset-0 bg-black/50 z-50"
+      <div
+        className="fixed inset-0 bg-ink/40 z-50"
         onClick={onClose}
       />
       
       {/* Main Menu Slide */}
-      <div className={`fixed top-0 ${isRTL ? 'right-0' : 'left-0'} h-full w-80 bg-black text-white z-50 transform transition-transform duration-300 ${isOpen ? 'translate-x-0' : isRTL ? 'translate-x-full' : '-translate-x-full'}`}>
+      <div className={`fixed top-0 ${isRTL ? 'right-0' : 'left-0'} h-full w-80 bg-cream text-ink border-e border-line shadow-luxury-lg z-50 transform transition-transform duration-300 ${isOpen ? 'translate-x-0' : isRTL ? 'translate-x-full' : '-translate-x-full'}`}>
         
         {/* Menu Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-700">
-          <h2 className={`text-lg font-medium ${isRTL ? 'font-arabic' : ''}`}>Menu</h2>
+        <div className="flex items-center justify-between p-4 border-b border-line">
+          <h2 className={`eyebrow text-gold-dark ${isRTL ? 'font-arabic' : ''}`}>Menu</h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+            className="p-2 text-muted hover:text-ink hover:bg-champagne rounded-lg transition-colors"
           >
             <X size={20} />
           </button>
@@ -140,7 +140,7 @@ const [brands, setBrands] = useState<Brand[]>([]);
       router.push("/");
       onClose();
     }}
-    className={`w-full p-4 text-left hover:bg-gray-900 ${
+    className={`w-full p-4 text-left text-ink hover:text-gold-dark hover:bg-champagne border-b border-line transition-colors ${
       isRTL ? "text-right font-arabic" : ""
     }`}
   >
@@ -149,26 +149,26 @@ const [brands, setBrands] = useState<Brand[]>([]);
 
 
   {/* BRANDS */}
-  <div className="border-b border-gray-800">
+  <div className="border-b border-line">
     <button
       onClick={() => handleCategoryClick("brands")}
-      className={`w-full flex items-center justify-between p-4 hover:bg-gray-900 ${
-        isRTL ? "flex-row-reverse font-arabic" : ""
+      className={`w-full flex items-center justify-between p-4 hover:bg-champagne transition-colors ${
+        isRTL ? "font-arabic" : ""
       }`}
     >
-      <span className="text-[#C9A24D]">
+      <span className="text-gold-dark">
         {t("categories.brands")}
       </span>
 
       {expandedCategory === "brands" ? (
-        <ChevronUp size={16} className="text-[#C9A24D]" />
+        <ChevronUp size={16} className="text-gold-dark" />
       ) : (
-        <ChevronDown size={16} className="text-gray-400" />
+        <ChevronDown size={16} className="text-muted" />
       )}
     </button>
 
     {expandedCategory === "brands" && (
-      <div className="bg-gray-900">
+      <div className="bg-champagne">
         {brands.map((brand) => (
           <button
             key={brand._id}
@@ -176,7 +176,7 @@ const [brands, setBrands] = useState<Brand[]>([]);
               router.push(`/brands?brand=${brand._id}`);
               onClose();
             }}
-            className={`w-full p-4 pl-8 text-left hover:bg-gray-800 text-[#C9A24D] ${
+            className={`w-full p-4 pl-8 text-left hover:bg-sand text-gold-dark transition-colors ${
               isRTL ? "pr-8 pl-4 text-right font-arabic" : ""
             }`}
           >
@@ -196,7 +196,7 @@ const [brands, setBrands] = useState<Brand[]>([]);
         router.push(`/brands?category=${cat._id}`);
         onClose();
       }}
-      className={`w-full p-4 text-left hover:bg-gray-900 ${
+      className={`w-full p-4 text-left text-ink hover:text-gold-dark hover:bg-champagne border-b border-line transition-colors ${
         isRTL ? "text-right font-arabic" : ""
       }`}
     >

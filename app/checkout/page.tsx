@@ -9,9 +9,9 @@ import { useCurrency } from "@/contexts/CurrencyContext";
 import api from "@/lib/axios";
 import { useRouter } from "next/navigation";
 
-const GOLD = "#C9A24D";
-const GOLD_LIGHT = "#E2C07A";
-const GOLD_DARK = "#A07C30";
+const GOLD = "#8B5E3C";
+const GOLD_LIGHT = "#A0724C";
+const GOLD_DARK = "#714B2F";
 
 // Tap calls go through our backend to avoid CORS
 
@@ -70,7 +70,7 @@ function InputField({ label, id, placeholder, value, onChange, type = "text", ic
       <label htmlFor={id} style={{
         display: "block", fontSize: 11, fontWeight: 600,
         letterSpacing: 2, textTransform: "uppercase",
-        color: focused ? GOLD : "#888", marginBottom: 8,
+        color: focused ? GOLD : "#918980", marginBottom: 8,
         transition: "color 0.2s", fontFamily: "'Cormorant Garamond', serif",
       }}>
         {label}
@@ -79,7 +79,7 @@ function InputField({ label, id, placeholder, value, onChange, type = "text", ic
         {icon && (
           <div style={{
             position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)",
-            color: focused ? GOLD : "#555", transition: "color 0.2s", pointerEvents: "none",
+            color: focused ? GOLD : "#918980", transition: "color 0.2s", pointerEvents: "none",
           }}>
             {icon}
           </div>
@@ -90,11 +90,11 @@ function InputField({ label, id, placeholder, value, onChange, type = "text", ic
           onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
           style={{
             width: "100%",
-            background: focused ? "#111" : "#0A0A0A",
-            border: `1px solid ${focused ? GOLD : "#2A2A2A"}`,
+            background: focused ? "#FFFFFF" : "#FAF6EF",
+            border: `1px solid ${focused ? GOLD : "#E8DED2"}`,
             borderRadius: 8,
             padding: icon ? "13px 14px 13px 42px" : "13px 14px",
-            color: "#F5F5F5", fontSize: 14, outline: "none",
+            color: "#2E2A26", fontSize: 14, outline: "none",
             transition: "all 0.25s", boxSizing: "border-box",
             fontFamily: "'DM Sans', sans-serif",
             boxShadow: focused ? `0 0 0 3px ${GOLD}18` : "none",
@@ -110,12 +110,12 @@ function OrderItemRow({ name, qty, price, img, formatPrice }: {
   formatPrice: (n: number) => string;
 }) {
   return (
-    <div style={{ display: "flex", gap: 14, alignItems: "center", padding: "14px 0", borderBottom: "1px solid #1A1A1A" }}>
+    <div style={{ display: "flex", gap: 14, alignItems: "center", padding: "14px 0", borderBottom: "1px solid #E8DED2" }}>
       <div style={{ position: "relative", flexShrink: 0 }}>
         <div style={{
           width: 58, height: 58, borderRadius: 10,
-          background: "linear-gradient(135deg, #1A1A1A 0%, #222 100%)",
-          border: "1px solid #2A2A2A", overflow: "hidden",
+          background: "linear-gradient(135deg, #F6F1E8 0%, #FAF6EF 100%)",
+          border: "1px solid #E8DED2", overflow: "hidden",
           display: "flex", alignItems: "center", justifyContent: "center",
         }}>
           {img ? <img src={img} alt={name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
@@ -124,13 +124,13 @@ function OrderItemRow({ name, qty, price, img, formatPrice }: {
         <div style={{
           position: "absolute", top: -6, right: -6,
           width: 18, height: 18, borderRadius: "50%",
-          background: GOLD, color: "#000", fontSize: 10, fontWeight: 700,
+          background: GOLD, color: "#FFFDF9", fontSize: 10, fontWeight: 700,
           display: "flex", alignItems: "center", justifyContent: "center",
         }}>{qty}</div>
       </div>
       <div style={{ flex: 1 }}>
-        <p style={{ margin: 0, fontWeight: 600, color: "#F0F0F0", fontFamily: "'Cormorant Garamond', serif", fontSize: 15 }}>{name}</p>
-        <p style={{ margin: "3px 0 0", fontSize: 11, color: "#555" }}>Qty: {qty}</p>
+        <p style={{ margin: 0, fontWeight: 600, color: "#2E2A26", fontFamily: "'Cormorant Garamond', serif", fontSize: 15 }}>{name}</p>
+        <p style={{ margin: "3px 0 0", fontSize: 11, color: "#918980" }}>Qty: {qty}</p>
       </div>
       <p style={{ margin: 0, fontWeight: 700, color: GOLD, fontSize: 14 }}>{formatPrice(price)}</p>
     </div>
@@ -295,12 +295,12 @@ export default function CheckoutPage() {
   if (cartLoading) {
     return (
       <div style={{
-        minHeight: "100vh", background: "#0D0D0D",
+        minHeight: "100vh", background: "#FFFDF9",
         display: "flex", alignItems: "center", justifyContent: "center",
       }}>
         <div style={{ textAlign: "center" }}>
           <Loader2 size={36} color={GOLD} style={{ animation: "spin 1s linear infinite", marginBottom: 12 }} />
-          <p style={{ color: "#555", fontSize: 13, fontFamily: "'DM Sans', sans-serif" }}>Loading your cart…</p>
+          <p style={{ color: "#6D665F", fontSize: 13, fontFamily: "'DM Sans', sans-serif" }}>Loading your cart…</p>
         </div>
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
@@ -310,18 +310,18 @@ export default function CheckoutPage() {
   if (cartItems.length === 0) {
     return (
       <div style={{
-        minHeight: "100vh", background: "#0D0D0D",
+        minHeight: "100vh", background: "#FFFDF9",
         display: "flex", alignItems: "center", justifyContent: "center",
         fontFamily: "'DM Sans', sans-serif",
       }}>
         <div style={{ textAlign: "center" }}>
-          <p style={{ color: "#888", fontSize: 16, marginBottom: 20 }}>Your cart is empty.</p>
+          <p style={{ color: "#6D665F", fontSize: 16, marginBottom: 20 }}>Your cart is empty.</p>
           <button
             onClick={() => router.push("/")}
             style={{
               padding: "12px 28px", borderRadius: 8,
               background: `linear-gradient(135deg, ${GOLD_DARK}, ${GOLD}, ${GOLD_LIGHT})`,
-              border: "none", color: "#000", fontWeight: 700, cursor: "pointer",
+              border: "none", color: "#FFFDF9", fontWeight: 700, cursor: "pointer",
             }}
           >
             Continue Shopping
@@ -333,17 +333,17 @@ export default function CheckoutPage() {
 
   return (
     <div style={{
-      minHeight: "100vh", background: "#0D0D0D",
-      color: "#F5F5F5", fontFamily: "'DM Sans', sans-serif",
+      minHeight: "100vh", background: "#FFFDF9",
+      color: "#2E2A26", fontFamily: "'DM Sans', sans-serif",
     }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
         * { box-sizing: border-box; }
-        input::placeholder { color: #3A3A3A; }
-        input:-webkit-autofill { -webkit-box-shadow: 0 0 0 100px #111 inset !important; -webkit-text-fill-color: #F5F5F5 !important; }
+        input::placeholder { color: #918980; }
+        input:-webkit-autofill { -webkit-box-shadow: 0 0 0 100px #FFFFFF inset !important; -webkit-text-fill-color: #2E2A26 !important; }
         ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #0D0D0D; }
-        ::-webkit-scrollbar-thumb { background: #2A2A2A; border-radius: 2px; }
+        ::-webkit-scrollbar-track { background: #F6F1E8; }
+        ::-webkit-scrollbar-thumb { background: #E8DED2; border-radius: 2px; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
         .step-content { animation: fadeIn 0.3s ease; }
         .gold-btn:hover:not(:disabled) { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 8px 30px ${GOLD}44 !important; }
@@ -360,23 +360,23 @@ export default function CheckoutPage() {
                 <div style={{
                   width: 34, height: 34, borderRadius: "50%",
                   background: step > s.n ? GOLD : "transparent",
-                  border: `2px solid ${step >= s.n ? GOLD : "#2A2A2A"}`,
+                  border: `2px solid ${step >= s.n ? GOLD : "#E8DED2"}`,
                   display: "flex", alignItems: "center", justifyContent: "center",
                   transition: "all 0.3s",
                 }}>
                   {step > s.n
-                    ? <Check size={14} color="#000" strokeWidth={3} />
-                    : <span style={{ fontSize: 12, fontWeight: 700, color: step === s.n ? GOLD : "#444" }}>{s.n}</span>
+                    ? <Check size={14} color="#FFFDF9" strokeWidth={3} />
+                    : <span style={{ fontSize: 12, fontWeight: 700, color: step === s.n ? GOLD : "#918980" }}>{s.n}</span>
                   }
                 </div>
-                <span style={{ fontSize: 10, letterSpacing: 1.5, textTransform: "uppercase", color: step >= s.n ? GOLD : "#444", fontWeight: 600 }}>
+                <span style={{ fontSize: 10, letterSpacing: 1.5, textTransform: "uppercase", color: step >= s.n ? GOLD : "#918980", fontWeight: 600 }}>
                   {s.label}
                 </span>
               </div>
               {i < steps.length - 1 && (
                 <div style={{
                   width: 60, height: 1, margin: "0 8px", marginBottom: 20,
-                  background: step > s.n ? GOLD : "#2A2A2A", transition: "background 0.3s",
+                  background: step > s.n ? GOLD : "#E8DED2", transition: "background 0.3s",
                 }} />
               )}
             </div>
@@ -391,7 +391,7 @@ export default function CheckoutPage() {
         <div
           onClick={() => setSummaryOpen(!summaryOpen)}
           style={{
-            background: "#111", border: "1px solid #2A2A2A", borderRadius: 10,
+            background: "#FFFFFF", border: "1px solid #E8DED2", borderRadius: 10,
             padding: "14px 18px", cursor: "pointer", marginBottom: 20,
             display: "flex", alignItems: "center", justifyContent: "space-between",
           }}
@@ -399,11 +399,11 @@ export default function CheckoutPage() {
         >
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <ShieldCheck size={16} color={GOLD} />
-            <span style={{ fontSize: 13, color: "#ccc" }}>{summaryOpen ? "Hide" : "Show"} order summary</span>
+            <span style={{ fontSize: 13, color: "#6D665F" }}>{summaryOpen ? "Hide" : "Show"} order summary</span>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
             <span style={{ fontWeight: 700, color: GOLD, fontSize: 16 }}>{formatPrice(total)}</span>
-            {summaryOpen ? <ChevronUp size={16} color="#555" /> : <ChevronDown size={16} color="#555" />}
+            {summaryOpen ? <ChevronUp size={16} color="#918980" /> : <ChevronDown size={16} color="#918980" />}
           </div>
         </div>
 
@@ -423,11 +423,11 @@ export default function CheckoutPage() {
             {/* STEP 1 — Contact & Delivery */}
             {step === 1 && (
               <div className="step-content">
-                <div style={{ background: "#111", border: "1px solid #1E1E1E", borderRadius: 14, padding: "28px 24px" }}>
+                <div style={{ background: "#FFFFFF", border: "1px solid #E8DED2", borderRadius: 14, padding: "28px 24px" }}>
                   <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, fontWeight: 700, margin: "0 0 4px" }}>
                     Contact & Delivery
                   </h2>
-                  <p style={{ margin: "0 0 24px", fontSize: 13, color: "#555" }}>We'll use these details for your order</p>
+                  <p style={{ margin: "0 0 24px", fontSize: 13, color: "#6D665F" }}>We'll use these details for your order</p>
 
                   <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
                     <InputField label="Full Name" id="name" placeholder="Aisha Al-Rashid"
@@ -462,7 +462,7 @@ export default function CheckoutPage() {
                     display: "flex", alignItems: "center", gap: 10,
                   }}>
                     <ShieldCheck size={16} color={GOLD} />
-                    <span style={{ fontSize: 12, color: "#C0A060" }}>Free standard shipping on all orders</span>
+                    <span style={{ fontSize: 12, color: "#714B2F" }}>Free standard shipping on all orders</span>
                   </div>
 
                   <button
@@ -470,9 +470,9 @@ export default function CheckoutPage() {
                     className="gold-btn"
                     style={{
                       marginTop: 24, width: "100%", padding: "15px", borderRadius: 10,
-                      background: canProceed1 ? `linear-gradient(135deg, ${GOLD_DARK}, ${GOLD}, ${GOLD_LIGHT})` : "#1A1A1A",
-                      border: canProceed1 ? "none" : `1px solid #2A2A2A`,
-                      color: canProceed1 ? "#0D0D0D" : "#444",
+                      background: canProceed1 ? `linear-gradient(135deg, ${GOLD_DARK}, ${GOLD}, ${GOLD_LIGHT})` : "#F6F1E8",
+                      border: canProceed1 ? "none" : `1px solid #E8DED2`,
+                      color: canProceed1 ? "#FFFDF9" : "#918980",
                       fontSize: 12, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase",
                       cursor: canProceed1 ? "pointer" : "not-allowed",
                       display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
@@ -488,8 +488,8 @@ export default function CheckoutPage() {
             {/* STEP 2 — Review & Pay via Tap */}
             {step === 2 && (
               <div className="step-content">
-                <div style={{ background: "#111", border: "1px solid #1E1E1E", borderRadius: 14, padding: "28px 24px" }}>
-                  <button onClick={() => setStep(1)} style={{ background: "none", border: "none", color: "#666", cursor: "pointer", display: "flex", alignItems: "center", gap: 6, fontSize: 12, marginBottom: 20, padding: 0 }}>
+                <div style={{ background: "#FFFFFF", border: "1px solid #E8DED2", borderRadius: 14, padding: "28px 24px" }}>
+                  <button onClick={() => setStep(1)} style={{ background: "none", border: "none", color: "#6D665F", cursor: "pointer", display: "flex", alignItems: "center", gap: 6, fontSize: 12, marginBottom: 20, padding: 0 }}>
                     <ArrowLeft size={14} /> Back
                   </button>
                   <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 24, fontWeight: 700, margin: "0 0 24px" }}>
@@ -497,21 +497,21 @@ export default function CheckoutPage() {
                   </h2>
 
                   {/* Delivery summary */}
-                  <div style={{ background: "#0A0A0A", borderRadius: 10, padding: "16px 18px", border: "1px solid #1A1A1A", marginBottom: 16 }}>
+                  <div style={{ background: "#FAF6EF", borderRadius: 10, padding: "16px 18px", border: "1px solid #E8DED2", marginBottom: 16 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-                      <span style={{ fontSize: 11, color: "#555", letterSpacing: 1.5, textTransform: "uppercase" }}>Deliver to</span>
+                      <span style={{ fontSize: 11, color: "#918980", letterSpacing: 1.5, textTransform: "uppercase" }}>Deliver to</span>
                       <button onClick={() => setStep(1)} style={{ background: "none", border: "none", color: GOLD, fontSize: 12, cursor: "pointer", padding: 0 }}>Edit</button>
                     </div>
-                    <p style={{ margin: 0, fontSize: 14, color: "#D0D0D0", lineHeight: 1.6 }}>
-                      <strong style={{ color: "#F5F5F5" }}>{info.name}</strong><br />
+                    <p style={{ margin: 0, fontSize: 14, color: "#6D665F", lineHeight: 1.6 }}>
+                      <strong style={{ color: "#2E2A26" }}>{info.name}</strong><br />
                       {info.address}{info.city && `, ${info.city}`}{info.pin && ` — ${info.pin}`}
                     </p>
-                    <p style={{ margin: "6px 0 0", fontSize: 13, color: "#666" }}>{info.email} · {info.phone}</p>
+                    <p style={{ margin: "6px 0 0", fontSize: 13, color: "#918980" }}>{info.email} · {info.phone}</p>
                   </div>
 
                   {/* Tap payment info */}
                   <div style={{
-                    background: "#0A0A0A", borderRadius: 10, padding: "16px 18px",
+                    background: "#FAF6EF", borderRadius: 10, padding: "16px 18px",
                     border: `1px solid ${GOLD}33`, marginBottom: 24,
                     display: "flex", alignItems: "center", gap: 14,
                   }}>
@@ -523,8 +523,8 @@ export default function CheckoutPage() {
                       <CreditCard size={20} color={GOLD} />
                     </div>
                     <div>
-                      <p style={{ margin: 0, fontSize: 14, color: "#F0F0F0", fontWeight: 600 }}>Pay via Tap Payments</p>
-                      <p style={{ margin: "3px 0 0", fontSize: 12, color: "#666" }}>
+                      <p style={{ margin: 0, fontSize: 14, color: "#2E2A26", fontWeight: 600 }}>Pay via Tap Payments</p>
+                      <p style={{ margin: "3px 0 0", fontSize: 12, color: "#6D665F" }}>
                         You'll be redirected to Tap's secure page to complete payment with card, KNET, or other methods.
                       </p>
                     </div>
@@ -534,8 +534,8 @@ export default function CheckoutPage() {
                   {payError && (
                     <div style={{
                       marginBottom: 16, padding: "12px 16px", borderRadius: 8,
-                      background: "#2A0A0A", border: "1px solid #FF444433",
-                      fontSize: 13, color: "#FF8888",
+                      background: "#FBECEA", border: "1px solid #C14B4933",
+                      fontSize: 13, color: "#C14B49",
                     }}>
                       {payError}
                     </div>
@@ -548,9 +548,9 @@ export default function CheckoutPage() {
                     disabled={paying}
                     style={{
                       width: "100%", padding: "17px", borderRadius: 10,
-                      background: paying ? "#1A1A1A" : `linear-gradient(135deg, ${GOLD_DARK}, ${GOLD}, ${GOLD_LIGHT})`,
-                      border: paying ? `1px solid #2A2A2A` : "none",
-                      color: paying ? "#555" : "#0D0D0D",
+                      background: paying ? "#F6F1E8" : `linear-gradient(135deg, ${GOLD_DARK}, ${GOLD}, ${GOLD_LIGHT})`,
+                      border: paying ? `1px solid #E8DED2` : "none",
+                      color: paying ? "#918980" : "#FFFDF9",
                       fontSize: 13, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase",
                       cursor: paying ? "not-allowed" : "pointer",
                       display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
@@ -570,7 +570,7 @@ export default function CheckoutPage() {
                     )}
                   </button>
 
-                  <p style={{ textAlign: "center", fontSize: 11, color: "#444", marginTop: 14 }}>
+                  <p style={{ textAlign: "center", fontSize: 11, color: "#918980", marginTop: 14 }}>
                     Secured by Tap Payments · 256-bit SSL encryption
                   </p>
                 </div>
@@ -581,13 +581,13 @@ export default function CheckoutPage() {
           {/* ── RIGHT: Order Summary Sidebar ── */}
           <div id="order-sidebar" style={{ display: summaryOpen ? "block" : "none" }}>
             <div style={{
-              background: "#111", border: "1px solid #1E1E1E",
+              background: "#FFFFFF", border: "1px solid #E8DED2",
               borderRadius: 14, padding: "24px 20px", position: "sticky", top: 80,
             }}>
               <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 20, fontWeight: 700, margin: "0 0 4px" }}>
                 Order Summary
               </h3>
-              <p style={{ margin: "0 0 16px", fontSize: 12, color: "#555" }}>{summary.itemCount} item{summary.itemCount !== 1 ? "s" : ""}</p>
+              <p style={{ margin: "0 0 16px", fontSize: 12, color: "#918980" }}>{summary.itemCount} item{summary.itemCount !== 1 ? "s" : ""}</p>
 
               {/* Items */}
               <div>
@@ -607,20 +607,20 @@ export default function CheckoutPage() {
 
               {/* Coupon */}
               <div style={{ marginTop: 20 }}>
-                <label style={{ fontSize: 11, color: "#555", letterSpacing: 2, textTransform: "uppercase", display: "block", marginBottom: 8, fontFamily: "'Cormorant Garamond', serif" }}>
+                <label style={{ fontSize: 11, color: "#918980", letterSpacing: 2, textTransform: "uppercase", display: "block", marginBottom: 8, fontFamily: "'Cormorant Garamond', serif" }}>
                   Promo Code
                 </label>
                 <div style={{ display: "flex", gap: 8 }}>
                   <div style={{ position: "relative", flex: 1 }}>
-                    <Tag size={14} color="#444" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }} />
+                    <Tag size={14} color="#918980" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }} />
                     <input
                       placeholder="LUVANA10"
                       value={coupon}
                       onChange={e => { setCoupon(e.target.value.toUpperCase()); setCouponApplied(false); }}
                       style={{
                         width: "100%", padding: "10px 10px 10px 34px",
-                        background: "#0A0A0A", border: "1px solid #222",
-                        borderRadius: 8, color: "#F5F5F5", fontSize: 13,
+                        background: "#FAF6EF", border: "1px solid #E8DED2",
+                        borderRadius: 8, color: "#2E2A26", fontSize: 13,
                         outline: "none", fontFamily: "'DM Sans', sans-serif",
                       }}
                     />
@@ -634,9 +634,9 @@ export default function CheckoutPage() {
                     onClick={() => { if (coupon) setCouponApplied(true); }}
                     style={{
                       padding: "10px 16px", borderRadius: 8,
-                      background: couponApplied ? `${GOLD}18` : "#1A1A1A",
-                      border: `1px solid ${couponApplied ? GOLD + "66" : "#2A2A2A"}`,
-                      color: couponApplied ? GOLD : "#888",
+                      background: couponApplied ? `${GOLD}18` : "#F6F1E8",
+                      border: `1px solid ${couponApplied ? GOLD + "66" : "#E8DED2"}`,
+                      color: couponApplied ? GOLD : "#6D665F",
                       fontSize: 12, fontWeight: 600, cursor: "pointer",
                       whiteSpace: "nowrap", transition: "all 0.2s",
                     }}
@@ -645,7 +645,7 @@ export default function CheckoutPage() {
                   </button>
                 </div>
                 {couponApplied && (
-                  <p style={{ margin: "8px 0 0", fontSize: 12, color: "#7DBF7D" }}>
+                  <p style={{ margin: "8px 0 0", fontSize: 12, color: "#3B7B48" }}>
                     ✓ 10% discount applied!
                   </p>
                 )}
@@ -662,8 +662,8 @@ export default function CheckoutPage() {
                   ...(couponApplied ? [{ label: "Promo Discount", val: `-${formatPrice(discount)}`, gold: true }] : []),
                 ].map(row => (
                   <div key={row.label} style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ fontSize: 13, color: "#666" }}>{row.label}</span>
-                    <span style={{ fontSize: 13, color: (row as any).gold ? GOLD : (row as any).green ? "#7DBF7D" : "#ccc", fontWeight: 600 }}>{row.val}</span>
+                    <span style={{ fontSize: 13, color: "#6D665F" }}>{row.label}</span>
+                    <span style={{ fontSize: 13, color: (row as any).gold ? GOLD : (row as any).green ? "#3B7B48" : "#2E2A26", fontWeight: 600 }}>{row.val}</span>
                   </div>
                 ))}
               </div>
@@ -675,8 +675,8 @@ export default function CheckoutPage() {
                 display: "flex", justifyContent: "space-between", alignItems: "center",
               }}>
                 <div>
-                  <p style={{ margin: 0, fontSize: 11, color: "#555", letterSpacing: 1, textTransform: "uppercase" }}>Total</p>
-                  <p style={{ margin: "2px 0 0", fontSize: 11, color: "#444" }}>Including all taxes</p>
+                  <p style={{ margin: 0, fontSize: 11, color: "#918980", letterSpacing: 1, textTransform: "uppercase" }}>Total</p>
+                  <p style={{ margin: "2px 0 0", fontSize: 11, color: "#918980" }}>Including all taxes</p>
                 </div>
                 <span style={{ fontSize: 24, fontWeight: 700, color: GOLD, fontFamily: "'Cormorant Garamond', serif" }}>
                   {formatPrice(total)}
@@ -684,7 +684,7 @@ export default function CheckoutPage() {
               </div>
 
               {/* Trust badges */}
-              <div style={{ marginTop: 16, padding: "14px", borderRadius: 10, background: "#0A0A0A", border: "1px solid #1A1A1A" }}>
+              <div style={{ marginTop: 16, padding: "14px", borderRadius: 10, background: "#FAF6EF", border: "1px solid #E8DED2" }}>
                 {[
                   { icon: <Lock size={13} color={GOLD} />, text: "256-bit SSL Encryption" },
                   { icon: <ShieldCheck size={13} color={GOLD} />, text: "Secured by Tap Payments" },
@@ -692,7 +692,7 @@ export default function CheckoutPage() {
                 ].map(b => (
                   <div key={b.text} style={{ display: "flex", alignItems: "center", gap: 10, padding: "5px 0" }}>
                     {b.icon}
-                    <span style={{ fontSize: 11, color: "#555" }}>{b.text}</span>
+                    <span style={{ fontSize: 11, color: "#918980" }}>{b.text}</span>
                   </div>
                 ))}
               </div>
