@@ -187,7 +187,7 @@ export default function CheckoutPage() {
   }, []);
 
   const discount = couponApplied ? Math.round(summary.subtotal * 0.1) : 0;
-  const total = summary.subtotal - discount + (summary.tax || 0);
+  const total = summary.subtotal ;
 
   const canProceed1 =
     info.name.trim() &&
@@ -607,13 +607,13 @@ export default function CheckoutPage() {
 
               {/* Coupon */}
               <div style={{ marginTop: 20 }}>
-                <label style={{ fontSize: 11, color: "#918980", letterSpacing: 2, textTransform: "uppercase", display: "block", marginBottom: 8, fontFamily: "'Cormorant Garamond', serif" }}>
+                {/* <label style={{ fontSize: 11, color: "#918980", letterSpacing: 2, textTransform: "uppercase", display: "block", marginBottom: 8, fontFamily: "'Cormorant Garamond', serif" }}>
                   Promo Code
-                </label>
+                </label> */}
                 <div style={{ display: "flex", gap: 8 }}>
-                  <div style={{ position: "relative", flex: 1 }}>
-                    <Tag size={14} color="#918980" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }} />
-                    <input
+                  {/* <div style={{ position: "relative", flex: 1 }}> */}
+                    {/* <Tag size={14} color="#918980" style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)" }} /> */}
+                    {/* <input
                       placeholder="LUVANA10"
                       value={coupon}
                       onChange={e => { setCoupon(e.target.value.toUpperCase()); setCouponApplied(false); }}
@@ -623,14 +623,14 @@ export default function CheckoutPage() {
                         borderRadius: 8, color: "#2E2A26", fontSize: 13,
                         outline: "none", fontFamily: "'DM Sans', sans-serif",
                       }}
-                    />
-                    {couponApplied && (
-                      <div style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)" }}>
-                        <Check size={14} color={GOLD} />
-                      </div>
-                    )}
-                  </div>
-                  <button
+                    /> */}
+                    {/* {couponApplied && ( */}
+                      {/* // <div style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)" }}>
+                      //   <Check size={14} color={GOLD} />
+                      // </div>
+                  //   )}
+                  // </div> */}
+                  {/* <button
                     onClick={() => { if (coupon) setCouponApplied(true); }}
                     style={{
                       padding: "10px 16px", borderRadius: 8,
@@ -642,7 +642,7 @@ export default function CheckoutPage() {
                     }}
                   >
                     {couponApplied ? "Applied!" : "Apply"}
-                  </button>
+                  </button> */}
                 </div>
                 {couponApplied && (
                   <p style={{ margin: "8px 0 0", fontSize: 12, color: "#3B7B48" }}>
@@ -657,8 +657,8 @@ export default function CheckoutPage() {
               <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                 {[
                   { label: "Subtotal", val: formatPrice(summary.subtotal) },
-                  { label: "Shipping", val: "Free", green: true },
-                  ...(summary.tax > 0 ? [{ label: "Tax", val: formatPrice(summary.tax) }] : []),
+                  // { label: "Shipping", val: "Free", green: true },
+                  // ...(summary.tax > 0 ? [{ label: "Tax", val: formatPrice(summary.tax) }] : []),
                   ...(couponApplied ? [{ label: "Promo Discount", val: `-${formatPrice(discount)}`, gold: true }] : []),
                 ].map(row => (
                   <div key={row.label} style={{ display: "flex", justifyContent: "space-between" }}>

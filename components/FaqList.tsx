@@ -1,8 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import {
-  Search, ChevronDown, Sparkles, ShoppingBag, CreditCard, Truck, RotateCcw,
+  ChevronDown, Sparkles, ShoppingBag, CreditCard, Truck, RotateCcw,
   FlaskConical, User, Tag, LifeBuoy, type LucideIcon,
 } from "lucide-react";
 import { FAQS } from "@/lib/faqs";
@@ -21,9 +21,14 @@ const CATEGORY_ICON: Record<string, LucideIcon> = {
   "Customer Support": LifeBuoy,
 };
 
+const slugify = (c: string) => "faq-" + c.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+const reducedMotion = () =>
+  typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+
 export default function FaqList() {
   const { isRTL } = useLanguage();
   const [query, setQuery] = useState("");
+  const [activeCat, setActiveCat] = useState("");
   const dir = isRTL ? "rtl" : "ltr";
 
   // localized accessors
@@ -48,64 +53,117 @@ export default function FaqList() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query, isRTL]);
 
-  return (
-    <div dir={dir}>
-      {/* Search — sticky on mobile */}
-      {/* <div className="sticky top-20 z-10 -mx-4 px-4 py-3 bg-cream/95 backdrop-blur mb-6 lg:static lg:mx-0 lg:px-0 lg:bg-transparent lg:py-0">
-        <label className="relative block">
-          <span className="sr-only">{isRTL ? "ابحث في الأسئلة الشائعة" : "Search FAQs"}</span>
-          <Search size={16} className="absolute start-4 top-1/2 -translate-y-1/2 text-muted" aria-hidden />
-          <input
-            type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={isRTL ? "ابحث عن سؤال…" : "Search questions…"}
-            className="input-luxury ps-11"
-          />
-        </label>
-      </div> */}
+  // Desktop rail: track which category is in view (no scroll listeners).
+  useEffect(() => {
+    if (!groups.length) return;
+    setActiveCat((prev) => prev || groups[0].key);
+    const visible = new Set<string>();
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => (e.isIntersecting ? visible.add(e.target.id) : visible.delete(e.target.id)));
+        for (const g of groups) {
+          if (visible.has(slugify(g.key))) { setActiveCat(g.key); break; }
+        }
+      },
+      { rootMargin: "-120px 0px -70% 0px", threshold: 0 }
+    );
+    groups.forEach((g) => {
+      const el = document.getElementById(slugify(g.key));
+      if (el) obs.observe(el);
+    });
+    return () => obs.disconnect();
+  }, [groups]);
 
-      {groups.length === 0 && (
-        <p className="text-ink-soft text-center py-12">
-          {isRTL ? `لا توجد نتائج لـ "${query}".` : `No results for “${query}”.`}
-        </p>
+  const goTo = (key: string) => (e: React.MouseEvent) => {
+    e.preventDefault();
+    const el = document.getElementById(slugify(key));
+    if (!el) return;
+    el.scrollIntoView({ behavior: reducedMotion() ? "auto" : "smooth", block: "start" });
+    setActiveCat(key);
+    if (typeof window !== "undefined") window.history.pushState(null, "", `#${slugify(key)}`);
+  };
+
+  return (
+    <div dir={dir} className="lg:grid lg:grid-cols-[minmax(260px,300px)_minmax(0,1fr)] lg:gap-10 xl:gap-14 lg:items-start">
+      {/* ── Sticky category rail — desktop only (≥lg) ── */}
+      {groups.length > 0 && (
+        <nav
+          aria-label={isRTL ? "فئات الأسئلة الشائعة" : "FAQ categories"}
+          className="hidden lg:block sticky top-24 self-start max-h-[calc(100vh-7rem)] overflow-y-auto card-luxury p-6 scrollbar-hide"
+        >
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-gold-dark mb-3 px-1 text-start">
+            {isRTL ? "الفئات" : "Categories"}
+          </p>
+          <ul className="space-y-1">
+            {groups.map(({ key, items }) => {
+              const active = activeCat === key;
+              const Icon = CATEGORY_ICON[key] ?? Sparkles;
+              return (
+                <li key={key}>
+                  <a
+                    href={`#${slugify(key)}`}
+                    aria-current={active ? "location" : undefined}
+                    onClick={goTo(key)}
+                    className={`flex items-center gap-2.5 py-2 px-3 text-sm rounded transition-colors text-start focus:outline-none focus-visible:ring-2 focus-visible:ring-gold ${
+                      active
+                        ? "text-gold-dark font-medium bg-gold/10 border-s-2 border-gold-dark"
+                        : "text-ink-soft hover:text-gold-dark hover:bg-gold/5 border-s-2 border-transparent"
+                    }`}
+                  >
+                    <Icon size={16} className="shrink-0" aria-hidden />
+                    <span className="truncate">{cat(items[0])}</span>
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
       )}
 
-      <div className="space-y-10">
-        {groups.map(({ key, items }) => {
-          const Icon = CATEGORY_ICON[key] ?? Sparkles;
-          return (
-            <section key={key} aria-label={cat(items[0])}>
-              <h2 className="font-serif text-xl text-ink flex items-center gap-2.5 mb-4">
-                <Icon size={18} className="text-gold-dark shrink-0" aria-hidden />
-                {cat(items[0])}
-              </h2>
-              <div className="space-y-3">
-                {items.map((f) => (
-                  <details
-                    key={f.n}
-                    name="faq"
-                    className="group card-luxury px-5 sm:px-6 [&_summary::-webkit-details-marker]:hidden"
-                  >
-                    <summary className="flex items-center justify-between gap-4 py-4 cursor-pointer list-none font-medium text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-gold rounded-lg">
-                      <span>{f.n}. {qt(f)}</span>
-                      <ChevronDown size={18} className="text-gold-dark shrink-0 transition-transform duration-300 group-open:rotate-180" aria-hidden />
-                    </summary>
-                    <div className="text-ink-soft leading-[1.8] text-[15px] pb-5 -mt-1 space-y-3">
-                      <p>{at(f)}</p>
-                      {list(f) && (
-                        <ul className="space-y-1.5 ps-5 list-disc marker:text-gold">
-                          {list(f)!.map((li, i) => <li key={i}>{li}</li>)}
-                        </ul>
-                      )}
-                      {note(f) && <p>{note(f)}</p>}
-                    </div>
-                  </details>
-                ))}
-              </div>
-            </section>
-          );
-        })}
+      {/* ── Accordion column ── */}
+      <div className="min-w-0">
+        {groups.length === 0 && (
+          <p className="text-ink-soft text-center py-12">
+            {isRTL ? `لا توجد نتائج لـ "${query}".` : `No results for “${query}”.`}
+          </p>
+        )}
+
+        <div className="space-y-14">
+          {groups.map(({ key, items }) => {
+            const Icon = CATEGORY_ICON[key] ?? Sparkles;
+            return (
+              <section key={key} id={slugify(key)} aria-label={cat(items[0])} className="scroll-mt-28">
+                <h2 className="font-serif text-2xl text-ink flex items-center gap-2.5 mb-6">
+                  <Icon size={20} className="text-gold-dark shrink-0" aria-hidden />
+                  {cat(items[0])}
+                </h2>
+                <div className="space-y-4">
+                  {items.map((f) => (
+                    <details
+                      key={f.n}
+                      name="faq"
+                      className="group card-luxury px-5 sm:px-6 [&_summary::-webkit-details-marker]:hidden"
+                    >
+                      <summary className="flex items-center justify-between gap-4 min-h-14 py-4 cursor-pointer list-none font-medium text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-gold rounded-lg">
+                        <span className="min-w-0 text-base sm:text-[17px]">{f.n}. {qt(f)}</span>
+                        <ChevronDown size={18} className="text-gold-dark shrink-0 transition-transform duration-300 group-open:rotate-180" aria-hidden />
+                      </summary>
+                      <div className="text-ink-soft leading-[1.8] text-[15px] pb-5 -mt-1 space-y-3">
+                        <p>{at(f)}</p>
+                        {list(f) && (
+                          <ul className="space-y-1.5 ps-5 list-disc marker:text-gold">
+                            {list(f)!.map((li, i) => <li key={i}>{li}</li>)}
+                          </ul>
+                        )}
+                        {note(f) && <p>{note(f)}</p>}
+                      </div>
+                    </details>
+                  ))}
+                </div>
+              </section>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

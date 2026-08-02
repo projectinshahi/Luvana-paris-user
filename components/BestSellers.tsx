@@ -232,8 +232,8 @@ export default function BestSellers() {
           {/* CAROUSEL */}
           <div
             className="relative"
-            onMouseEnter={() => { const s = swiperRef.current; if (!s) return; s.autoplay?.stop(); s.setTransition(0); s.setTranslate(s.getTranslate()); }}
-            onMouseLeave={() => { const s = swiperRef.current; if (!s) return; s.animating = false; /* freeze cancels the transition (no transitionend) → animating stays true → loop's slideNext bails; reset it so autoplay can advance */ s.setTransition(s.params.speed); s.autoplay?.start(); }}
+            onPointerEnter={(e) => { if (e.pointerType !== "mouse") return; const s = swiperRef.current; if (!s) return; s.autoplay?.stop(); s.setTransition(0); s.setTranslate(s.getTranslate()); }}
+            onPointerLeave={(e) => { if (e.pointerType !== "mouse") return; const s = swiperRef.current; if (!s) return; s.animating = false; /* freeze cancels the transition (no transitionend) → animating stays true → loop's slideNext bails; reset it so autoplay can advance */ s.setTransition(s.params.speed); s.autoplay?.start(); }}
           >
             {/* Prev — circular, vertically centered, on the carousel's left edge */}
             <button

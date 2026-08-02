@@ -272,7 +272,7 @@ export default function ImageSection() {
   // Loading state
   if (isLoading || !banners.length) {
     return (
-      <section className="relative w-full h-[70vh] sm:h-[80vh] md:h-[85vh] lg:h-[95vh] overflow-hidden bg-champagne">
+      <section className="relative w-full aspect-video md:aspect-auto md:h-[70svh] lg:h-[80svh] min-[1440px]:h-[85svh] overflow-hidden bg-champagne">
         <div className="absolute inset-0 skeleton-luxury" />
       </section>
     );
@@ -280,7 +280,7 @@ export default function ImageSection() {
 
   return (
     <section
-      className="relative w-full h-[70vh] sm:h-[80vh] md:h-[85vh] lg:h-[95vh] overflow-hidden bg-black"
+      className="relative w-full aspect-video md:aspect-auto md:h-[70svh] lg:h-[80svh] min-[1440px]:h-[85svh] overflow-hidden bg-black"
       aria-roledescription="carousel"
       aria-label="Promotional banners"
       tabIndex={0}
@@ -314,10 +314,10 @@ export default function ImageSection() {
           >
             <Image
               src={image}
-              alt={title}
+              alt={title || "Promotional banner"}
               fill
               priority={index === 0}
-              quality={90}
+              quality={85}
               className="object-cover object-center"
               sizes="100vw"
               loading={index === 0 ? "eager" : "lazy"}

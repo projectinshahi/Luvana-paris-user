@@ -2,11 +2,11 @@
 
 import { X, Heart, ShoppingCart, Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { useLanguage } from "@/lib/useLanguage";
 import { useEffect, useState } from "react";
 import api from "@/lib/axios";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import Image from "next/image";
+import { useDrawer } from "@/lib/useDrawer";
 
 interface WishlistItem {
   _id: string;
@@ -40,8 +40,8 @@ export default function WishlistSidebar({
   onClose,
 }: WishlistSidebarProps) {
   const { t } = useTranslation("common");
-  const { isRTL } = useLanguage();
   const { formatPrice } = useCurrency();
+  const topOffset = useDrawer(isOpen, onClose);
 
   const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -110,24 +110,22 @@ export default function WishlistSidebar({
 
   return (
     <>
-      {/* Backdrop */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-ink/40 backdrop-blur-sm z-45"
-          onClick={onClose}
-        />
-      )}
+      {/* Backdrop — starts at navbar bottom, fades in/out */}
+      <div
+        aria-hidden
+        onClick={onClose}
+        style={{ top: topOffset }}
+        className={`fixed inset-x-0 bottom-0 z-40 bg-ink/40 backdrop-blur-sm transition-opacity duration-300 ${
+          isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+      />
 
       {/* Sidebar */}
       <div
-        className={`fixed top-16 bottom-0 ${
-          isRTL ? "left-0" : "right-0"
-        } w-80 sm:w-96 bg-cream text-ink border-s border-line shadow-luxury-lg z-50 transform transition-transform duration-300 ${
-          isOpen
-            ? "translate-x-0"
-            : isRTL
-            ? "-translate-x-full"
-            : "translate-x-full"
+        inert={!isOpen}
+        style={{ top: topOffset }}
+        className={`fixed bottom-0 right-0 w-80 sm:w-96 bg-cream text-ink border-s border-line shadow-luxury-lg z-50 transform transition-transform duration-300 ease-out ${
+          isOpen ? "translate-x-0" : "translate-x-full"
         } flex flex-col`}
       >
         {/* Header */}
@@ -150,15 +148,33 @@ export default function WishlistSidebar({
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {loading ? (
-            <p className="text-center text-muted">Loading...</p>
+            <div className="flex flex-col gap-3">
+              {[...Array(3)].map((_, index) => (
+                <div key={index} className="flex gap-3 rounded-xl border border-line bg-card p-3">
+                  <div className="h-20 w-20 shrink-0 rounded-lg skeleton-luxury" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-3 w-2/3 skeleton-luxury rounded" />
+                    <div className="h-3 w-1/2 skeleton-luxury rounded" />
+                    <div className="h-8 w-24 skeleton-luxury rounded-full" />
+                  </div>
+                </div>
+              ))}
+            </div>
           ) : wishlistItems.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-full gap-4">
-              <div className="w-16 h-16 rounded-full bg-champagne flex items-center justify-center">
-                <Heart size={28} className="text-muted" />
+            <div className="flex flex-col items-center justify-center h-full gap-4 px-2 py-8 text-center">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-champagne">
+                <Heart size={28} className="text-gold-dark" />
               </div>
-              <p className="text-center text-muted">
-                {t("empty wishlist")}
-              </p>
+              <div className="space-y-2">
+                <p className="text-lg font-semibold text-ink">Your wishlist is empty</p>
+                <p className="text-sm text-muted">Save products you love so you can come back anytime.</p>
+              </div>
+              <button
+                onClick={onClose}
+                className="rounded-full bg-gold px-4 py-2 text-sm font-semibold text-cream transition hover:bg-gold-dark focus-visible:ring-2 focus-visible:ring-gold focus:outline-none"
+              >
+                Continue browsing
+              </button>
             </div>
           ) : (
             wishlistItems.map((item) => {

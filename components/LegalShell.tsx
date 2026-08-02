@@ -349,7 +349,7 @@ window.scrollTo({
       </div>
 
       {/* ── Need Assistance Banner ── */}
-      <section className="bg-champagne/60 border-y border-line">
+      {/* <section className="bg-champagne/60 border-y border-line">
         <div className="max-w-3xl mx-auto text-center px-4 py-12 sm:py-16">
           <h2 className="font-serif font-bold text-2xl sm:text-3xl text-ink">
             {isRTL ? "هل تحتاج إلى مساعدة؟" : "Need Assistance?"}
@@ -368,10 +368,10 @@ window.scrollTo({
             </a>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* ── Contact Details Card ── */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+      {/* <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
         <div className="card-luxury p-6 sm:p-10 text-start">
           <h2 className="font-serif font-bold text-xl sm:text-2xl text-ink mb-1">{CONTACT.company}</h2>
           <p className="text-muted text-sm mb-6">
@@ -413,7 +413,7 @@ window.scrollTo({
             </a>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -1,887 +1,365 @@
-// "use client";
-
-// import Image from "next/image";
-// import { Search, X } from "lucide-react";
-// import { useState, useEffect } from "react";
-// import { useRouter } from "next/navigation";
-// import { useDebounce } from "@/lib/useDebounce";
-// import { useCurrency } from "@/contexts/CurrencyContext";
-// import { useLanguage } from "@/lib/useLanguage";
-
-// interface SearchSidebarProps {
-//   isOpen: boolean;
-//   onClose: () => void;
-// }
-
-// interface Product {
-//   _id: string;
-//   nameEnglish: string;
-//   nameArabic?: string;
-//   imageUrlEnglish?: { imageUrl: string }[];
-//   imageUrlArabic?: { imageUrl: string }[];
-//   minPrice: number | null;
-//   brand?: {
-//     nameEnglish: string;
-//     nameArabic?: string;
-//   };
-//   category?: {
-//     nameEnglish: string;
-//     nameArabic?: string;
-//   };
-// }
-
-// export default function SearchSidebar({ isOpen, onClose }: SearchSidebarProps) {
-//   const router = useRouter();
-//   const [query, setQuery] = useState("");
-//   const [products, setProducts] = useState<Product[]>([]);
-//   const [loading, setLoading] = useState(false);
-//   const [showResults, setShowResults] = useState(false);
-//   const { formatPrice } = useCurrency();
-//   const { currentLanguage } = useLanguage();
-// const isArabic = currentLanguage === "ar";
-
-//   // Debounce search query to avoid too many API calls
-//   const debouncedQuery = useDebounce(query, 500);
-
-//   /* ================= SEARCH PRODUCTS ================= */
-//   // useEffect(() => {
-//   //   const searchProducts = async () => {
-//   //     if (!debouncedQuery.trim()) {
-//   //       setProducts([]);
-//   //       setShowResults(false);
-//   //       return;
-//   //     }
-
-//   //     try {
-//   //       setLoading(true);
-//   //       setShowResults(true);
-
-//   //       const response = await fetch(
-//   //         `http://localhost:8000/user/product?search=${encodeURIComponent(
-//   //           debouncedQuery
-//   //         )}&limit=10`
-//   //       );
-
-//   //       const data = await response.json();
-//   //       console.log("🔍 Search results:", data);
-
-//   //       setProducts(data.items || []);
-//   //     } catch (error) {
-//   //       console.error("Search error:", error);
-//   //       setProducts([]);
-//   //     } finally {
-//   //       setLoading(false);
-//   //     }
-//   //   };
-
-//   //   searchProducts();
-//   // }, [debouncedQuery]);
-//   useEffect(() => {
-//   const searchProducts = async () => {
-//     try {
-//       setLoading(true);
-//       setShowResults(true);
-
-//       const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-//       let url = `${API_URL}/user/product?limit=10`;
-
-//       // If user typed something, use search API
-//       if (debouncedQuery.trim()) {
-//         url = `${API_URL}/user/product?search=${encodeURIComponent(
-//           debouncedQuery
-//         )}&limit=10`;
-//       }
-
-//       const response = await fetch(url);
-//       const data = await response.json();
-
-//       setProducts(data.items || []);
-//     } catch (error) {
-//       console.error("Search error:", error);
-//       setProducts([]);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   searchProducts();
-// }, [debouncedQuery, isOpen]);
-
-//   /* ================= HANDLE PRODUCT CLICK ================= */
-//   const handleProductClick = (productId: string) => {
-//     onClose();
-//     router.push(`/brands/${productId}`);
-//   };
-
-//   /* ================= CLEAR SEARCH ================= */
-//   const handleClear = () => {
-//     setQuery("");
-//     setProducts([]);
-//     setShowResults(false);
-//   };
-
-//   return (
-//     <>
-//     <style>{`
-//   .custom-scroll::-webkit-scrollbar {
-//     width: 6px;
-//   }
-
-//   .custom-scroll::-webkit-scrollbar-track {
-//     background: #1A1A1A;
-//   }
-
-//   .custom-scroll::-webkit-scrollbar-thumb {
-//     background: #C9A24D;
-//     border-radius: 10px;
-//   }
-
-//   .custom-scroll::-webkit-scrollbar-thumb:hover {
-//     background: #D4AF37;
-//   }
-
-//   /* Firefox */
-//   .custom-scroll {
-//     scrollbar-width: thin;
-//     scrollbar-color: #C9A24D #1A1A1A;
-//   }
-// `}</style>
-//       {/* BACKDROP */}
-//       {isOpen && (
-//         <div
-//           className="fixed inset-0 bg-black/60 backdrop-blur-sm z-45"
-//           onClick={onClose}
-//         />
-//       )}
-
-//       {/* SIDEBAR */}
-//       <aside
-//         className={`fixed top-16 right-0 bottom-0 w-full sm:w-95 bg-[#1A1A1A] text-white z-50
-//         transform transition-transform duration-300 ease-in-out
-//         ${isOpen ? "translate-x-0" : "translate-x-full"}`}
-//       >
-//         {/* HEADER */}
-//         <div className="flex items-center justify-between p-4 border-b border-[#2A2A2A]">
-//           <h2 className="text-lg font-semibold">Search Products</h2>
-//           <button
-//             onClick={onClose}
-//             className="p-2 hover:bg-[#2A2A2A] rounded-full transition"
-//           >
-//             <X size={20} />
-//           </button>
-//         </div>
-
-//         {/* SEARCH INPUT */}
-//         <div className="p-4">
-//           <div className="relative flex items-center gap-3 bg-[#2A2A2A] rounded-lg px-4 py-3">
-//             <Search className="w-5 h-5 text-gray-400" />
-//             <input
-//               value={query}
-//               onChange={(e) => setQuery(e.target.value)}
-//               placeholder="Search for products..."
-//               className="bg-transparent text-sm text-white placeholder-gray-400 outline-none w-full"
-//               autoFocus
-//             />
-//             {query && (
-//               <button
-//                 onClick={handleClear}
-//                 className="p-1 hover:bg-[#3A3A3A] rounded-full transition"
-//               >
-//                 <X size={16} className="text-gray-400" />
-//               </button>
-//             )}
-//           </div>
-//         </div>
-
-//         {/* RESULTS */}
-//         {/* <div className="px-4 pb-4 overflow-y-auto" style={{ maxHeight: "calc(100vh - 180px)" }}> */}
-//         <div
-//   className="px-4 pb-4 overflow-y-auto custom-scroll"
-//   style={{ maxHeight: "calc(100vh - 180px)" }}
-// >
-//           {loading ? (
-//             <div className="flex items-center justify-center py-8">
-//               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#C9A24D]"></div>
-//             </div>
-//           ) : showResults ? (
-//             products.length > 0 ? (
-//               <>
-//                 <p className="text-sm text-gray-400 mb-4">
-//                   Found {products.length} result{products.length !== 1 ? "s" : ""}
-//                 </p>
-//                 <div className="flex flex-col gap-3">
-//                   {products.map((product) => {
-//                     const image =
-//                       product.imageUrlEnglish?.[0]?.imageUrl ||
-//                       product.imageUrlArabic?.[0]?.imageUrl ||
-//                       "/placeholder.png";
-
-//                     return (
-//                       <div
-//                         key={product._id}
-//                         onClick={() => handleProductClick(product._id)}
-//                         className="flex items-center gap-3 p-3 bg-[#0D0D0D] rounded-lg border border-[#2A2A2A] hover:border-[#C9A24D] cursor-pointer transition"
-//                       >
-//                         {/* IMAGE */}
-//                         <div className="relative w-16 h-16 shrink-0 rounded-lg overflow-hidden bg-[#2A2A2A]">
-//                           <Image
-//                             src={image}
-//                             alt={product.nameEnglish}
-//                             fill
-//                             className="object-cover"
-//                           />
-//                         </div>
-
-//                         {/* TEXT */}
-//                         <div className="flex-1 min-w-0">
-//                           <p className="text-sm font-medium line-clamp-2 mb-1">
-//                             {product.nameEnglish}
-//                           </p>
-//                           {product.brand && (
-//                             <p className="text-xs text-gray-400 mb-1">
-//                               {product.brand.nameEnglish}
-//                             </p>
-//                           )}
-//                           {product.minPrice && (
-//                             <p className="text-sm text-[#C9A24D] font-semibold">
-//                               {formatPrice(product.minPrice)}
-//                             </p>
-//                           )}
-//                         </div>
-//                       </div>
-//                     );
-//                   })}
-//                 </div>
-//               </>
-//             ) : (
-//               <div className="flex flex-col items-center justify-center py-12 text-center">
-//                 <div className="w-16 h-16 rounded-full bg-[#2A2A2A] flex items-center justify-center mb-4">
-//                   <Search size={28} className="text-gray-600" />
-//                 </div>
-//                 <p className="text-sm text-gray-400">
-//                   No products found for "{query}"
-//                 </p>
-//                 <p className="text-xs text-gray-500 mt-2">
-//                   Try searching with different keywords
-//                 </p>
-//               </div>
-//             )
-//           ) : (
-//             <div className="flex flex-col items-center justify-center py-12 text-center">
-//               <div className="w-16 h-16 rounded-full bg-[#2A2A2A] flex items-center justify-center mb-4">
-//                 <Search size={28} className="text-gray-600" />
-//               </div>
-//               <p className="text-sm text-gray-400">
-//                 Start typing to search products
-//               </p>
-//             </div>
-//           )}
-//         </div>
-//       </aside>
-//     </>
-//   );
-// }
-
-// "use client";
-
-// import Image from "next/image";
-// import { Search, X } from "lucide-react";
-// import { useState, useEffect } from "react";
-// import { useRouter } from "next/navigation";
-// import { useDebounce } from "@/lib/useDebounce";
-// import { useCurrency } from "@/contexts/CurrencyContext";
-// import { useLanguage } from "@/lib/useLanguage";
-
-// interface Variant {
-//   _id: string;
-//   imageUrlEnglish?: { imageUrl: string }[];
-//   imageUrlArabic?: { imageUrl: string }[];
-// }
-
-// interface Product {
-//   _id: string;
-//   nameEnglish: string;
-//   nameArabic?: string;
-
-//   imageUrlEnglish?: { imageUrl: string }[];
-//   imageUrlArabic?: { imageUrl: string }[];
-
-//   variants?: Variant[];
-
-//   minPrice: number | null;
-
-//   brand?: {
-//     nameEnglish: string;
-//     nameArabic?: string;
-//   };
-// }
-
-// interface SearchSidebarProps {
-//   isOpen: boolean;
-//   onClose: () => void;
-// }
-
-// export default function SearchSidebar({ isOpen, onClose }: SearchSidebarProps) {
-//   const router = useRouter();
-//   const { formatPrice } = useCurrency();
-//   const { currentLanguage } = useLanguage();
-
-//   const isArabic = currentLanguage === "ar";
-
-//   const [query, setQuery] = useState("");
-//   const [products, setProducts] = useState<Product[]>([]);
-//   const [loading, setLoading] = useState(false);
-//   const [showResults, setShowResults] = useState(false);
-
-//   const debouncedQuery = useDebounce(query, 500);
-
-//   /* ================= SEARCH PRODUCTS ================= */
-
-//   useEffect(() => {
-//     const searchProducts = async () => {
-//       try {
-//         setLoading(true);
-//         setShowResults(true);
-
-//         const API_URL =
-//           process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-
-//         let url = `${API_URL}/user/product?limit=10`;
-
-//         if (debouncedQuery.trim()) {
-//           url = `${API_URL}/user/product?search=${encodeURIComponent(
-//             debouncedQuery
-//           )}&limit=10`;
-//         }
-
-//         const response = await fetch(url);
-//         const data = await response.json();
-
-//         setProducts(data.items || []);
-//       } catch (error) {
-//         console.error("Search error:", error);
-//         setProducts([]);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     if (isOpen) searchProducts();
-//   }, [debouncedQuery, isOpen]);
-
-//   /* ================= PRODUCT CLICK ================= */
-
-//   const handleProductClick = (productId: string) => {
-//     onClose();
-//     router.push(`/brands/${productId}`);
-//   };
-
-//   /* ================= CLEAR SEARCH ================= */
-
-//   const handleClear = () => {
-//     setQuery("");
-//     setProducts([]);
-//     setShowResults(false);
-//   };
-
-//   return (
-//     <>
-//       {/* Invisible Scrollbar */}
-//       <style>{`
-//       .custom-scroll::-webkit-scrollbar {
-//         display:none;
-//       }
-
-//       .custom-scroll {
-//         -ms-overflow-style:none;
-//         scrollbar-width:none;
-//       }
-//       `}</style>
-
-//       {/* BACKDROP */}
-
-//       {isOpen && (
-//         <div
-//           className="fixed inset-0 bg-black/60 backdrop-blur-sm z-45"
-//           onClick={onClose}
-//         />
-//       )}
-
-//       {/* SIDEBAR */}
-
-//       <aside
-//         className={`fixed top-16 right-0 bottom-0 w-full sm:w-95 bg-[#1A1A1A] text-white z-50
-//         transform transition-transform duration-300 ease-in-out
-//         ${isOpen ? "translate-x-0" : "translate-x-full"}`}
-//       >
-//         {/* HEADER */}
-
-//         <div className="flex items-center justify-between p-4 border-b border-[#2A2A2A]">
-//           <h2 className="text-lg font-semibold">
-//             {isArabic ? "البحث عن المنتجات" : "Search Products"}
-//           </h2>
-
-//           <button
-//             onClick={onClose}
-//             className="p-2 hover:bg-[#2A2A2A] rounded-full transition"
-//           >
-//             <X size={20} />
-//           </button>
-//         </div>
-
-//         {/* SEARCH INPUT */}
-
-//         <div className="p-4">
-//           <div className="relative flex items-center gap-3 bg-[#2A2A2A] rounded-lg px-4 py-3">
-//             <Search className="w-5 h-5 text-gray-400" />
-
-//             <input
-//               value={query}
-//               onChange={(e) => setQuery(e.target.value)}
-//               placeholder={
-//                 isArabic ? "ابحث عن المنتجات..." : "Search for products..."
-//               }
-//               className="bg-transparent text-sm text-white placeholder-gray-400 outline-none w-full"
-//               autoFocus
-//             />
-
-//             {query && (
-//               <button
-//                 onClick={handleClear}
-//                 className="p-1 hover:bg-[#3A3A3A] rounded-full transition"
-//               >
-//                 <X size={16} className="text-gray-400" />
-//               </button>
-//             )}
-//           </div>
-//         </div>
-
-//         {/* RESULTS */}
-
-//         <div
-//           className="px-4 pb-4 overflow-y-auto custom-scroll"
-//           style={{ maxHeight: "calc(100vh - 180px)" }}
-//         >
-//           {loading ? (
-//             <div className="flex items-center justify-center py-8">
-//               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#C9A24D]" />
-//             </div>
-//           ) : showResults ? (
-//             products.length > 0 ? (
-//               <>
-//                 <p className="text-sm text-gray-400 mb-4">
-//                   {isArabic
-//                     ? `تم العثور على ${products.length}`
-//                     : `Found ${products.length} result${
-//                         products.length !== 1 ? "s" : ""
-//                       }`}
-//                 </p>
-
-//                 <div className="flex flex-col gap-3">
-//                   {products.map((product) => {
-//                     /* ================= IMAGE LOGIC ================= */
-
-//                     const selectedVariant = product.variants?.[0];
-
-//                     const variantImage = isArabic
-//                       ? selectedVariant?.imageUrlArabic?.[0]?.imageUrl
-//                       : selectedVariant?.imageUrlEnglish?.[0]?.imageUrl;
-
-//                     const productImage = isArabic
-//                       ? product.imageUrlArabic?.[0]?.imageUrl
-//                       : product.imageUrlEnglish?.[0]?.imageUrl;
-
-//                     const image =
-//                       variantImage ||
-//                       productImage ||
-//                       "/placeholder.png";
-
-//                     return (
-//                       <div
-//                         key={product._id}
-//                         onClick={() => handleProductClick(product._id)}
-//                         className="flex items-center gap-3 p-3 bg-[#0D0D0D] rounded-lg border border-[#2A2A2A] hover:border-[#C9A24D] cursor-pointer transition"
-//                       >
-//                         {/* IMAGE */}
-
-//                         <div className="relative w-16 h-16 shrink-0 rounded-lg overflow-hidden bg-[#2A2A2A]">
-//                           <Image
-//                             src={image}
-//                             alt={
-//                               isArabic
-//                                 ? product.nameArabic || ""
-//                                 : product.nameEnglish
-//                             }
-//                             fill
-//                             className="object-cover"
-//                           />
-//                         </div>
-
-//                         {/* TEXT */}
-
-//                         <div className="flex-1 min-w-0">
-//                           <p className="text-sm font-medium line-clamp-2 mb-1">
-//                             {isArabic
-//                               ? product.nameArabic
-//                               : product.nameEnglish}
-//                           </p>
-
-//                           {product.brand && (
-//                             <p className="text-xs text-gray-400 mb-1">
-//                               {isArabic
-//                                 ? product.brand.nameArabic
-//                                 : product.brand.nameEnglish}
-//                             </p>
-//                           )}
-
-//                           {product.minPrice && (
-//                             <p className="text-sm text-[#C9A24D] font-semibold">
-//                               {formatPrice(product.minPrice)}
-//                             </p>
-//                           )}
-//                         </div>
-//                       </div>
-//                     );
-//                   })}
-//                 </div>
-//               </>
-//             ) : (
-//               <div className="flex flex-col items-center justify-center py-12 text-center">
-//                 <Search size={28} className="text-gray-600 mb-3" />
-
-//                 <p className="text-sm text-gray-400">
-//                   {isArabic
-//                     ? `لا توجد نتائج لـ "${query}"`
-//                     : `No products found for "${query}"`}
-//                 </p>
-//               </div>
-//             )
-//           ) : (
-//             <div className="flex flex-col items-center justify-center py-12 text-center">
-//               <Search size={28} className="text-gray-600 mb-3" />
-
-//               <p className="text-sm text-gray-400">
-//                 {isArabic
-//                   ? "ابدأ الكتابة للبحث عن المنتجات"
-//                   : "Start typing to search products"}
-//               </p>
-//             </div>
-//           )}
-//         </div>
-//       </aside>
-//     </>
-//   );
-// }
 "use client";
 
 import Image from "next/image";
-import { Search, X } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Search, X, Loader2, Clock } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useDebounce } from "@/lib/useDebounce";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { useLanguage } from "@/lib/useLanguage";
 
 interface Variant {
-_id: string;
-imageUrlEnglish?: { imageUrl: string }[];
-imageUrlArabic?: { imageUrl: string }[];
+  _id: string;
+  imageUrlEnglish?: { imageUrl: string }[];
+  imageUrlArabic?: { imageUrl: string }[];
 }
 
 interface Product {
-_id: string;
-nameEnglish: string;
-nameArabic?: string;
-
-imageUrlEnglish?: { imageUrl: string }[];
-imageUrlArabic?: { imageUrl: string }[];
-
-variants?: Variant[];
-
-minPrice: number | null;
-
-brand?: {
-nameEnglish: string;
-nameArabic?: string;
-};
+  _id: string;
+  nameEnglish: string;
+  nameArabic?: string;
+  imageUrlEnglish?: { imageUrl: string }[];
+  imageUrlArabic?: { imageUrl: string }[];
+  variants?: Variant[];
+  minPrice: number | null;
+  brand?: {
+    nameEnglish: string;
+    nameArabic?: string;
+  };
 }
 
 interface SearchSidebarProps {
-isOpen: boolean;
-onClose: () => void;
+  isOpen: boolean;
+  onClose: () => void;
 }
+
+const RECENT_KEY = "recentSearches";
 
 export default function SearchSidebar({ isOpen, onClose }: SearchSidebarProps) {
-const router = useRouter();
-const { formatPrice } = useCurrency();
-const { currentLanguage } = useLanguage();
+  const router = useRouter();
+  const { formatPrice } = useCurrency();
+  const { currentLanguage } = useLanguage();
+  const isArabic = currentLanguage === "ar";
 
-const isArabic = currentLanguage === "ar";
+  const [query, setQuery] = useState("");
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [showResults, setShowResults] = useState(false);
+  const [recent, setRecent] = useState<string[]>([]);
 
-const [query, setQuery] = useState("");
-const [products, setProducts] = useState<Product[]>([]);
-const [loading, setLoading] = useState(false);
-const [showResults, setShowResults] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const asideRef = useRef<HTMLElement>(null);
+  const triggerRef = useRef<HTMLElement | null>(null);
+  const [topOffset, setTopOffset] = useState(64); // drawer starts exactly at the navbar's bottom
+  const debouncedQuery = useDebounce(query, 250);
 
-const debouncedQuery = useDebounce(query, 500);
+  /* ================= SEARCH PRODUCTS (logic unchanged) ================= */
+  useEffect(() => {
+    const searchProducts = async () => {
+      try {
+        setLoading(true);
+        setShowResults(false);
 
-/* ================= SEARCH PRODUCTS ================= */
+        const API_URL = process.env.NEXT_PUBLIC_API_URL;
+        let url = `${API_URL}/user/product?limit=10`;
 
-useEffect(() => {
-const searchProducts = async () => {
-try {
-setLoading(true);
-setShowResults(false);
+        if (debouncedQuery.trim()) {
+          url = `${API_URL}/user/product?search=${encodeURIComponent(debouncedQuery)}&limit=10`;
+        }
 
+        const response = await fetch(url);
+        const data = await response.json();
 
-    const API_URL =
-      process.env.NEXT_PUBLIC_API_URL;
+        setProducts(data.items || []);
+        setShowResults(true);
+      } catch (error) {
+        console.error("Search error:", error);
+        setProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    let url = `${API_URL}/user/product?limit=10`;
+    if (isOpen) searchProducts();
+  }, [debouncedQuery, isOpen]);
 
-    if (debouncedQuery.trim()) {
-      url = `${API_URL}/user/product?search=${encodeURIComponent(
-        debouncedQuery
-      )}&limit=10`;
-    }
+  /* ========= OPEN: anchor to navbar, scroll-lock, Escape, focus trap ========= */
+  useEffect(() => {
+    if (!isOpen) return;
+    const asideEl = asideRef.current;
+    triggerRef.current = (document.activeElement as HTMLElement) ?? null; // for focus restore
 
-    const response = await fetch(url);
-    const data = await response.json();
+    // Start exactly at the navbar's bottom edge — no gap on any breakpoint.
+    const measure = () => {
+      const nav = document.querySelector<HTMLElement>("[data-app-navbar]");
+      setTopOffset(nav ? Math.round(nav.getBoundingClientRect().bottom) : 64);
+    };
+    measure();
+    window.addEventListener("resize", measure);
 
-    setProducts(data.items || []);
-    setShowResults(true);
-  } catch (error) {
-    console.error("Search error:", error);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") { onClose(); return; }
+      if (e.key !== "Tab" || !asideEl) return;
+      const f = asideEl.querySelectorAll<HTMLElement>(
+        'a[href],button:not([disabled]),input:not([disabled]),[tabindex]:not([tabindex="-1"])'
+      );
+      if (!f.length) return;
+      const first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    };
+    document.addEventListener("keydown", onKey);
+
+    // Lock page scroll on <html> (the viewport scroller); scrollbar-gutter keeps it shift-free.
+    const root = document.documentElement;
+    const prevOverflow = root.style.overflow;
+    root.style.overflow = "hidden";
+
+    const t = setTimeout(() => inputRef.current?.focus(), 60);
+
+    return () => {
+      window.removeEventListener("resize", measure);
+      document.removeEventListener("keydown", onKey);
+      root.style.overflow = prevOverflow;
+      clearTimeout(t);
+      triggerRef.current?.focus?.(); // restore focus to the search button
+    };
+  }, [isOpen, onClose]);
+
+  /* ================= RECENT SEARCHES (frontend-only) ================= */
+  useEffect(() => {
+    try {
+      const r = JSON.parse(localStorage.getItem(RECENT_KEY) || "[]");
+      if (Array.isArray(r)) setRecent(r.slice(0, 6));
+    } catch { /* ignore */ }
+  }, []);
+
+  const saveRecent = (term: string) => {
+    const t = term.trim();
+    if (!t) return;
+    setRecent((prev) => {
+      const next = [t, ...prev.filter((x) => x.toLowerCase() !== t.toLowerCase())].slice(0, 6);
+      try { localStorage.setItem(RECENT_KEY, JSON.stringify(next)); } catch { /* ignore */ }
+      return next;
+    });
+  };
+
+  const clearRecent = () => {
+    setRecent([]);
+    try { localStorage.removeItem(RECENT_KEY); } catch { /* ignore */ }
+  };
+
+  const handleProductClick = (productId: string) => {
+    saveRecent(query);
+    onClose();
+    router.push(`/brands/${productId}`);
+  };
+
+  const handleClear = () => {
+    setQuery("");
     setProducts([]);
-  } finally {
-    setLoading(false);
-  }
-};
+    setShowResults(false);
+    inputRef.current?.focus();
+  };
 
-if (isOpen) searchProducts();
+  const productName = (p: Product) => (isArabic ? p.nameArabic || p.nameEnglish : p.nameEnglish);
+  const productImage = (p: Product) => {
+    const v = p.variants?.[0];
+    return (
+      (isArabic ? v?.imageUrlArabic?.[0]?.imageUrl : v?.imageUrlEnglish?.[0]?.imageUrl) ||
+      (isArabic ? p.imageUrlArabic?.[0]?.imageUrl : p.imageUrlEnglish?.[0]?.imageUrl) ||
+      "/placeholder.png"
+    );
+  };
 
+  const dir = isArabic ? "rtl" : "ltr";
 
-}, [debouncedQuery, isOpen]);
+  return (
+    <>
+      <style>{`
+        .search-scroll::-webkit-scrollbar { width: 6px; }
+        .search-scroll::-webkit-scrollbar-thumb { background: #e8ded2; border-radius: 999px; }
+        .search-scroll::-webkit-scrollbar-thumb:hover { background: #d8cbb8; }
+        .search-scroll { scrollbar-width: thin; scrollbar-color: #e8ded2 transparent; }
+      `}</style>
 
-/* ================= PRODUCT CLICK ================= */
-
-const handleProductClick = (productId: string) => {
-onClose();
-router.push(`/brands/${productId}`);
-};
-
-/* ================= CLEAR SEARCH ================= */
-
-const handleClear = () => {
-setQuery("");
-setProducts([]);
-setShowResults(false);
-};
-
-return (
-<>
-{/* Invisible Scrollbar */} <style>{`
-.custom-scroll::-webkit-scrollbar {
-display:none;
-}
-
-
-  .custom-scroll {
-    -ms-overflow-style:none;
-    scrollbar-width:none;
-  }
-  `}</style>
-
-  {/* BACKDROP */}
-
-  {isOpen && (
-    <div
-      className="fixed inset-0 bg-ink/40 backdrop-blur-md z-45"
-      onClick={onClose}
-    />
-  )}
-
-  {/* SIDEBAR */}
-
-  <aside
-    className={`fixed top-16 bottom-0 w-full sm:w-95 bg-cream text-ink border border-line shadow-luxury-lg z-50
-    transform transition-transform duration-300 ease-in-out
-    ${isArabic ? "left-0" : "right-0"}
-    ${isOpen ? "translate-x-0" : isArabic ? "-translate-x-full" : "translate-x-full"}`}
-  >
-    {/* HEADER */}
-
-    <div className="flex items-center justify-between p-4 border-b border-line">
-      <h2 className="text-lg font-semibold text-ink">
-        {isArabic ? "البحث عن المنتجات" : "Search Products"}
-      </h2>
-
-      <button
+      {/* BACKDROP — starts at the navbar's bottom so the navbar stays clear; fades in/out (200ms) */}
+      <div
+        aria-hidden
         onClick={onClose}
-        aria-label="Close search sidebar"
-        className="p-2 text-ink-soft hover:bg-champagne hover:text-ink rounded-full transition focus-visible:ring-2 focus-visible:ring-gold focus:outline-none"
+        style={{ top: topOffset }}
+        className={`fixed inset-x-0 bottom-0 z-40 bg-ink/40 backdrop-blur-md transition-opacity duration-200 ${
+          isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+      />
+
+      {/* DRAWER — right-side sliding panel (left in RTL) */}
+      <aside
+        ref={asideRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={isArabic ? "البحث عن المنتجات" : "Search products"}
+        dir={dir}
+        inert={!isOpen}
+        style={{ top: topOffset }}
+        className={`fixed bottom-0 right-0 z-50 flex flex-col w-full sm:w-[440px] lg:w-[520px] bg-cream text-ink border border-line shadow-luxury-lg sm:rounded-l-[24px]
+          transition-transform duration-200 ease-out
+          ${isOpen ? "translate-x-0" : "translate-x-full"}`}
       >
-        <X size={20} />
-      </button>
-    </div>
-
-    {/* SEARCH INPUT */}
-
-    <div className="p-4">
-      <div className="relative flex items-center gap-3 bg-card border border-line rounded-lg px-4 py-3 focus-within:border-gold focus-within:ring-2 focus-within:ring-gold/20 transition">
-        <Search className="w-5 h-5 text-muted" />
-
-        <input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder={
-            isArabic ? "ابحث عن المنتجات..." : "Search for products..."
-          }
-          className="bg-transparent text-sm text-ink placeholder:text-muted outline-none w-full"
-          autoFocus
-        />
-
-        {query && (
+        {/* ── Sticky header ── */}
+        <div className="shrink-0 flex items-center justify-between px-5 py-4 border-b border-line bg-cream/95 backdrop-blur">
+          <h2 className="font-serif text-xl font-semibold text-ink">
+            {isArabic ? "البحث عن المنتجات" : "Search Products"}
+          </h2>
           <button
-            onClick={handleClear}
-            aria-label="Clear search query"
-            className="p-1 text-ink-soft hover:bg-champagne hover:text-ink rounded-full transition focus-visible:ring-2 focus-visible:ring-gold focus:outline-none"
+            onClick={onClose}
+            aria-label={isArabic ? "إغلاق البحث" : "Close search"}
+            className="p-2 text-ink-soft hover:bg-champagne hover:text-ink rounded-full transition focus-visible:ring-2 focus-visible:ring-gold focus:outline-none"
           >
-            <X size={16} className="text-muted" />
+            <X size={20} />
           </button>
-        )}
-      </div>
-    </div>
+        </div>
 
-    {/* RESULTS */}
+        {/* ── Sticky search bar (56px) ── */}
+        <div className="shrink-0 px-5 py-3 border-b border-line">
+          <div className="relative flex items-center gap-3 h-14 bg-card border border-line rounded-xl px-4 focus-within:border-gold focus-within:ring-2 focus-within:ring-gold/20 transition">
+            {loading ? (
+              <Loader2 className="w-5 h-5 text-gold animate-spin shrink-0" aria-hidden />
+            ) : (
+              <Search className="w-5 h-5 text-muted shrink-0" aria-hidden />
+            )}
+            <input
+              ref={inputRef}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") saveRecent(query); }}
+              placeholder={isArabic ? "ابحث عن المنتجات والعلامات والفئات..." : "Search products, brands, categories..."}
+              aria-label={isArabic ? "البحث" : "Search"}
+              className="bg-transparent text-[15px] text-ink placeholder:text-muted outline-none w-full min-w-0"
+            />
+            {query && (
+              <button
+                onClick={handleClear}
+                aria-label={isArabic ? "مسح" : "Clear"}
+                className="p-1 text-muted hover:bg-champagne hover:text-ink rounded-full transition shrink-0 focus-visible:ring-2 focus-visible:ring-gold focus:outline-none"
+              >
+                <X size={16} />
+              </button>
+            )}
+          </div>
+        </div>
 
-    {/* <div
-      className="px-4 pb-4 overflow-y-auto custom-scroll"
-      style={{ maxHeight: "calc(100vh - 180px)" }}
-    > */}
-    <div className="relative">
-      {loading ? (
-        /* Skeleton Loading */
-        <div className="flex flex-col gap-3">
-          {[...Array(6)].map((_, i) => (
-            <div
-              key={i}
-              className="flex items-center gap-3 p-3 bg-card rounded-lg border border-line animate-pulse"
-            >
-              <div className="w-16 h-16 skeleton-luxury rounded-lg"></div>
-
-              <div className="flex-1">
-                <div className="h-3 skeleton-luxury rounded w-32 mb-2"></div>
-                <div className="h-3 skeleton-luxury rounded w-20"></div>
+        {/* ── Results (only this scrolls) ── */}
+        <div className="search-scroll flex-1 overflow-y-auto px-5 py-4 pb-[calc(1rem+env(safe-area-inset-bottom))]">
+          {/* Recent searches — shown when the box is empty */}
+          {!query.trim() && recent.length > 0 && (
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-gold-dark">
+                  {isArabic ? "عمليات البحث الأخيرة" : "Recent Searches"}
+                </p>
+                <button onClick={clearRecent} className="text-xs text-muted hover:text-gold-dark transition">
+                  {isArabic ? "مسح" : "Clear"}
+                </button>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {recent.map((term) => (
+                  <button
+                    key={term}
+                    onClick={() => setQuery(term)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-line bg-card text-sm text-ink-soft hover:border-gold hover:text-gold-dark transition"
+                  >
+                    <Clock size={13} className="text-muted" aria-hidden />
+                    {term}
+                  </button>
+                ))}
               </div>
             </div>
-          ))}
-        </div>
-      ) : showResults ? (
-        products.length > 0 ? (
-          <>
-            <p className="text-sm text-muted mb-4">
-              {isArabic
-                ? `تم العثور على ${products.length}`
-                : `Found ${products.length} result${
-                    products.length !== 1 ? "s" : ""
-                  }`}
-            </p>
+          )}
 
+          {loading ? (
+            /* Skeletons */
             <div className="flex flex-col gap-3">
-              {products.map((product) => {
-                /* IMAGE PRIORITY LOGIC */
-
-                const selectedVariant = product.variants?.[0];
-
-                const variantImage = isArabic
-                  ? selectedVariant?.imageUrlArabic?.[0]?.imageUrl
-                  : selectedVariant?.imageUrlEnglish?.[0]?.imageUrl;
-
-                const productImage = isArabic
-                  ? product.imageUrlArabic?.[0]?.imageUrl
-                  : product.imageUrlEnglish?.[0]?.imageUrl;
-
-                const image =
-                  variantImage ||
-                  productImage ||
-                  "/placeholder.png";
-
-                return (
-                  <div
-                    key={product._id}
-                    onClick={() => handleProductClick(product._id)}
-                    className="flex items-center gap-3 p-3 bg-card rounded-lg border border-line hover:border-gold hover:bg-champagne cursor-pointer transition"
-                  >
-                    {/* IMAGE */}
-
-                    <div className="relative w-16 h-16 shrink-0 rounded-lg overflow-hidden bg-champagne">
-                      <Image
-                        src={image}
-                        alt={
-                          isArabic
-                            ? product.nameArabic || ""
-                            : product.nameEnglish
-                        }
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-
-                    {/* TEXT */}
-
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-ink line-clamp-2 mb-1">
-                        {isArabic
-                          ? product.nameArabic
-                          : product.nameEnglish}
-                      </p>
-
-                      {product.brand && (
-                        <p className="text-xs text-muted mb-1">
-                          {isArabic
-                            ? product.brand.nameArabic
-                            : product.brand.nameEnglish}
-                        </p>
-                      )}
-
-                      {product.minPrice && (
-                        <p className="text-sm text-gold-dark font-semibold">
-                          {formatPrice(product.minPrice)}
-                        </p>
-                      )}
-                    </div>
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="flex items-center gap-4 p-4 bg-card rounded-2xl border border-line">
+                  <div className="w-22 h-22 skeleton-luxury rounded-xl shrink-0" />
+                  <div className="flex-1">
+                    <div className="h-2.5 skeleton-luxury rounded w-20 mb-2" />
+                    <div className="h-3 skeleton-luxury rounded w-40 mb-2" />
+                    <div className="h-3 skeleton-luxury rounded w-16" />
                   </div>
-                );
-              })}
+                </div>
+              ))}
             </div>
-          </>
-        ) : (
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <Search size={28} className="text-muted mb-3" />
+          ) : showResults ? (
+            products.length > 0 ? (
+              <>
+                <p className="text-sm text-muted mb-4">
+                  {query.trim()
+                    ? isArabic
+                      ? `تم العثور على ${products.length} نتيجة`
+                      : `Found ${products.length} result${products.length !== 1 ? "s" : ""}`
+                    : isArabic
+                      ? "منتجات رائجة"
+                      : "Popular Products"}
+                </p>
 
-            <p className="text-sm text-muted">
-              {isArabic
-                ? `لا توجد نتائج لـ "${query}"`
-                : `No products found for "${query}"`}
-            </p>
-          </div>
-        )
-      ) : (
-        <div className="flex flex-col items-center justify-center py-12 text-center">
-          <Search size={28} className="text-muted mb-3" />
+                <div className="flex flex-col gap-3">
+                  {products.map((product) => (
+                    <button
+                      key={product._id}
+                      type="button"
+                      onClick={() => handleProductClick(product._id)}
+                      className="group w-full flex items-center gap-4 p-4 bg-card rounded-2xl border border-line text-start hover:border-gold hover:shadow-luxury transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+                    >
+                      <div className="relative w-22 h-22 shrink-0 rounded-xl overflow-hidden bg-champagne">
+                        <Image
+                          src={productImage(product)}
+                          alt={productName(product) || ""}
+                          fill
+                          sizes="88px"
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                      </div>
 
-          <p className="text-sm text-muted">
-            {isArabic
-              ? "ابدأ الكتابة للبحث عن المنتجات"
-              : "Start typing to search products"}
-          </p>
+                      <div className="flex-1 min-w-0">
+                        {product.brand && (
+                          <p className="text-[11px] uppercase tracking-[0.12em] text-muted mb-0.5 truncate">
+                            {isArabic ? product.brand.nameArabic || product.brand.nameEnglish : product.brand.nameEnglish}
+                          </p>
+                        )}
+                        <p className="text-sm font-medium text-ink line-clamp-2 mb-1.5 leading-snug">
+                          {productName(product)}
+                        </p>
+                        {product.minPrice != null && (
+                          <p className="text-base text-gold-dark font-semibold">
+                            {formatPrice(product.minPrice)}
+                          </p>
+                        )}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </>
+            ) : (
+              /* No results */
+              <div className="flex flex-col items-center justify-center py-16 text-center">
+                <div className="w-16 h-16 rounded-full bg-champagne flex items-center justify-center mb-4">
+                  <Search size={26} className="text-gold-dark" aria-hidden />
+                </div>
+                <p className="text-base font-medium text-ink">
+                  {isArabic ? "لا توجد منتجات" : "No products found"}
+                </p>
+                <p className="text-sm text-muted mt-1.5 max-w-[15rem]">
+                  {isArabic
+                    ? `لم نجد نتائج لـ "${query}". جرّب كلمات مختلفة.`
+                    : `We couldn't find anything for “${query}”. Try different keywords.`}
+                </p>
+              </div>
+            )
+          ) : null}
         </div>
-      )}
-    </div>
-  </aside>
-</>
-
-
-);
+      </aside>
+    </>
+  );
 }

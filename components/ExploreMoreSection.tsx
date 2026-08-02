@@ -102,15 +102,17 @@ export default function ExploreMoreSection() {
         <div className="relative z-10">
           {/* TITLE — constrained to the site container */}
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
-            <div className={`text-center mb-16 ${isRTL ? "font-arabic" : ""}`}>
-              <div className="flex items-center justify-center gap-6 mb-6">
-                <div className="w-32 h-px bg-linear-to-r from-transparent to-gold" />
+            <header className={`text-center mb-16 ${isRTL ? "font-arabic" : ""}`}>
+              <div className="flex items-center justify-center gap-3 sm:gap-6 mb-4 sm:mb-6">
+                {/* decorative — equal flex-1 (capped) lines on BOTH sides keep the heading the true center */}
+                <span aria-hidden className="flex-1 max-w-32 h-px bg-linear-to-r from-transparent to-gold" />
                 <h2
-                  className="text-gold-dark text-4xl md:text-5xl font-normal tracking-wide whitespace-nowrap"
+                  className="text-gold-dark text-3xl sm:text-4xl md:text-5xl font-normal tracking-wide break-words"
                   style={{ fontFamily: "'Cactus Classical Serif', serif" }}
                 >
                   {t("exploreMore.title")}
                 </h2>
+                <span aria-hidden className="flex-1 max-w-32 h-px bg-linear-to-r from-gold to-transparent" />
               </div>
               <p
                 className="text-muted text-base md:text-lg tracking-wider font-normal"
@@ -118,15 +120,15 @@ export default function ExploreMoreSection() {
               >
                 {t("exploreMore.subtitle")}
               </p>
-            </div>
+            </header>
           </div>
 
           {/* CAROUSEL — identical behaviour to Best Sellers (seamless infinite) */}
           <div className="w-full max-w-[1728px] mx-auto px-4 sm:px-5 md:px-6 lg:px-8 xl:px-10 2xl:px-12 min-[1920px]:px-16">
             <div
               className="relative"
-              onMouseEnter={() => { const s = swiperRef.current; if (!s) return; s.autoplay?.stop(); s.setTransition(0); s.setTranslate(s.getTranslate()); }}
-              onMouseLeave={() => { const s = swiperRef.current; if (!s) return; s.animating = false; /* freeze cancels the transition (no transitionend) → animating stays true → loop's slideNext bails; reset it so autoplay can advance */ s.setTransition(s.params.speed); s.autoplay?.start(); }}
+              onPointerEnter={(e) => { if (e.pointerType !== "mouse") return; const s = swiperRef.current; if (!s) return; s.autoplay?.stop(); s.setTransition(0); s.setTranslate(s.getTranslate()); }}
+              onPointerLeave={(e) => { if (e.pointerType !== "mouse") return; const s = swiperRef.current; if (!s) return; s.animating = false; /* freeze cancels the transition (no transitionend) → animating stays true → loop's slideNext bails; reset it so autoplay can advance */ s.setTransition(s.params.speed); s.autoplay?.start(); }}
             >
               {/* Prev — circular, vertically centered, on the carousel's left edge */}
               <button

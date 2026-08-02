@@ -5,6 +5,7 @@ import { X, ChevronDown, ChevronUp } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@/lib/useLanguage';
 import { useRouter } from "next/navigation";
+import { useDrawer } from "@/lib/useDrawer";
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -31,6 +32,7 @@ const [brands, setBrands] = useState<Brand[]>([]);
   
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const router = useRouter();
+  useDrawer(isOpen, onClose); // scroll-lock + Escape (full-height menu → topOffset unused)
 
   // const menuCategories = [
   //   {
@@ -107,18 +109,22 @@ const [brands, setBrands] = useState<Brand[]>([]);
     }
   };
 
-  if (!isOpen) return null;
-
   return (
     <>
-      {/* Overlay */}
+      {/* Overlay — fades in/out (kept mounted so the menu can animate) */}
       <div
-        className="fixed inset-0 bg-ink/40 z-50"
+        aria-hidden
         onClick={onClose}
+        className={`fixed inset-0 z-40 bg-ink/40 backdrop-blur-sm transition-opacity duration-300 ${
+          isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
       />
-      
+
       {/* Main Menu Slide */}
-      <div className={`fixed top-0 ${isRTL ? 'right-0' : 'left-0'} h-full w-80 bg-cream text-ink border-e border-line shadow-luxury-lg z-50 transform transition-transform duration-300 ${isOpen ? 'translate-x-0' : isRTL ? 'translate-x-full' : '-translate-x-full'}`}>
+      <div
+        inert={!isOpen}
+        className={`fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-cream text-ink border-e border-line shadow-luxury-lg z-50 flex flex-col transform transition-transform duration-300 ease-out ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
+      >
         
         {/* Menu Header */}
         <div className="flex items-center justify-between p-4 border-b border-line">
