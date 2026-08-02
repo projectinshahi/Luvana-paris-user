@@ -975,7 +975,7 @@ export default function Navbar() {
     <>
       {/* dir="ltr" pins the navbar chrome so it never mirrors in Arabic —
           logo stays left, utility icons stay right; only text renders RTL. */}
-      <div dir="ltr" className="fixed top-0 left-0 right-0 z-50">
+      <div data-app-navbar dir="ltr" className="fixed top-0 left-0 right-0 z-50">
 
         {/* 🔥 PROMOTION BAR */}
         {/* <div className="bg-[#0A0A0A] text-white text-center text-xs sm:text-sm py-4">
@@ -1190,6 +1190,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between px-6 py-2">
 
           <button
+            aria-current={pathname === "/" && !showWishlist && !showCart && !showSearch && !showLogin && !showUserDropdown ? "page" : undefined}
             onClick={() => {
               setShowWishlist(false);
               setShowCart(false);
@@ -1206,9 +1207,11 @@ export default function Navbar() {
               strokeWidth={pathname === "/" && !showWishlist && !showCart && !showSearch && !showLogin && !showUserDropdown ? 2 : 1.5}
               className={`transition-all duration-300 mt-1 ${pathname === "/" && !showWishlist && !showCart && !showSearch && !showLogin && !showUserDropdown ? "text-gold-dark" : "text-muted group-hover:text-gold"}`}
             />
+            <span className="sr-only">Home</span>
           </button>
 
           <button
+            aria-current={showWishlist ? "page" : undefined}
             onClick={() => {
               setShowCart(false);
               setShowSearch(false);
@@ -1224,9 +1227,11 @@ export default function Navbar() {
               strokeWidth={showWishlist ? 2 : 1.5}
               className={`transition-all duration-300 mt-1 ${showWishlist ? "text-gold-dark" : "text-muted group-hover:text-gold"}`}
             />
+            <span className="sr-only">Wishlist</span>
           </button>
 
           <button
+            aria-current={showCart ? "page" : undefined}
             onClick={() => {
               setShowWishlist(false);
               setShowSearch(false);
@@ -1242,9 +1247,11 @@ export default function Navbar() {
               strokeWidth={showCart ? 2 : 1.5}
               className={`transition-all duration-300 mt-1 ${showCart ? "text-gold-dark" : "text-muted group-hover:text-gold"}`}
             />
+            <span className="sr-only">Cart</span>
           </button>
 
           <button
+            aria-current={showSearch ? "page" : undefined}
             onClick={() => {
               setShowWishlist(false);
               setShowCart(false);
@@ -1260,9 +1267,11 @@ export default function Navbar() {
               strokeWidth={showSearch ? 2 : 1.5}
               className={`transition-all duration-300 mt-1 ${showSearch ? "text-gold-dark" : "text-muted group-hover:text-gold"}`}
             />
+            <span className="sr-only">Search</span>
           </button>
 
           <button
+            aria-current={(showLogin || showUserDropdown) ? "page" : undefined}
             onClick={() => {
               setShowWishlist(false);
               setShowCart(false);
@@ -1278,6 +1287,7 @@ export default function Navbar() {
               strokeWidth={(showLogin || showUserDropdown) ? 2 : 1.5}
               className={`transition-all duration-300 mt-1 ${(showLogin || showUserDropdown) ? "text-gold-dark" : "text-muted group-hover:text-gold"}`}
             />
+            <span className="sr-only">Account</span>
           </button>
 
         </div>

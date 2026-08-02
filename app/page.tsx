@@ -4,26 +4,18 @@ import ExploreBrandsSection from "@/components/ExploreBrandsSection";
 import ExploreMoreSection from "@/components/ExploreMoreSection";
 import ImageSection from "@/components/ImageSection";
 import InfluencersReelsSection from "@/components/InfluencersReelsSection";
-import InfluencersSection from "@/components/InfluencesSection";
-
-
-
-
 
 export default function Home() {
   return (
-    <div>
-     
-      <div className="pt-8 sm:pt-12 md:pt-12 pb-20 sm:pb-0">
-
-        <ImageSection/>
+    <main className="flex flex-col">
+      <div className="pt-6 sm:pt-8 md:pt-10 pb-16 sm:pb-20 lg:pb-24">
+        <ImageSection />
         <CategoryBar />
-        <BestSellers/>
-        <ExploreBrandsSection/>
-        <ExploreMoreSection/>
-        <InfluencersReelsSection/>
-       
+        <BestSellers />
+        <ExploreBrandsSection />
+        <ExploreMoreSection />
+        <InfluencersReelsSection />
       </div>
-    </div>
+    </main>
   );
 }

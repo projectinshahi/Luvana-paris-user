@@ -37,6 +37,9 @@ interface Influencer {
   variant?: Variant;
 }
 
+const reducedMotion = () =>
+  typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+
 // ============= MAIN COMPONENT =============
 export default function InfluencersReelsSection() {
   const { i18n } = useTranslation("common");
@@ -49,11 +52,13 @@ export default function InfluencersReelsSection() {
   const [loading, setLoading] = useState(true);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [addingToCart, setAddingToCart] = useState(false);
-  const [isCarouselHovered, setIsCarouselHovered] = useState(false);
 
   // Refs
   const videoRefs = useRef<Map<string, HTMLVideoElement>>(new Map());
   const observerRef = useRef<IntersectionObserver | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);       // swipeable marquee track
+  const pausedRef = useRef(false);                       // pause auto-scroll on touch/hover
+  const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // ============= FETCH DATA =============
   useEffect(() => {
@@ -98,6 +103,32 @@ export default function InfluencersReelsSection() {
       observerRef.current?.disconnect();
     };
   }, []);
+
+  // ============= AUTO-SCROLL MARQUEE (native swipe on touch) =============
+  // Drives scrollLeft each frame; the container is overflow-x-auto so touch users
+  // can swipe freely. Loops seamlessly because the card set is duplicated (reset at halfway).
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el || reducedMotion()) return; // reduced-motion: manual swipe only, no drift
+    let raf = 0;
+    const SPEED = 0.6; // ponytail: px/frame gentle drift — tune here if a different pace is wanted
+    const step = () => {
+      if (!pausedRef.current) {
+        el.scrollLeft += SPEED;
+        const half = el.scrollWidth / 2;
+        if (half > 0 && el.scrollLeft >= half) el.scrollLeft -= half;
+      }
+      raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [influencers.length]);
+
+  // Resume drift shortly after the finger/pointer lifts (lets momentum settle first).
+  const resumeSoon = () => {
+    if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+    resumeTimerRef.current = setTimeout(() => { pausedRef.current = false; }, 900);
+  };
 
   // ============= VIDEO REF CALLBACK =============
   const setVideoRef = useCallback((id: string, element: HTMLVideoElement | null) => {
@@ -270,59 +301,51 @@ const getInstagramId = (url?: string) => {
   const copies = Math.max(1, Math.ceil(3900 / (influencers.length * CARD_W)));
   const oneSet = Array.from({ length: copies }).flatMap(() => influencers);
   const duplicatedInfluencers = [...oneSet, ...oneSet];
-  // Constant, gentle scroll speed regardless of how many cards there are.
-  const scrollDuration = Math.max(24, oneSet.length * 3);
 
   return (
     <>
       <style jsx>{`
-        @keyframes scroll-left {
-          from {
-            transform: translateX(0);
-          }
-          to {
-            transform: translateX(-50%);
-          }
+        .reel-scroll {
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+          -webkit-overflow-scrolling: touch;
+          overscroll-behavior-x: contain;
         }
-
-        .carousel-track {
-          display: flex;
-          width: max-content;
-          animation: scroll-left 15s linear infinite;
-          will-change: transform;
-        }
-
-        .carousel-track.paused {
-          animation-play-state: paused;
+        .reel-scroll::-webkit-scrollbar {
+          display: none;
         }
       `}</style>
 
       <section className="relative w-full py-10 bg-cream overflow-hidden" dir="ltr">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-center gap-6 mb-6">
-            <div className="flex-1 h-px bg-linear-to-r from-transparent via-gold/50 to-gold" />
-            <div className="flex flex-col items-center text-center">
-              <h2 className="text-gold-dark text-2xl md:text-3xl font-light tracking-widest uppercase whitespace-nowrap">
+        <header className="max-w-7xl mx-auto px-4">
+          <div className="flex items-center justify-center gap-3 sm:gap-6 mb-6">
+            {/* decorative — flex-1 keeps both lines equal width so the heading is always the true center */}
+            <span aria-hidden className="flex-1 h-px bg-linear-to-r from-transparent via-gold/50 to-gold" />
+            <div className="flex flex-col items-center text-center min-w-0">
+              <h2 className="text-gold-dark text-xl sm:text-2xl md:text-3xl font-light tracking-widest uppercase break-words">
                 {isRTL ? "المؤثرون" : "Influencers"}
               </h2>
-              <span className="text-gold-dark/60 text-sm mt-1">
+              <span className="text-gold-dark/60 text-xs sm:text-sm mt-1">
                 {isRTL ? "الريلز" : "Scrolls"}
               </span>
             </div>
-            <div className="flex-1 h-px bg-linear-to-r from-gold via-gold/50 to-transparent" />
+            <span aria-hidden className="flex-1 h-px bg-linear-to-r from-gold via-gold/50 to-transparent" />
           </div>
-        </div>
+        </header>
 
         {/* CAROUSEL — full-bleed, edge to edge (no left/right gap) */}
         <div
-          className="relative overflow-hidden cursor-grab active:cursor-grabbing"
-            onMouseEnter={() => setIsCarouselHovered(true)}
-            onMouseLeave={() => setIsCarouselHovered(false)}
+          ref={scrollRef}
+          className="reel-scroll relative overflow-x-auto overflow-y-hidden cursor-grab active:cursor-grabbing mt-5 mb-10"
+          onMouseEnter={() => { pausedRef.current = true; }}
+          onMouseLeave={() => { pausedRef.current = false; }}
+          onPointerDown={() => { pausedRef.current = true; }}
+          onPointerUp={resumeSoon}
+          onTouchStart={() => { pausedRef.current = true; }}
+          onTouchEnd={resumeSoon}
           >
-            <div
-              className={`flex gap-4 sm:gap-6 carousel-track mt-5 mb-10 ${isCarouselHovered ? "paused" : ""}`}
-              style={{ animationDuration: `${scrollDuration}s` }}
-            >
+            <div className="flex gap-4 sm:gap-6 w-max">
+
               {duplicatedInfluencers.map((influencer, index) => {
                 const uniqueId = `${influencer._id}-${index}`;
                 // const isYouTube = influencer.videoUrl?.includes("youtube.com") || influencer.videoUrl?.includes("youtu.be");

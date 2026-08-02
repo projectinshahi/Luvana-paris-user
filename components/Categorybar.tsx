@@ -264,6 +264,12 @@ export default function CategoryBar() {
     fetchHomeData();
   }, []);
 
+  // Keep the selected pill fully in view (scroll-padding leaves the safe edge gap).
+  useEffect(() => {
+    const el = categoryScrollRef.current?.querySelector<HTMLElement>('[data-active="true"]');
+    el?.scrollIntoView({ behavior: "smooth", inline: "nearest", block: "nearest" });
+  }, [selectedItem, categories]);
+
  
 const handleClick = (key: string) => {
   setSelectedItem(key);
@@ -514,16 +520,18 @@ const handleClick = (key: string) => {
       </div>
 
       {/* ================= MOBILE ================= */}
-      <div className="md:hidden py-3 px-3">
+      <div className="md:hidden">
         <div
           ref={categoryScrollRef}
           onScroll={updateDropdownPosition}
-          className={`flex gap-3 whitespace-nowrap overflow-x-auto hide-scrollbar scroll-snap-x select-none ${
-            isRTL ? "" : ""
-          }`}
+          role="tablist"
+          aria-label={isRTL ? "الفئات" : "Categories"}
+          // py inside the scroller: overflow-x-auto also clips overflow-y, so vertical padding
+          // must live here or the pill border/focus-ring gets cut top & bottom.
+          className="flex gap-3 whitespace-nowrap overflow-x-auto hide-scrollbar scroll-snap-x select-none px-4 py-3"
           style={{
             scrollBehavior: 'smooth',
-            scrollPaddingLeft: '0px',
+            scrollPaddingInline: '1rem', // safe gap so first/last pill never clips on snap or scroll-into-view
           }}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
@@ -535,7 +543,10 @@ const handleClick = (key: string) => {
         >
           <button
             onClick={() => handleClick("new")}
-            className={`px-4 py-2 rounded-full text-xs font-medium border scroll-snap-align-start shrink-0 transition-colors
+            role="tab"
+            aria-selected={selectedItem === "new"}
+            data-active={selectedItem === "new"}
+            className={`px-4 py-2 rounded-full text-xs font-medium border scroll-snap-align-start shrink-0 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gold
               ${
                 selectedItem === "new"
                   ? "text-gold-dark border-gold bg-champagne"
@@ -549,6 +560,9 @@ const handleClick = (key: string) => {
           {/* Mobile Brands Button */}
           <button
             ref={brandsBtnRef}
+            role="tab"
+            aria-selected={selectedItem === "brands"}
+            data-active={selectedItem === "brands"}
             onClick={(e) => {
               if (openMenu === "brands") {
                 router.push("/brands");
@@ -559,7 +573,7 @@ const handleClick = (key: string) => {
                 setTimeout(updateDropdownPosition, 0);
               }
             }}
-            className={`px-4 py-2 rounded-full text-xs font-medium border scroll-snap-align-start shrink-0 transition-colors
+            className={`px-4 py-2 rounded-full text-xs font-medium border scroll-snap-align-start shrink-0 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gold
               ${
                 selectedItem === "brands"
                   ? "text-gold-dark border-gold bg-champagne"
@@ -574,7 +588,10 @@ const handleClick = (key: string) => {
             <button
               key={cat._id}
               onClick={() => handleClick(cat._id)}
-              className={`px-4 py-2 rounded-full text-xs font-medium border scroll-snap-align-start shrink-0 transition-colors
+              role="tab"
+              aria-selected={selectedItem === cat._id}
+              data-active={selectedItem === cat._id}
+              className={`px-4 py-2 rounded-full text-xs font-medium border scroll-snap-align-start shrink-0 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gold
                 ${
                   selectedItem === cat._id
                     ? "text-gold-dark border-gold bg-champagne"

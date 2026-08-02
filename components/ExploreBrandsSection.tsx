@@ -375,19 +375,17 @@ const router = useRouter();
     <div className="w-full bg-cream">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 pt-16 md:pt-20 pb-10 md:pb-12">
         {/* TITLE — matches BestSellers / ExploreMore section headings */}
-        <div className={`text-center ${isRTL ? "font-arabic" : ""}`}>
-          <div
-            className={`flex items-center justify-center gap-6 mb-6 ${
-              isRTL ? "" : ""
-            }`}
-          >
-            <div className="w-32 h-px bg-linear-to-r from-transparent to-gold" />
+        <header className={`text-center ${isRTL ? "font-arabic" : ""}`}>
+          <div className="flex items-center justify-center gap-3 sm:gap-6 mb-4 sm:mb-6">
+            {/* decorative — equal flex-1 (capped) lines on BOTH sides keep the heading the true center */}
+            <span aria-hidden className="flex-1 max-w-32 h-px bg-linear-to-r from-transparent to-gold" />
             <h2
-              className="text-gold-dark text-4xl md:text-5xl font-normal tracking-wide whitespace-nowrap"
+              className="text-gold-dark text-3xl sm:text-4xl md:text-5xl font-normal tracking-wide break-words"
               style={{ fontFamily: "'Cactus Classical Serif', serif" }}
             >
               {t("exploreBrands")}
             </h2>
+            <span aria-hidden className="flex-1 max-w-32 h-px bg-linear-to-r from-gold to-transparent" />
           </div>
           <p
             className="text-muted text-base md:text-lg tracking-wider font-normal"
@@ -395,7 +393,7 @@ const router = useRouter();
           >
             {brandsSubheading}
           </p>
-        </div>
+        </header>
       </div>
     </div>
   );

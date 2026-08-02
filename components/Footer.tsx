@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Facebook, Instagram, Twitter, Linkedin, Mail, Phone, MapPin } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import Image from "next/image";
@@ -14,30 +15,30 @@ export default function Footer() {
       className="w-full bg-champagne text-ink-soft border-t border-line"
     >
       {/* Main Footer */}
-      <div className="max-w-7xl mx-auto px-4 md:px-6 py-16">
-        <div className={`grid grid-cols-1 md:grid-cols-4 gap-8 mb-12 text-left`}>
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-16">
+        <div className={`grid grid-cols-2 md:grid-cols-4 gap-8 gap-y-10 mb-10 md:mb-12 text-center md:text-left`}>
           {/* Company Info */}
-          <div className="text-left">
+          <div className="col-span-2 md:col-span-1 text-center md:text-left">
             <Image
               src="/images/final.png"
               alt="Luvana Paris"
               width={140}
               height={44}
-              className="h-10 w-auto object-contain mb-4"
+              className="h-10 w-auto object-contain mb-4 mx-auto md:mx-0"
             />
             <p className={`text-muted mb-6 ${isRTL ? 'font-arabic' : ''}`}>
               {t('footer.description')}
             </p>
-            <div className="space-y-3">
-              <div className={`flex items-center gap-3 text-ink-soft hover:text-gold-dark transition `}>
+            <div className="space-y-3 [&>div]:justify-center md:[&>div]:justify-start">
+              <a href={`mailto:${t('footer.email')}`} className="flex items-center gap-3 text-ink-soft hover:text-gold-dark transition">
                 <Mail size={18} />
                 <span>{t('footer.email')}</span>
-              </div>
-              <div className={`flex items-center gap-3 text-ink-soft hover:text-gold-dark transition`}>
+              </a>
+              <a href={`tel:${t('footer.phone')}`} className="flex items-center gap-3 text-ink-soft hover:text-gold-dark transition">
                 <Phone size={18} />
                 <span>{t('footer.phone')}</span>
-              </div>
-              <div className={`flex items-center gap-3 text-ink-soft hover:text-gold-dark transition`}>
+              </a>
+              <div className="flex items-center gap-3 text-ink-soft transition">
                 <MapPin size={18} />
                 <span>{t('footer.address')}</span>
               </div>
@@ -45,79 +46,79 @@ export default function Footer() {
           </div>
 
           {/* Quick Links */}
-          <div className="text-left">
+          <div className="text-center md:text-left">
             <h4 className={`text-lg font-bold text-ink mb-4 ${isRTL ? 'font-arabic' : ''}`}>
               {t('footer.quickLinks')}
             </h4>
             <ul className="space-y-2">
               <li>
-                <a href="#" className={`text-ink-soft hover:text-gold-dark transition ${isRTL ? 'font-arabic' : ''}`}>
+                <Link href="/about" className={`text-ink-soft hover:text-gold-dark transition ${isRTL ? 'font-arabic' : ''}`}>
                   {t('footer.aboutUs')}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className={`text-ink-soft hover:text-gold-dark transition ${isRTL ? 'font-arabic' : ''}`}>
+                <Link href="/brands" className={`text-ink-soft hover:text-gold-dark transition ${isRTL ? 'font-arabic' : ''}`}>
                   {t('shop')}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className={`text-ink-soft hover:text-gold-dark transition ${isRTL ? 'font-arabic' : ''}`}>
+                <Link href="/brands" className={`text-ink-soft hover:text-gold-dark transition ${isRTL ? 'font-arabic' : ''}`}>
                   {t('categories.brands')}
-                </a>
+                </Link>
               </li>
-              <li>
+              {/* <li>
                 <a href="#" className={`text-ink-soft hover:text-gold-dark transition ${isRTL ? 'font-arabic' : ''}`}>
                   {t('footer.blog')}
                 </a>
-              </li>
-              <li>
+              </li> */}
+              {/* <li>
                 <a href="#" className={`text-ink-soft hover:text-gold-dark transition ${isRTL ? 'font-arabic' : ''}`}>
                   {t('contact')}
                 </a>
-              </li>
+              </li> */}
             </ul>
           </div>
 
           {/* Customer Care */}
-          <div className="text-left">
+          <div className="text-center md:text-left">
             <h4 className={`text-lg font-bold text-ink mb-4 ${isRTL ? 'font-arabic' : ''}`}>
               {t('footer.customerCare')}
             </h4>
             <ul className="space-y-2">
-              <li>
+              {/* <li>
                 <a href="#" className={`text-ink-soft hover:text-gold-dark transition ${isRTL ? 'font-arabic' : ''}`}>
                   {t('footer.shippingInfo')}
                 </a>
-              </li>
+              </li> */}
               <li>
-                <a href="#" className={`text-ink-soft hover:text-gold-dark transition ${isRTL ? 'font-arabic' : ''}`}>
+                <Link href="/returns" className={`text-ink-soft hover:text-gold-dark transition ${isRTL ? 'font-arabic' : ''}`}>
                   {t('footer.returns')}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className={`text-ink-soft hover:text-gold-dark transition ${isRTL ? 'font-arabic' : ''}`}>
+                <Link href="/faq" className={`text-ink-soft hover:text-gold-dark transition ${isRTL ? 'font-arabic' : ''}`}>
                   {t('footer.faq')}
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className={`text-ink-soft hover:text-gold-dark transition ${isRTL ? 'font-arabic' : ''}`}>
+                <Link href="/myorders" className={`text-ink-soft hover:text-gold-dark transition ${isRTL ? 'font-arabic' : ''}`}>
                   {t('footer.trackOrder')}
-                </a>
+                </Link>
               </li>
-              <li>
+              {/* <li>
                 <a href="#" className={`text-ink-soft hover:text-gold-dark transition ${isRTL ? 'font-arabic' : ''}`}>
                   {t('footer.support')}
                 </a>
-              </li>
+              </li> */}
             </ul>
           </div>
 
           {/* Social Media */}
-          <div className="text-left">
+          <div className="col-span-2 md:col-span-1 text-center md:text-left">
             <h4 className={`text-lg font-bold text-ink mb-4 ${isRTL ? 'font-arabic' : ''}`}>
               {t('footer.followUs')}
             </h4>
-            <div className={`flex gap-4 mb-6`}>
+            <div className={`flex gap-4 mb-6 justify-center md:justify-start`}>
               <a
                 href="#"
                 className="bg-card border border-line p-3 rounded-full text-ink-soft hover:bg-gold hover:text-cream hover:border-gold hover:-translate-y-0.5 transition-all duration-300"
@@ -145,11 +146,11 @@ export default function Footer() {
             </div>
 
             {/* Payment Methods */}
-            <div>
+            {/* <div>
               <p className={`text-sm font-semibold text-muted mb-3 ${isRTL ? 'font-arabic' : ''}`}>
                 {t('footer.weAccept')}
               </p>
-              <div className={`flex flex-wrap gap-2`}>
+              <div className={`flex flex-wrap gap-2 justify-center md:justify-start`}>
                 <span className="bg-card border border-line px-3 py-1 rounded text-xs text-muted">
                   {t('footer.visa')}
                 </span>
@@ -160,27 +161,27 @@ export default function Footer() {
                   {t('footer.upi')}
                 </span>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
 
         {/* Divider */}
-        <div className="border-t border-line py-8">
+        <div className="border-t border-line py-6 md:py-8">
           {/* <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 text-center md:text-left ${isRTL ? 'md:text-right' : ''}`}> */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-center md:text-left">
             <p className={`text-muted text-sm ${isRTL ? 'font-arabic' : ''}`}>
               {t('footer.allRightsReserved')}
             </p>
             <div className="flex flex-col md:flex-row gap-4 justify-center md:justify-end">
-              <a href="#" className={`text-ink-soft hover:text-gold-dark text-sm transition ${isRTL ? 'font-arabic' : ''}`}>
+              <Link href="/privacy" className={`text-ink-soft hover:text-gold-dark text-sm transition ${isRTL ? 'font-arabic' : ''}`}>
                 {t('footer.privacyPolicy')}
-              </a>
-              <a href="#" className={`text-ink-soft hover:text-gold-dark text-sm transition ${isRTL ? 'font-arabic' : ''}`}>
+              </Link>
+              <Link href="/terms" className={`text-ink-soft hover:text-gold-dark text-sm transition ${isRTL ? 'font-arabic' : ''}`}>
                 {t('footer.termsOfService')}
-              </a>
-              <a href="#" className={`text-ink-soft hover:text-gold-dark text-sm transition ${isRTL ? 'font-arabic' : ''}`}>
+              </Link>
+              <Link href="/shipping" className={`text-ink-soft hover:text-gold-dark text-sm transition ${isRTL ? 'font-arabic' : ''}`}>
                 {t('footer.cookieSettings')}
-              </a>
+              </Link>
             </div>
           </div>
         </div>
