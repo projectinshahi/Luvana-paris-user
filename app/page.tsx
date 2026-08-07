@@ -8,7 +8,7 @@ import InfluencersReelsSection from "@/components/InfluencersReelsSection";
 export default function Home() {
   return (
     <main className="flex flex-col">
-      <div className="pt-6 sm:pt-8 md:pt-10 pb-16 sm:pb-20 lg:pb-24">
+      <div className="pt-5 sm:pt-6 md:pt-8 pb-14 sm:pb-16 lg:pb-20">
         <ImageSection />
         <CategoryBar />
         <BestSellers />

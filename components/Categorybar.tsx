@@ -528,7 +528,7 @@ const handleClick = (key: string) => {
           aria-label={isRTL ? "الفئات" : "Categories"}
           // py inside the scroller: overflow-x-auto also clips overflow-y, so vertical padding
           // must live here or the pill border/focus-ring gets cut top & bottom.
-          className="flex gap-3 whitespace-nowrap overflow-x-auto hide-scrollbar scroll-snap-x select-none px-4 py-3"
+          className="flex gap-2.5 whitespace-nowrap overflow-x-auto hide-scrollbar scroll-snap-x select-none px-4 py-2.5"
           style={{
             scrollBehavior: 'smooth',
             scrollPaddingInline: '1rem', // safe gap so first/last pill never clips on snap or scroll-into-view
@@ -546,7 +546,7 @@ const handleClick = (key: string) => {
             role="tab"
             aria-selected={selectedItem === "new"}
             data-active={selectedItem === "new"}
-            className={`px-4 py-2 rounded-full text-xs font-medium border scroll-snap-align-start shrink-0 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gold
+            className={`px-3.5 py-1.5 rounded-full text-xs font-medium border scroll-snap-align-start shrink-0 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gold
               ${
                 selectedItem === "new"
                   ? "text-gold-dark border-gold bg-champagne"
@@ -573,7 +573,7 @@ const handleClick = (key: string) => {
                 setTimeout(updateDropdownPosition, 0);
               }
             }}
-            className={`px-4 py-2 rounded-full text-xs font-medium border scroll-snap-align-start shrink-0 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gold
+            className={`px-3.5 py-1.5 rounded-full text-xs font-medium border scroll-snap-align-start shrink-0 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gold
               ${
                 selectedItem === "brands"
                   ? "text-gold-dark border-gold bg-champagne"
@@ -591,7 +591,7 @@ const handleClick = (key: string) => {
               role="tab"
               aria-selected={selectedItem === cat._id}
               data-active={selectedItem === cat._id}
-              className={`px-4 py-2 rounded-full text-xs font-medium border scroll-snap-align-start shrink-0 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gold
+              className={`px-3.5 py-1.5 rounded-full text-xs font-medium border scroll-snap-align-start shrink-0 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gold
                 ${
                   selectedItem === cat._id
                     ? "text-gold-dark border-gold bg-champagne"
