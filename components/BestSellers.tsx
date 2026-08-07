@@ -210,13 +210,13 @@ export default function BestSellers() {
 
       <section
         key={i18n.language}
-        className="w-full bg-cream text-ink py-16 overflow-hidden animate-fade-in-up"
+        className="w-full bg-cream text-ink py-10 sm:py-12 md:py-14 overflow-hidden animate-fade-in-up"
       >
         <div className="w-full max-w-[1728px] mx-auto px-4 sm:px-5 md:px-6 lg:px-8 xl:px-10 2xl:px-12 min-[1920px]:px-16">
 
           {/* HEADER */}
           <div
-            className={`flex items-center justify-center gap-6 mb-12 ${isRTL ? "" : ""
+            className={`flex items-center justify-center gap-6 mb-8 sm:mb-10 ${isRTL ? "" : ""
               }`}
           >
             <div className="flex-1 h-px bg-line" />

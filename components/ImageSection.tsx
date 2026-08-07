@@ -272,7 +272,7 @@ export default function ImageSection() {
   // Loading state
   if (isLoading || !banners.length) {
     return (
-      <section className="relative w-full aspect-video md:aspect-auto md:h-[70svh] lg:h-[80svh] min-[1440px]:h-[85svh] overflow-hidden bg-champagne">
+      <section className="relative w-full overflow-hidden bg-champagne aspect-[16/9]">
         <div className="absolute inset-0 skeleton-luxury" />
       </section>
     );
@@ -280,7 +280,7 @@ export default function ImageSection() {
 
   return (
     <section
-      className="relative w-full aspect-video md:aspect-auto md:h-[70svh] lg:h-[80svh] min-[1440px]:h-[85svh] overflow-hidden bg-black"
+      className="relative w-full overflow-hidden bg-black aspect-[16/9]"
       aria-roledescription="carousel"
       aria-label="Promotional banners"
       tabIndex={0}
@@ -317,23 +317,23 @@ export default function ImageSection() {
               alt={title || "Promotional banner"}
               fill
               priority={index === 0}
-              quality={85}
+              quality={100}
               className="object-cover object-center"
-              sizes="100vw"
+              sizes="(max-width: 768px) 100vw, (max-width: 1536px) 100vw, 1600px"
               loading={index === 0 ? "eager" : "lazy"}
             />
 
-            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/60" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/20 to-black/70" />
 
             <div
-              className={`relative z-30 h-full flex items-center px-5 sm:px-8 md:px-16 lg:px-24 transition-all duration-700 ${isActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+              className={`relative z-30 h-full flex items-end px-4 pb-5 sm:px-8 sm:pb-8 md:px-14 md:pb-10 lg:px-16 lg:pb-12 transition-all duration-700 ${isActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
                 } ${isRTL ? "justify-end text-right" : "justify-start text-left"}`}
             >
-              <div className="max-w-5xl">
+              <div className="w-full max-w-[32rem] sm:max-w-[36rem] lg:max-w-[42rem] px-1 sm:px-0 pb-2 sm:pb-0">
                 <h1
                   className={`${libreBodoni.className}
-                    text-[24px] sm:text-[34px] md:text-[48px] lg:text-[60px] xl:text-[72px]
-                    leading-tight text-[#E3C6A8] mb-3
+                    text-[24px] sm:text-[28px] md:text-[36px] lg:text-[44px] xl:text-[52px]
+                    leading-tight text-[#E3C6A8] mb-2 sm:mb-3
                     transition-all duration-700 delay-100
                     ${isActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}
                   `}
@@ -343,7 +343,7 @@ export default function ImageSection() {
 
                 <p
                   className={`${charm.className}
-                    text-[16px] sm:text-[20px] md:text-[26px] lg:text-[34px]
+                    text-[15px] sm:text-[16px] md:text-[20px] lg:text-[24px]
                     text-[#C5A059]
                     transition-all duration-700 delay-200
                     ${isActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}
