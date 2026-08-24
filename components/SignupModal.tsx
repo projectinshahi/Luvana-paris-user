@@ -287,7 +287,10 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
         {/* Google Sign Up */}
         <button
           type="button"
-          onClick={() => toast.info("Google Sign Up coming soon!")}
+          onClick={() => {
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.luvanaparis.com";
+            window.location.href = `${API_URL}/user/google-auth/google`;
+          }}
           className="w-full py-3 bg-card hover:bg-champagne border border-line text-ink rounded-lg transition duration-300 flex items-center justify-center gap-3 active:scale-[.99] focus:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-card"
         >
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
