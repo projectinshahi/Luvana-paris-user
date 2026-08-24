@@ -171,6 +171,7 @@ import Image from "next/image";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { Libre_Bodoni, Charm } from "next/font/google";
 import { useTranslation } from "react-i18next";
+import { useIsMobile } from "@/lib/useIsMobile";
 
 const libreBodoni = Libre_Bodoni({ subsets: ["latin"], weight: ["400"] });
 const charm = Charm({ subsets: ["latin"], weight: ["400"] });
@@ -183,6 +184,8 @@ interface Banner {
   descriptionArabic: string;
   imageUrlEnglish: string;
   imageUrlArabic: string;
+  imageMobileUrlEnglish?: string;
+  imageMobileUrlArabic?: string;
   sortOrder: number;
   status: string;
 }
@@ -190,10 +193,14 @@ interface Banner {
 export default function ImageSection() {
   const { i18n } = useTranslation("common");
   const isRTL = i18n.language === "ar";
+  const isMobile = useIsMobile();
 
   const [banners, setBanners] = useState<Banner[]>([]);
   const [current, setCurrent] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  // Real aspect ratio (w/h) of the mobile banner image, measured on load, so the
+  // mobile container can match it exactly — no side gaps, no cropping.
+  const [mobileRatio, setMobileRatio] = useState<number | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Fetch banners
@@ -269,10 +276,22 @@ export default function ImageSection() {
     return () => document.removeEventListener("visibilitychange", onVis);
   }, [banners.length, startAutoSlide, stopAutoSlide]);
 
+  // Container sizing.
+  //  • Desktop: unchanged 16:9.
+  //  • Mobile: match the measured mobile-image ratio → full-width, gap-free, crop-free.
+  //    Until measured, fall back to ~70svh. Rails keep freak ratios from going extreme
+  //    (object-cover fills the rail, so they never reintroduce gaps).
+  const sizeClass = isMobile
+    ? mobileRatio
+      ? "min-h-[58svh] max-h-[86svh]"
+      : "h-[70svh]"
+    : "aspect-[16/9]";
+  const sizeStyle = isMobile && mobileRatio ? { aspectRatio: String(mobileRatio) } : undefined;
+
   // Loading state
   if (isLoading || !banners.length) {
     return (
-      <section className="relative w-full overflow-hidden bg-champagne aspect-[16/9]">
+      <section className={`relative w-full overflow-hidden bg-champagne ${sizeClass}`} style={sizeStyle}>
         <div className="absolute inset-0 skeleton-luxury" />
       </section>
     );
@@ -280,7 +299,8 @@ export default function ImageSection() {
 
   return (
     <section
-      className="relative w-full overflow-hidden bg-black aspect-[16/9]"
+      className={`relative w-full overflow-hidden bg-champagne ${sizeClass}`}
+      style={sizeStyle}
       aria-roledescription="carousel"
       aria-label="Promotional banners"
       tabIndex={0}
@@ -289,7 +309,10 @@ export default function ImageSection() {
       onMouseLeave={() => { if (banners.length > 1) startAutoSlide(); }}
     >
       {banners.map((banner, index) => {
-        const image = isRTL ? banner.imageUrlArabic : banner.imageUrlEnglish;
+        const desktopImage = isRTL ? banner.imageUrlArabic : banner.imageUrlEnglish;
+        const mobileImage = isRTL ? banner.imageMobileUrlArabic : banner.imageMobileUrlEnglish;
+        // Mobile viewport uses the mobile image when present, else falls back to desktop.
+        const image = isMobile && mobileImage ? mobileImage : desktopImage;
         const title = isRTL ? banner.titleArabic : banner.titleEnglish;
         const description = isRTL
           ? banner.descriptionArabic
@@ -321,6 +344,15 @@ export default function ImageSection() {
               className="object-cover object-center"
               sizes="(max-width: 768px) 100vw, (max-width: 1536px) 100vw, 1600px"
               loading={index === 0 ? "eager" : "lazy"}
+              onLoad={(e) => {
+                // Only a real mobile asset drives the mobile container ratio.
+                if (!isMobile || !mobileImage) return;
+                const img = e.currentTarget;
+                if (img.naturalWidth > 0 && img.naturalHeight > 0) {
+                  const r = img.naturalWidth / img.naturalHeight;
+                  setMobileRatio((prev) => (prev === r ? prev : r));
+                }
+              }}
             />
 
             <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/20 to-black/70" />

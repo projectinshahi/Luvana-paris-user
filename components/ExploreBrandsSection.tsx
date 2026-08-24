@@ -184,17 +184,21 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useIsMobile } from "@/lib/useIsMobile";
 
 type BrandFromBackend = {
   _id: string;
   brandImageEnglish: string;
   brandImageArabic: string;
+  brandImageMobileEnglish?: string;
+  brandImageMobileArabic?: string;
   status: string;
 };
 
 type Slide = {
   _id: string;
   src: string;
+  srcMobile?: string;
   nameEnglish: string;
   nameArabic: string;
 };
@@ -202,6 +206,7 @@ type Slide = {
 export default function ExploreBrandsSection() {
   const { t, i18n } = useTranslation("common");
   const isRTL = i18n.language === "ar";
+  const isMobile = useIsMobile();
 
   const brandsSubheading = isRTL
     ? "أرقى المختارات."
@@ -247,6 +252,10 @@ const router = useRouter();
                 i18n.language === "ar"
                   ? brand.brandImageArabic
                   : brand.brandImageEnglish,
+              srcMobile:
+                i18n.language === "ar"
+                  ? brand.brandImageMobileArabic
+                  : brand.brandImageMobileEnglish,
                    nameEnglish: brand.nameEnglish,
                    nameArabic: brand.nameArabic,
             }));
@@ -431,10 +440,12 @@ const router = useRouter();
           const idx = Math.min(Math.max(slotIdx[s], 0), slides.length - 1);
           const slide = slides[idx];
           const isTop = s === topSlot;
+          // Mobile viewport uses the mobile image when present, else falls back to desktop.
+          const src = isMobile && slide.srcMobile ? slide.srcMobile : slide.src;
           return (
             <Image
               key={`hero-slot-${s}`}
-              src={slide.src}
+              src={src}
               alt={slide?.nameEnglish || "Brand"}
               fill
               sizes="100vw"

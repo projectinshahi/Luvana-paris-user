@@ -322,8 +322,23 @@ export default function ProfilePage() {
 
   if (fetching) {
     return (
-      <div className="min-h-screen bg-cream text-ink flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold"></div>
+      <div className="min-h-screen bg-cream text-ink py-27 px-4" dir="ltr" aria-busy="true">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-14 space-y-3">
+            <div className="h-9 w-56 skeleton-luxury rounded" />
+            <div className="h-4 w-72 skeleton-luxury rounded" />
+          </div>
+          <div className="grid gap-6 md:grid-cols-2">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="card-luxury p-6 space-y-4">
+                <div className="h-5 w-40 skeleton-luxury rounded" />
+                <div className="h-4 w-full skeleton-luxury rounded" />
+                <div className="h-4 w-2/3 skeleton-luxury rounded" />
+                <div className="h-10 w-32 skeleton-luxury rounded-full" />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
