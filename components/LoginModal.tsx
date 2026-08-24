@@ -546,7 +546,10 @@ const handleSubmit = async (e: React.FormEvent) => {
             </button>
             <button
           type="button"
-          onClick={() => toast.info("Google Sign Up coming soon!")}
+          onClick={() => {
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.luvanaparis.com";
+            window.location.href = `${API_URL}/user/google-auth/google`;
+          }}
           className="w-full py-3 bg-card hover:bg-champagne border border-line text-ink rounded-lg transition duration-300 flex items-center justify-center gap-3"
         >
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -555,7 +558,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             <path d="M3.96409 10.7098C3.78409 10.1698 3.68182 9.59301 3.68182 8.99983C3.68182 8.40665 3.78409 7.82983 3.96409 7.28983V4.95801H0.957273C0.347727 6.17301 0 7.54755 0 8.99983C0 10.4521 0.347727 11.8266 0.957273 13.0416L3.96409 10.7098Z" fill="#FBBC05"/>
             <path d="M8.99976 3.57955C10.3211 3.57955 11.5075 4.03364 12.4402 4.92545L15.0216 2.34409C13.4629 0.891818 11.4257 0 8.99976 0C5.48158 0 2.43794 2.01682 0.957031 4.95818L3.96385 7.29C4.67158 5.16273 6.65567 3.57955 8.99976 3.57955Z" fill="#EA4335"/>
           </svg>
-          Sign up with google
+          Continue with Google
         </button>
          <div className="flex items-center gap-4 my-2">
                  
