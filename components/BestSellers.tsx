@@ -8,6 +8,7 @@ import { useCurrency } from "@/contexts/CurrencyContext";
 import { useEffect, useState, useRef, useMemo } from "react";
 import { toast } from "react-toastify";
 import api from "@/lib/axios";
+import { getHome } from "@/lib/homeData";
 import { useRouter } from "next/navigation";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, Keyboard, A11y } from 'swiper/modules';
@@ -147,11 +148,9 @@ export default function BestSellers() {
   useEffect(() => {
     const fetchHome = async () => {
       try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.luvanaparis.com";
-        const res = await fetch(`${API_URL}/user/home`);
-        const data = await res.json();
+        const data = await getHome();
 
-        if (res.ok) {
+        if (data) {
           setProducts(data.featuredProducts || []);
         }
       } catch (error) {

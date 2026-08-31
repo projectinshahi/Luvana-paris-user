@@ -190,6 +190,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
+import { getHome } from "@/lib/homeData";
 
 type Category = {
   _id: string;
@@ -242,9 +243,7 @@ export default function CategoryBar() {
   useEffect(() => {
     const fetchHomeData = async () => {
       try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.luvanaparis.com";
-        const res = await fetch(`${API_URL}/user/home`);
-        const data = await res.json();
+        const data = await getHome();
 
         const activeCategories = data.categories.filter(
           (cat: Category) => cat.status === "active"

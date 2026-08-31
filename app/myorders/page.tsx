@@ -559,7 +559,6 @@ import { useLanguage } from "@/lib/useLanguage";
 import ResponsiveLayout from "@/components/ResponsiveLayout";
 import api from "@/lib/axios";
 import { useCurrency } from "@/contexts/CurrencyContext";
-import { i18n } from "next-i18next";
 
 interface OrderItem {
   name: string;

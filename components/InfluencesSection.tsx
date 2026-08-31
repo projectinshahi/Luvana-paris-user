@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { getHome } from "@/lib/homeData";
 import { X, ShoppingCart } from "lucide-react";
 import { toast } from "react-toastify";
 import api from "@/lib/axios";
@@ -49,8 +50,7 @@ export default function InfluencersSection() {
   useEffect(() => {
     const fetchInfluencers = async () => {
       try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.luvanaparis.com";
-        const res = await axios.get(`${API_URL}/user/home`);
+        const res = { data: await getHome() };
 
         if (res.data?.influencers && res.data.influencers.length > 0) {
           console.log("✅ Influencers loaded:", res.data.influencers);
