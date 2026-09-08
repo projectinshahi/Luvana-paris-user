@@ -285,7 +285,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                             updateQuantity(item._id, item.quantity - 1)
                           }
                           aria-label="Decrease quantity"
-                          className="w-7 h-7 flex items-center justify-center text-ink hover:bg-champagne rounded-full transition focus-visible:ring-2 focus-visible:ring-gold focus:outline-none"
+                          className="w-9 h-9 flex items-center justify-center text-ink hover:bg-champagne rounded-full transition focus-visible:ring-2 focus-visible:ring-gold focus:outline-none"
                         >
                           <Minus size={14} />
                         </button>
@@ -297,7 +297,7 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                             updateQuantity(item._id, item.quantity + 1)
                           }
                           aria-label="Increase quantity"
-                          className="w-7 h-7 flex items-center justify-center text-ink hover:bg-champagne rounded-full transition focus-visible:ring-2 focus-visible:ring-gold focus:outline-none"
+                          className="w-9 h-9 flex items-center justify-center text-ink hover:bg-champagne rounded-full transition focus-visible:ring-2 focus-visible:ring-gold focus:outline-none"
                         >
                           <Plus size={14} />
                         </button>

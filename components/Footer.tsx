@@ -22,9 +22,9 @@ export default function Footer() {
             <Image
               src="/images/final.png"
               alt="Luvana Paris"
-              width={140}
-              height={44}
-              className="h-10 w-auto object-contain mb-4 mx-auto md:mx-0"
+              width={100}
+              height={111}
+              className="h-14 w-auto object-contain mb-4 mx-auto md:mx-0"
             />
             <p className={`text-muted mb-6 ${isRTL ? 'font-arabic' : ''}`}>
               {t('footer.description')}
@@ -121,27 +121,31 @@ export default function Footer() {
             <div className={`flex gap-4 mb-6 justify-center md:justify-start`}>
               <a
                 href="#"
+                aria-label="Facebook"
                 className="bg-card border border-line p-3 rounded-full text-ink-soft hover:bg-gold hover:text-cream hover:border-gold hover:-translate-y-0.5 transition-all duration-300"
               >
-                <Facebook size={20} />
+                <Facebook size={20} aria-hidden />
               </a>
               <a
                 href="#"
+                aria-label="Instagram"
                 className="bg-card border border-line p-3 rounded-full text-ink-soft hover:bg-gold hover:text-cream hover:border-gold hover:-translate-y-0.5 transition-all duration-300"
               >
-                <Instagram size={20} />
+                <Instagram size={20} aria-hidden />
               </a>
               <a
                 href="#"
+                aria-label="Twitter"
                 className="bg-card border border-line p-3 rounded-full text-ink-soft hover:bg-gold hover:text-cream hover:border-gold hover:-translate-y-0.5 transition-all duration-300"
               >
-                <Twitter size={20} />
+                <Twitter size={20} aria-hidden />
               </a>
               <a
                 href="#"
+                aria-label="LinkedIn"
                 className="bg-card border border-line p-3 rounded-full text-ink-soft hover:bg-gold hover:text-cream hover:border-gold hover:-translate-y-0.5 transition-all duration-300"
               >
-                <Linkedin size={20} />
+                <Linkedin size={20} aria-hidden />
               </a>
             </div>
 

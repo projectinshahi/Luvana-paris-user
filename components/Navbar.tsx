@@ -773,12 +773,14 @@ import { useRouter, usePathname } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { logoutUser, selectIsAuthenticated } from "@/app/features/auth";
 import { toast } from "react-toastify";
-import SettingsOverlay from "@/components/SettingsOverlay";
-import LoginModal from "@/components/LoginModal";
-import CartSidebar from "./CartSidebar";
-import WishlistSidebar from "./WishlistSidebar";
-import SearchSidebar from "./SearchSidebar";
-import MobileMenu from "./MobileMenu";
+import dynamic from "next/dynamic";
+const SettingsOverlay = dynamic(() => import("@/components/SettingsOverlay"), { ssr: false });
+// On-demand overlays — code-split out of the initial bundle (loaded when first opened).
+const LoginModal = dynamic(() => import("@/components/LoginModal"), { ssr: false });
+const CartSidebar = dynamic(() => import("./CartSidebar"), { ssr: false });
+const WishlistSidebar = dynamic(() => import("./WishlistSidebar"), { ssr: false });
+const SearchSidebar = dynamic(() => import("./SearchSidebar"), { ssr: false });
+const MobileMenu = dynamic(() => import("./MobileMenu"), { ssr: false });
 import { useLanguage } from "@/lib/useLanguage";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { COUNTRIES } from "@/lib/countries";
@@ -1000,9 +1002,10 @@ export default function Navbar() {
             <Image
               src="/images/final.png"
               alt="Luvana Paris"
-              width={116}
-              height={38}
-              className="h-9 w-auto object-contain"
+              width={100}
+              height={111}
+              priority
+              className="h-14 w-auto object-contain"
             />
           </div>
 
@@ -1170,9 +1173,10 @@ export default function Navbar() {
             <Image
               src="/images/final.png"
               alt="Luvana Paris"
-              width={96}
-              height={30}
-              className="h-8 w-auto object-contain"
+              width={100}
+              height={111}
+              priority
+              className="h-12 w-auto object-contain"
             />
           </div>
           <button aria-label="Settings" onClick={() => setShowSettings(true)} className="p-1.5 rounded-full focus-visible:ring-2 focus-visible:ring-gold focus:outline-none">

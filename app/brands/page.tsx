@@ -3,6 +3,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { ShoppingCart, Heart, X, Search, SlidersHorizontal, ChevronDown, Sparkles } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { getHome } from "@/lib/homeData";
+import { useDebounce } from "@/lib/useDebounce";
 import { useLanguage } from "@/lib/useLanguage";
 import { toast } from "react-toastify";
 import api from "@/lib/axios";
@@ -31,6 +33,13 @@ interface Product {
   brand: { _id: string; nameEnglish: string; nameArabic: string };
   imageUrlEnglish: { imageUrl: string }[];
   imageUrlArabic: { imageUrl: string }[];
+}
+
+interface FilterItem {
+  _id: string;
+  nameEnglish: string;
+  nameArabic: string;
+  status: string;
 }
 
 /* ─── Gold theme constants ───────────────────────────────────────────────── */
@@ -113,7 +122,8 @@ function ProductCard({
         {/* Wishlist */}
         <button
           onClick={onWishlist}
-          className="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 text-ink-soft hover:text-gold"
+          aria-label={isArabic ? "أضف إلى المفضلة" : "Add to wishlist"}
+          className="absolute top-3 right-3 w-11 h-11 rounded-full flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 text-ink-soft hover:text-gold"
           style={{ background: "rgba(255,253,249,0.9)", backdropFilter: "blur(8px)" }}
           onMouseEnter={(e) => { e.currentTarget.style.background = "#FAF6EF"; }}
           onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(255,253,249,0.9)"; }}
@@ -176,8 +186,10 @@ export default function BrandsPage() {
   const [sortBy, setSortBy] = useState("default");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [homeCategories, setHomeCategories] = useState<any[]>([]);
-  const [homeBrands, setHomeBrands] = useState<any[]>([]);
+  const [homeCategories, setHomeCategories] = useState<FilterItem[]>([]);
+  const [homeBrands, setHomeBrands] = useState<FilterItem[]>([]);
+
+  const debouncedSearch = useDebounce(searchQuery, 400);
 
   /* ── Sync URL params ── */
   useEffect(() => {
@@ -192,10 +204,9 @@ export default function BrandsPage() {
   useEffect(() => {
     const fetchHomeData = async () => {
       try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.luvanaparis.com";
-        const res = await axios.get(`${API_URL}/user/home`);
-        setHomeCategories(res.data.categories?.filter((c: any) => c.status === "active") || []);
-        setHomeBrands(res.data.brands?.filter((b: any) => b.status === "active") || []);
+        const data = await getHome();
+        setHomeCategories(data.categories?.filter((c: FilterItem) => c.status === "active") || []);
+        setHomeBrands(data.brands?.filter((b: FilterItem) => b.status === "active") || []);
       } catch (e) { console.error(e); }
     };
     fetchHomeData();
@@ -208,7 +219,7 @@ export default function BrandsPage() {
         setLoading(true);
         const cat = searchParams.get("category");
         const brand = searchParams.get("brand");
-        const params: any = { page: 1, limit: 50, search: searchQuery };
+        const params: Record<string, string | number> = { page: 1, limit: 50, search: debouncedSearch };
         if (cat) params.category = cat;
         if (brand) params.brand = brand;
         const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.luvanaparis.com";
@@ -219,7 +230,7 @@ export default function BrandsPage() {
       finally { setLoading(false); }
     };
     fetchProducts();
-  }, [searchParams, searchQuery]); // price filtering is client-side (see dynamicMax / sortedProducts)
+  }, [searchParams, debouncedSearch]); // price filtering is client-side (see dynamicMax / sortedProducts)
 
   /* ── Handlers ── */
   const updateURL = (cats: string[], brands: string[]) => {
@@ -268,6 +279,18 @@ export default function BrandsPage() {
   // Reset to full range when currency changes (a finite range is currency-specific)
   useEffect(() => { setPriceRange(Infinity); }, [selectedCountry?._id]);
 
+  /* ── Mobile drawer: lock body scroll + close on Escape ── */
+  useEffect(() => {
+    if (!isFilterOpen) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setIsFilterOpen(false); };
+    document.addEventListener("keydown", onKey);
+    document.documentElement.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.documentElement.style.overflow = "";
+    };
+  }, [isFilterOpen]);
+
   /* ── Filter by price (active currency) + sort ── */
   const sortedProducts = useMemo(() => {
     const filtered = products.filter((p) => convertPrice(basePrice(p)) <= priceRange);
@@ -277,7 +300,7 @@ export default function BrandsPage() {
   }, [products, sortBy, priceRange, selectedCountry]);
 
   /* ── Filter panel content ── */
-  const FilterPanel = () => (
+  const renderFilterPanel = () => (
     <div className="space-y-7">
       {/* Price */}
       <div>
@@ -313,26 +336,32 @@ export default function BrandsPage() {
             {homeCategories.map((cat) => {
               const active = selectedCategories.includes(cat._id);
               return (
-                <label key={cat._id} className="flex items-center gap-3 cursor-pointer group">
-                  <div
-                    onClick={() => {
-                      const updated = active
-                        ? selectedCategories.filter((c) => c !== cat._id)
-                        : [...selectedCategories, cat._id];
-                      updateURL(updated, selectedBrands);
-                    }}
+                <button
+                  type="button"
+                  key={cat._id}
+                  role="checkbox"
+                  aria-checked={active}
+                  onClick={() => {
+                    const updated = active
+                      ? selectedCategories.filter((c) => c !== cat._id)
+                      : [...selectedCategories, cat._id];
+                    updateURL(updated, selectedBrands);
+                  }}
+                  className="flex items-center gap-3 cursor-pointer group w-full text-left min-h-[44px] rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+                >
+                  <span
                     className="w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 transition-all duration-200"
                     style={{
                       borderColor: active ? GOLD : "#E8DED2",
                       background: active ? `${GOLD}20` : "transparent",
                     }}
                   >
-                    {active && <div className="w-2 h-2 rounded-sm" style={{ background: GOLD }} />}
-                  </div>
+                    {active && <span className="w-2 h-2 rounded-sm" style={{ background: GOLD }} />}
+                  </span>
                   <span className={`text-sm transition-colors duration-200 ${active ? "text-ink" : "text-ink-soft group-hover:text-ink"}`}>
                     {isArabic ? cat.nameArabic : cat.nameEnglish}
                   </span>
-                </label>
+                </button>
               );
             })}
           </div>
@@ -352,26 +381,32 @@ export default function BrandsPage() {
             {homeBrands.map((brand) => {
               const active = selectedBrands.includes(brand._id);
               return (
-                <label key={brand._id} className="flex items-center gap-3 cursor-pointer group">
-                  <div
-                    onClick={() => {
-                      const updated = active
-                        ? selectedBrands.filter((b) => b !== brand._id)
-                        : [...selectedBrands, brand._id];
-                      updateURL(selectedCategories, updated);
-                    }}
+                <button
+                  type="button"
+                  key={brand._id}
+                  role="checkbox"
+                  aria-checked={active}
+                  onClick={() => {
+                    const updated = active
+                      ? selectedBrands.filter((b) => b !== brand._id)
+                      : [...selectedBrands, brand._id];
+                    updateURL(selectedCategories, updated);
+                  }}
+                  className="flex items-center gap-3 cursor-pointer group w-full text-left min-h-[44px] rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+                >
+                  <span
                     className="w-4 h-4 rounded border flex items-center justify-center flex-shrink-0 transition-all duration-200"
                     style={{
                       borderColor: active ? GOLD : "#E8DED2",
                       background: active ? `${GOLD}20` : "transparent",
                     }}
                   >
-                    {active && <div className="w-2 h-2 rounded-sm" style={{ background: GOLD }} />}
-                  </div>
+                    {active && <span className="w-2 h-2 rounded-sm" style={{ background: GOLD }} />}
+                  </span>
                   <span className={`text-sm transition-colors duration-200 ${active ? "text-ink" : "text-ink-soft group-hover:text-ink"}`}>
                     {isArabic ? brand.nameArabic : brand.nameEnglish}
                   </span>
-                </label>
+                </button>
               );
             })}
           </div>
@@ -556,6 +591,9 @@ export default function BrandsPage() {
             {/* ── Customize — mobile only, fixed width, never shrinks ── */}
             <button
               onClick={() => setIsFilterOpen(true)}
+              aria-expanded={isFilterOpen}
+              aria-controls="filter-drawer"
+              aria-haspopup="dialog"
               className="lux-btn-filter lg:hidden flex items-center gap-1 px-2.5 py-2 rounded-lg text-[11px] flex-shrink-0 whitespace-nowrap"
             >
               <SlidersHorizontal size={11} />
@@ -593,7 +631,7 @@ export default function BrandsPage() {
                     </span>
                   )}
                 </div>
-                <FilterPanel />
+                {renderFilterPanel()}
               </div>
             </aside>
 
@@ -651,7 +689,12 @@ export default function BrandsPage() {
               className="fixed inset-0 bg-[#2E2A26]/40 z-40 backdrop-blur-sm"
               onClick={() => setIsFilterOpen(false)}
             />
-            <div className="filter-drawer fixed top-0 left-0 h-full w-[85vw] max-w-sm bg-cream z-50 flex flex-col shadow-2xl"
+            <div
+              id="filter-drawer"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Product filters"
+              className="filter-drawer fixed top-0 left-0 h-full w-[85vw] max-w-sm bg-cream z-50 flex flex-col shadow-2xl"
               style={{ borderRight: `1px solid ${GOLD}20` }}>
 
               {/* Drawer header */}
@@ -665,7 +708,8 @@ export default function BrandsPage() {
                 </div>
                 <button
                   onClick={() => setIsFilterOpen(false)}
-                  className="w-8 h-8 rounded-full flex items-center justify-center transition-colors"
+                  aria-label="Close filters"
+                  className="w-11 h-11 rounded-full flex items-center justify-center transition-colors"
                   style={{ background: "rgba(46,42,38,0.06)" }}
                   onMouseEnter={(e) => { e.currentTarget.style.background = `${GOLD}20`; }}
                   onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(46,42,38,0.06)"; }}
@@ -676,7 +720,7 @@ export default function BrandsPage() {
 
               {/* Drawer body */}
               <div className="flex-1 overflow-y-auto px-6 py-6">
-                <FilterPanel />
+                {renderFilterPanel()}
               </div>
 
               {/* Drawer footer */}

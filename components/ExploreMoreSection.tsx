@@ -5,6 +5,7 @@ import { useEffect, useState, useRef, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { getHome } from "@/lib/homeData";
 import { Autoplay, Pagination, Keyboard, A11y } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
@@ -40,9 +41,7 @@ export default function ExploreMoreSection() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.luvanaparis.com";
-        const res = await fetch(`${API_URL}/user/home`);
-        const data = await res.json();
+        const data = await getHome();
 
         if (data?.categories) {
           setCategories(
@@ -199,7 +198,6 @@ export default function ExploreMoreSection() {
                               fill
                               sizes="(max-width: 480px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                               className="object-cover group-hover:scale-110 transition-transform duration-500"
-                              unoptimized
                             />
                           )}
                         </div>

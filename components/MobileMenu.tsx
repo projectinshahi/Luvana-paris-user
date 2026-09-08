@@ -5,6 +5,7 @@ import { X, ChevronDown, ChevronUp } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@/lib/useLanguage';
 import { useRouter } from "next/navigation";
+import { getHome } from "@/lib/homeData";
 import { useDrawer } from "@/lib/useDrawer";
 
 interface MobileMenuProps {
@@ -80,8 +81,7 @@ const [brands, setBrands] = useState<Brand[]>([]);
       const API_URL =
         process.env.NEXT_PUBLIC_API_URL || "https://api.luvanaparis.com";
 
-      const res = await fetch(`${API_URL}/user/home`);
-      const data = await res.json();
+      const data = await getHome();
 
       const activeCategories = data.categories.filter(
         (cat: Category) => cat.status === "active"

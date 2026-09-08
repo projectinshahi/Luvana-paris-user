@@ -172,6 +172,7 @@ import { useEffect, useState, useRef, useCallback } from "react";
 import { Libre_Bodoni, Charm } from "next/font/google";
 import { useTranslation } from "react-i18next";
 import { useIsMobile } from "@/lib/useIsMobile";
+import { getHome } from "@/lib/homeData";
 
 const libreBodoni = Libre_Bodoni({ subsets: ["latin"], weight: ["400"] });
 const charm = Charm({ subsets: ["latin"], weight: ["400"] });
@@ -207,11 +208,9 @@ export default function ImageSection() {
   useEffect(() => {
     const fetchHome = async () => {
       try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL;
-        const res = await fetch(`${API_URL}/user/home`);
-        const data = await res.json();
+        const data = await getHome();
 
-        if (res.ok) {
+        if (data) {
           const activeBanners = data.banners
             .filter((banner: Banner) => banner.status === "active")
             .sort((a: Banner, b: Banner) => a.sortOrder - b.sortOrder);
@@ -432,8 +431,8 @@ export default function ImageSection() {
               //   }`}
               className={`transition-all duration-300 rounded-full focus-visible:ring-2 focus-visible:ring-white focus:outline-none ${
   current === index
-    ? "w-[18px] h-[4px] bg-gold"
-    : "w-[4px] h-[4px] bg-white/40 hover:bg-white/70"
+    ? "w-[30px] h-[6px] bg-gold"
+    : "w-[6px] h-[6px] bg-white/40 hover:bg-white/70"
 }`}
             />
           ))}

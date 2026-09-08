@@ -190,11 +190,6 @@ h1, h2, h3, h4, h5, h6 {
   text-align: left;
 }
 
-/* Smooth transitions for language switching */
-* {
-  transition: text-align 0.3s ease, direction 0.3s ease;
-}
-
 /* Arabic text improvements */
 [dir="rtl"] {
   font-feature-settings: "liga" 1, "calt" 1, "kern" 1;

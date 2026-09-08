@@ -185,13 +185,14 @@ import { useTranslation } from "react-i18next";
 import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useIsMobile } from "@/lib/useIsMobile";
+import { getHome } from "@/lib/homeData";
 
 type BrandFromBackend = {
   _id: string;
   brandImageEnglish: string;
   brandImageArabic: string;
-  brandImageMobileEnglish?: string;
-  brandImageMobileArabic?: string;
+  brandMobileImageEnglish?: string;
+  brandMobileImageArabic?: string;
   status: string;
 };
 
@@ -213,35 +214,34 @@ export default function ExploreBrandsSection() {
     : "More Luxury Brand Style.";
 
   const [slides, setSlides] = useState<Slide[]>([]);
-  const [current, setCurrent] = useState(0);
+  // Track index over the extended array [ ...slides, clone-of-slide-0 ].
+  // pos may reach slides.length (the trailing clone) so the track keeps moving
+  // RIGHT past the last brand into the first, then silently snaps back.
+  const [pos, setPos] = useState(0);
+  const [animate, setAnimate] = useState(true);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [progress, setProgress] = useState(0);
+  // Real aspect ratio (w/h) of the mobile brand image, measured on load, so the mobile
+  // container can match it exactly — full-width, no side gaps, no cropping.
+  const [mobileRatio, setMobileRatio] = useState<number | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const touchStartX = useRef(0);
 const router = useRouter();
   const SLIDE_DURATION = 5000;
   const PROGRESS_UPDATE_INTERVAL = 50;
-  const CROSSFADE_MS = 900;
+  const SLIDE_MS = 700;
 
-  // ── Luxury crossfade: two persistent, load-gated image layers ──────────────
-  // slotIdx[s] = which slide each layer shows. `topSlot` is the layer on top.
-  // The bottom layer stays fully opaque (shows the outgoing slide) until the
-  // top layer has LOADED and faded in — so the background is never revealed.
-  const [slotIdx, setSlotIdx] = useState<[number, number]>([0, 0]);
-  const [topSlot, setTopSlot] = useState<0 | 1>(0);
-  const [topOpacity, setTopOpacity] = useState(1);
-  const [topLoaded, setTopLoaded] = useState(true);
-  const [crossfading, setCrossfading] = useState(false);
+  // Display index (0..N-1) derived from the track position. The trailing clone
+  // (pos === slides.length) maps back to 0, so dots/progress/Shop-Now stay correct.
+  const current = slides.length ? pos % slides.length : 0;
 
   // ✅ FETCH BRANDS FROM BACKEND
   useEffect(() => {
     const fetchBrands = async () => {
       try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.luvanaparis.com";
-        const res = await fetch(`${API_URL}/user/home`);
-        const data = await res.json();
+        const data = await getHome();
 
         if (data?.brands) {
           const activeBrands = data.brands
@@ -254,8 +254,8 @@ const router = useRouter();
                   : brand.brandImageEnglish,
               srcMobile:
                 i18n.language === "ar"
-                  ? brand.brandImageMobileArabic
-                  : brand.brandImageMobileEnglish,
+                  ? brand.brandMobileImageArabic
+                  : brand.brandMobileImageEnglish,
                    nameEnglish: brand.nameEnglish,
                    nameArabic: brand.nameArabic,
             }));
@@ -278,24 +278,50 @@ const router = useRouter();
   //   setProgress(0);
   //   setTimeout(() => setIsTransitioning(false), 300);
   // }, [isTransitioning]);
+  // Jump straight to a real slide (dots). Animates directly from wherever we are.
   const goToSlide = useCallback((index: number) => {
-    setCurrent(index);
+    setPos(index);
     setProgress(0);
-}, []);
+  }, []);
 
+  // Forward: step the track right by one. From the last real slide this lands on
+  // the trailing clone (slide 0 arriving from the right); onTransitionEnd then
+  // snaps to the real slide 0 with animation off — invisible, no rewind.
   const goNext = useCallback(() => {
     if (!slides.length) return;
-    goToSlide((current + 1) % slides.length);
-  }, [current, slides.length, goToSlide]);
+    setProgress(0);
+    setPos((p) => (p >= slides.length ? 1 : p + 1));
+  }, [slides.length]);
 
+  // Backward: from the first slide, hop to the trailing clone with no animation,
+  // then slide left to the last real slide — seamless in both directions.
   const goPrev = useCallback(() => {
     if (!slides.length) return;
-    goToSlide((current - 1 + slides.length) % slides.length);
-  }, [current, slides.length, goToSlide]);
+    setProgress(0);
+    if (pos % slides.length !== 0) {
+      setPos((p) => p - 1);
+      return;
+    }
+    setAnimate(false);
+    setPos(slides.length); // land on the clone first (identical to slide 0)
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        setAnimate(true);
+        setPos(slides.length - 1);
+      })
+    );
+  }, [pos, slides.length]);
+
+  // Re-enable transitions one frame after a silent snap (forward wrap / prev hop).
+  useEffect(() => {
+    if (animate) return;
+    const raf = requestAnimationFrame(() => setAnimate(true));
+    return () => cancelAnimationFrame(raf);
+  }, [animate]);
 
   // ✅ AUTO SLIDER WITH PROGRESS BAR
   useEffect(() => {
-    if (!slides.length || !isPlaying) {
+    if (slides.length <= 1 || !isPlaying) {
       if (intervalRef.current) clearInterval(intervalRef.current);
       if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
       return;
@@ -338,44 +364,6 @@ const router = useRouter();
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [goNext, goPrev]);
 
-  // 1) When `current` points to a slide not yet on top, mount it into the
-  //    OTHER (incoming) layer at opacity 0. The current image keeps showing.
-  useEffect(() => {
-    if (!slides.length || crossfading) return;
-    if (slotIdx[topSlot] === current) return;
-    const incoming: 0 | 1 = topSlot === 0 ? 1 : 0;
-    setSlotIdx((prev) => {
-      const next: [number, number] = [prev[0], prev[1]];
-      next[incoming] = current;
-      return next;
-    });
-    setTopSlot(incoming);
-    setTopOpacity(0);
-    setTopLoaded(false);
-    setCrossfading(true);
-  }, [current, slides.length, crossfading, topSlot, slotIdx]);
-
-  // 2) Once the incoming (top) image has fully loaded, fade it in next frame.
-  useEffect(() => {
-    if (!crossfading || !topLoaded) return;
-    const raf = requestAnimationFrame(() => setTopOpacity(1));
-    return () => cancelAnimationFrame(raf);
-  }, [crossfading, topLoaded]);
-
-  // 3) Safety: if a load event is missed (cache/edge cases), don't stall.
-  useEffect(() => {
-    if (!crossfading || topLoaded) return;
-    const t = setTimeout(() => setTopLoaded(true), 1500);
-    return () => clearTimeout(t);
-  }, [crossfading, topLoaded]);
-
-  // 4) Commit once the fade completes (timeout backs up onTransitionEnd).
-  useEffect(() => {
-    if (!crossfading || topOpacity !== 1) return;
-    const t = setTimeout(() => setCrossfading(false), CROSSFADE_MS);
-    return () => clearTimeout(t);
-  }, [crossfading, topOpacity]);
-
   const currentSlide = slides[current];
 
   // ── Premium section heading (lives ABOVE the slider, in the container). ──────
@@ -407,13 +395,24 @@ const router = useRouter();
     </div>
   );
 
+  // Container sizing.
+  //  • Desktop: unchanged fixed 682px.
+  //  • Mobile: match the measured mobile-image ratio → full-width, gap-free, crop-free.
+  //    Until measured, fall back to ~70svh. Rails keep freak ratios from going extreme.
+  const sizeClass = isMobile ? (mobileRatio ? "min-h-[58svh] max-h-[86svh]" : "h-[70svh]") : "";
+  const sizeStyle = isMobile
+    ? mobileRatio
+      ? { aspectRatio: String(mobileRatio) }
+      : undefined
+    : { height: "682px" };
+
   if (!slides.length) {
     return (
       <>
         {heading}
         <section
-          className="relative w-full overflow-hidden bg-champagne animate-pulse"
-          style={{ height: "682px" }}
+          className={`relative w-full overflow-hidden bg-champagne animate-pulse ${sizeClass}`}
+          style={sizeStyle}
         >
           <div className="absolute inset-0 skeleton-luxury" />
         </section>
@@ -425,52 +424,58 @@ const router = useRouter();
     <>
       {heading}
       <section
-        className="relative w-full overflow-hidden bg-cream group"
-        style={{ height: "682px" }}
+        className={`relative w-full overflow-hidden bg-cream group ${sizeClass}`}
+        style={sizeStyle}
         onTouchStart={(e) => { touchStartX.current = e.touches[0].clientX; }}
         onTouchEnd={(e) => {
           const dx = e.changedTouches[0].clientX - touchStartX.current;
           if (Math.abs(dx) > 50) (dx < 0 ? goNext : goPrev)();
         }}
       >
-      {/* BACKGROUND — LUXURY CROSSFADE (two persistent, load-gated layers).
-          `isolate` keeps these layers' z-order local so the overlay stays on top. */}
-      <div className="absolute inset-0 isolate">
-        {([0, 1] as const).map((s) => {
-          const idx = Math.min(Math.max(slotIdx[s], 0), slides.length - 1);
-          const slide = slides[idx];
-          const isTop = s === topSlot;
+      {/* BACKGROUND — HORIZONTAL SWIPE TRACK.
+          All slides sit in one flex row; the track slides by 100% per step.
+          Forced dir="ltr" so the translate math is language-independent. */}
+      <div
+        dir="ltr"
+        className="absolute inset-0 flex"
+        style={{
+          transform: `translateX(-${pos * 100}%)`,
+          transition: animate ? `transform ${SLIDE_MS}ms cubic-bezier(0.4, 0, 0.2, 1)` : "none",
+          willChange: "transform",
+        }}
+        onTransitionEnd={() => {
+          // Reached the trailing clone → silently snap to the real first slide.
+          if (pos === slides.length) {
+            setAnimate(false);
+            setPos(0);
+          }
+        }}
+      >
+        {[...slides, slides[0]].map((slide, idx) => {
           // Mobile viewport uses the mobile image when present, else falls back to desktop.
           const src = isMobile && slide.srcMobile ? slide.srcMobile : slide.src;
           return (
-            <Image
-              key={`hero-slot-${s}`}
-              src={src}
-              alt={slide?.nameEnglish || "Brand"}
-              fill
-              sizes="100vw"
-              unoptimized
-              priority={idx === 0}
-              draggable={false}
-              onLoad={() => {
-                if (isTop && crossfading) setTopLoaded(true);
-              }}
-              onError={() => {
-                if (isTop && crossfading) setTopLoaded(true);
-              }}
-              onTransitionEnd={(e) => {
-                if (e.propertyName === "opacity" && isTop && topOpacity === 1) {
-                  setCrossfading(false);
-                }
-              }}
-              className="object-cover"
-              style={{
-                opacity: isTop ? topOpacity : 1,
-                zIndex: isTop ? 2 : 1,
-                transition: `opacity ${CROSSFADE_MS}ms cubic-bezier(0.4, 0, 0.2, 1)`,
-                willChange: "opacity",
-              }}
-            />
+            <div key={`${slide._id}-${idx}`} className="relative w-full h-full shrink-0">
+              <Image
+                src={src}
+                alt={slide?.nameEnglish || "Brand"}
+                fill
+                sizes="100vw"
+                priority={idx === 0}
+                draggable={false}
+                onLoad={(e) => {
+                  // Only a real mobile asset drives the mobile container ratio.
+                  if (isMobile && slide.srcMobile) {
+                    const img = e.currentTarget;
+                    if (img.naturalWidth > 0 && img.naturalHeight > 0) {
+                      const r = img.naturalWidth / img.naturalHeight;
+                      setMobileRatio((prev) => (prev === r ? prev : r));
+                    }
+                  }
+                }}
+                className="object-cover"
+              />
+            </div>
           );
         })}
       </div>
