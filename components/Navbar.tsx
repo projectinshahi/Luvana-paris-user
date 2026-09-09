@@ -993,7 +993,7 @@ export default function Navbar() {
 
         {/* DESKTOP NAVBAR */}
         <nav
-          className="hidden sm:flex items-center justify-between bg-cream/85 backdrop-blur-xl border-b border-line text-ink px-4 md:px-10 py-3.5 transition-all duration-300"
+          className="hidden sm:flex items-center justify-between bg-cream/85 backdrop-blur-xl border-b border-line text-ink px-4 md:px-10 py-2 transition-all duration-300"
         >
           <div
             onClick={() => router.push("/")}
@@ -1005,7 +1005,7 @@ export default function Navbar() {
               width={100}
               height={111}
               priority
-              className="h-14 w-auto object-contain"
+              className="h-14 w-auto object-contain scale-125 origin-center"
             />
           </div>
 
@@ -1176,7 +1176,7 @@ export default function Navbar() {
               width={100}
               height={111}
               priority
-              className="h-12 w-auto object-contain"
+              className="h-12 w-auto object-contain scale-125 origin-center"
             />
           </div>
           <button aria-label="Settings" onClick={() => setShowSettings(true)} className="p-1.5 rounded-full focus-visible:ring-2 focus-visible:ring-gold focus:outline-none">
