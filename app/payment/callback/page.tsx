@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 
@@ -11,7 +11,7 @@ const GOLD = "#8B5E3C";
  * Handles the redirect from Tap after payment.
  * Verifies the charge status, creates the order, then routes to success/failed.
  */
-export default function PaymentCallbackPage() {
+function PaymentCallbackPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -179,5 +179,16 @@ if (alreadyProcessed) {
       </div>
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
+  );
+}
+
+// This page reads the URL's search params, which on a statically generated page must
+// sit inside a Suspense boundary (the build fails otherwise). The fallback holds the
+// page's height so the footer does not jump while the content hydrates.
+export default function PaymentCallbackPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-cream" />}>
+      <PaymentCallbackPageContent />
+    </Suspense>
   );
 }

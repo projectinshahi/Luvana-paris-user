@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useDebounce } from "@/lib/useDebounce";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { useLanguage } from "@/lib/useLanguage";
+import { API_BASE_URL } from "@/lib/apiBase";
 
 interface Variant {
   _id: string;
@@ -60,7 +61,7 @@ export default function SearchSidebar({ isOpen, onClose }: SearchSidebarProps) {
         setLoading(true);
         setShowResults(false);
 
-        const API_URL = process.env.NEXT_PUBLIC_API_URL;
+        const API_URL = API_BASE_URL;
         let url = `${API_URL}/user/product?limit=10`;
 
         if (debouncedQuery.trim()) {

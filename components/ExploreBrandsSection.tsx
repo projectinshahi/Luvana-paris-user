@@ -221,16 +221,13 @@ export default function ExploreBrandsSection() {
   const [animate, setAnimate] = useState(true);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [progress, setProgress] = useState(0);
   // Real aspect ratio (w/h) of the mobile brand image, measured on load, so the mobile
   // container can match it exactly — full-width, no side gaps, no cropping.
   const [mobileRatio, setMobileRatio] = useState<number | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const touchStartX = useRef(0);
 const router = useRouter();
   const SLIDE_DURATION = 5000;
-  const PROGRESS_UPDATE_INTERVAL = 50;
   const SLIDE_MS = 700;
 
   // Display index (0..N-1) derived from the track position. The trailing clone
@@ -281,7 +278,6 @@ const router = useRouter();
   // Jump straight to a real slide (dots). Animates directly from wherever we are.
   const goToSlide = useCallback((index: number) => {
     setPos(index);
-    setProgress(0);
   }, []);
 
   // Forward: step the track right by one. From the last real slide this lands on
@@ -289,7 +285,6 @@ const router = useRouter();
   // snaps to the real slide 0 with animation off — invisible, no rewind.
   const goNext = useCallback(() => {
     if (!slides.length) return;
-    setProgress(0);
     setPos((p) => (p >= slides.length ? 1 : p + 1));
   }, [slides.length]);
 
@@ -297,7 +292,6 @@ const router = useRouter();
   // then slide left to the last real slide — seamless in both directions.
   const goPrev = useCallback(() => {
     if (!slides.length) return;
-    setProgress(0);
     if (pos % slides.length !== 0) {
       setPos((p) => p - 1);
       return;
@@ -319,24 +313,13 @@ const router = useRouter();
     return () => cancelAnimationFrame(raf);
   }, [animate]);
 
-  // ✅ AUTO SLIDER WITH PROGRESS BAR
+  // ✅ AUTO SLIDER — the progress bar is a CSS animation (see the dots below),
+  // not a 50 ms timer re-rendering the whole slideshow 20 times a second.
   useEffect(() => {
     if (slides.length <= 1 || !isPlaying) {
       if (intervalRef.current) clearInterval(intervalRef.current);
-      if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
       return;
     }
-
-    // Reset progress
-    setProgress(0);
-
-    // Progress bar animation
-    const startTime = Date.now();
-    progressIntervalRef.current = setInterval(() => {
-      const elapsed = Date.now() - startTime;
-      const newProgress = Math.min((elapsed / SLIDE_DURATION) * 100, 100);
-      setProgress(newProgress);
-    }, PROGRESS_UPDATE_INTERVAL);
 
     // Auto advance slide
     intervalRef.current = setInterval(() => {
@@ -345,7 +328,6 @@ const router = useRouter();
 
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
-      if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
     };
   }, [slides.length, isPlaying, current, goNext]);
 
@@ -552,12 +534,9 @@ const router = useRouter();
                 {/* Active progress fill */}
                 {current === index && isPlaying && (
                   <div
-                    className="h-full bg-gold rounded-full transition-[width]"
-                    style={{
-                      width: `${progress}%`,
-                      transitionDuration: "75ms",
-                      transitionTimingFunction: "cubic-bezier(0.25, 0.46, 0.45, 0.94)"
-                    }}
+                    key={`progress-${pos}`}
+                    className="h-full w-full bg-gold rounded-full origin-left"
+                    style={{ animation: `brand-slide-progress ${SLIDE_DURATION}ms linear forwards` }}
                   />
                 )}
                 {/* Static fill for current slide when paused */}

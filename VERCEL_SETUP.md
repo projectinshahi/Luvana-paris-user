@@ -10,14 +10,12 @@ npm install
 ```
 
 ### Step 2: Create Local Environment File
-```bash
-cp .env.example .env.local
+Create `.env.local` with the API address **as seen from this machine**:
+```
+API_URL=http://localhost:8000
 ```
 
-Edit `.env.local` and set your backend URL:
-```
-NEXT_PUBLIC_API_URL=http://localhost:8000
-```
+Do not set `NEXT_PUBLIC_API_URL` to a `localhost` address — browsers call `/api` on the storefront and the dev server forwards to `API_URL`, which is what lets other devices on the network use the site.
 
 ### Step 3: Run Locally
 ```bash
@@ -84,15 +82,11 @@ vercel --prod
 2. Add `NEXT_PUBLIC_API_URL` with your backend URL
 3. Redeploy (Settings → Deployments → Click "..." → Redeploy)
 
-### Issue: Works on your laptop but not friend's
+### Issue: Works on your laptop but not friend's (or on a phone)
 
-**Cause:** Missing `.env.local` file
+**Cause:** A `localhost` API address reached the browser, so each device called itself.
 
-**Fix:**
-```bash
-cp .env.example .env.local
-# Edit .env.local with correct backend URL
-```
+**Fix:** In `.env.local`, set `API_URL=http://localhost:8000` (or wherever the API runs, as seen from the machine serving the storefront), remove any `NEXT_PUBLIC_API_URL=http://localhost…`, and restart `npm run dev`.
 
 ### Issue: CORS errors in production
 

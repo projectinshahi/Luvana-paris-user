@@ -4,7 +4,8 @@
 // and hand the same one to every caller, so the homepage makes ONE request.
 // ponytail: session-lifetime cache, no revalidation — call refreshHome() if you need it fresh.
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.luvanaparis.com";
+import { API_BASE_URL } from "@/lib/apiBase";
+const API_URL = API_BASE_URL;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let homePromise: Promise<any> | null = null;

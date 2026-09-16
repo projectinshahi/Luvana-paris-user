@@ -757,7 +757,7 @@
 
 import Image from "next/image";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import {
   Heart,
   User,
@@ -784,6 +784,7 @@ const MobileMenu = dynamic(() => import("./MobileMenu"), { ssr: false });
 import { useLanguage } from "@/lib/useLanguage";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { COUNTRIES } from "@/lib/countries";
+import { API_BASE_URL } from "@/lib/apiBase";
 type CountryFromBackend = {
   _id: string;
   nameEnglish: string;
@@ -798,10 +799,9 @@ export default function Navbar() {
   const pathname = usePathname();
   const dispatch = useAppDispatch();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
-  const { t, ready } = useTranslation("common");
+  const { t } = useTranslation("common");
   const { isRTL, languages, changeLanguage, currentLang } = useLanguage();
   const { selectedCountry, setSelectedCountry, countries } = useCurrency();
-  const [mounted, setMounted] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
@@ -816,19 +816,17 @@ export default function Navbar() {
   const userDropdownRef = useRef<HTMLDivElement>(null);
   const countryDropdownRef = useRef<HTMLDivElement>(null);
   const languageDropdownRef = useRef<HTMLDivElement>(null);
+  const navRef = useRef<HTMLDivElement>(null);
 
   // ✅ NEW PROMOTION STATES
   const [offers, setOffers] = useState<string[]>([]);
   const [offerIndex, setOfferIndex] = useState(0);
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // ✅ FETCH PROMOTION STRIP
   useEffect(() => {
     const fetchPromotions = async () => {
       try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.luvanaparis.com";
+        const API_URL = API_BASE_URL;
         const res = await fetch(
           `${API_URL}/admin/promotion-strip`,
           { cache: "no-store" }
@@ -959,7 +957,21 @@ export default function Navbar() {
     }
   }, [showWishlist, showCart, showSearch, showSettings]);
 
-  if (!mounted || !ready) return null;
+  // The navbar is fixed, so page content must start below it. Its height varies
+  // by breakpoint and with the promotion text, so publish the measured value as
+  // --navbar-h for pages to offset by (globals.css holds the pre-measure fallback).
+  // Layout effect: set before paint, so content never flashes underneath.
+  useLayoutEffect(() => {
+    const el = navRef.current;
+    if (!el) return;
+    const publish = () =>
+      document.documentElement.style.setProperty("--navbar-h", `${Math.round(el.getBoundingClientRect().height)}px`);
+    publish();
+    const observer = new ResizeObserver(publish);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
 
   const handleLogout = async () => {
     try {
@@ -977,7 +989,7 @@ export default function Navbar() {
     <>
       {/* dir="ltr" pins the navbar chrome so it never mirrors in Arabic —
           logo stays left, utility icons stay right; only text renders RTL. */}
-      <div data-app-navbar dir="ltr" className="fixed top-0 left-0 right-0 z-50">
+      <div ref={navRef} data-app-navbar dir="ltr" className="fixed top-0 left-0 right-0 z-50">
 
         {/* 🔥 PROMOTION BAR */}
         {/* <div className="bg-[#0A0A0A] text-white text-center text-xs sm:text-sm py-4">
@@ -985,10 +997,19 @@ export default function Navbar() {
             {offers.length > 0 ? offers[offerIndex] : "Loading..."}
           </span>
         </div>     */}
-        <div className="bg-ink text-champagne text-center py-2.5">
-          <span className="block text-[11px] sm:text-xs font-medium tracking-[0.2em] uppercase">
-            {offers.length > 0 ? offers[offerIndex] : "Loading..."}
-          </span>
+        {/* All offers share one grid cell and only the current one is visible, so the
+            bar is always as tall as the longest offer. Swapping the text alone made the
+            bar (and the fixed navbar) grow and shrink as offers rotated on phones. */}
+        <div className="bg-ink text-champagne text-center py-2.5 grid">
+          {(offers.length > 0 ? offers : ["Loading..."]).map((offer, i) => (
+            <span
+              key={i}
+              aria-hidden={i !== offerIndex}
+              className={`[grid-area:1/1] block text-[11px] sm:text-xs font-medium tracking-[0.2em] uppercase ${i === offerIndex ? "" : "invisible"}`}
+            >
+              {offer}
+            </span>
+          ))}
         </div>
 
         {/* DESKTOP NAVBAR */}

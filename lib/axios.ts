@@ -1,11 +1,12 @@
 import axios, { AxiosError, AxiosInstance } from "axios";
+import { API_BASE_URL } from "@/lib/apiBase";
 
 // ────────────────────────────────────────────────────────────────────────────
 // AXIOS CONFIGURATION - Production Ready
 // ────────────────────────────────────────────────────────────────────────────
 
 const api: AxiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "https://api.luvanaparis.com",
+  baseURL: API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },

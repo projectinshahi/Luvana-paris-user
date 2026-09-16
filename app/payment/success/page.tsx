@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   CheckCircle2,
@@ -28,7 +28,7 @@ interface OrderDetails {
   paymentStatus: string;
 }
 
-export default function PaymentSuccessPage() {
+function PaymentSuccessPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { formatPrice } = useCurrency();
@@ -169,7 +169,6 @@ export default function PaymentSuccessPage() {
       }}
     >
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
         * { box-sizing: border-box; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .success-card { animation: slideIn 0.5s ease; }
@@ -569,5 +568,16 @@ export default function PaymentSuccessPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// This page reads the URL's search params, which on a statically generated page must
+// sit inside a Suspense boundary (the build fails otherwise). The fallback holds the
+// page's height so the footer does not jump while the content hydrates.
+export default function PaymentSuccessPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-cream" />}>
+      <PaymentSuccessPageContent />
+    </Suspense>
   );
 }

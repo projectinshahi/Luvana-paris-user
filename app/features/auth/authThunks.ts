@@ -1,8 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { User } from "./authTypes";
+import { API_BASE_URL } from "@/lib/apiBase";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.luvanaparis.com";
+const API_URL = API_BASE_URL;
 
 // 🔥 LOGIN
 export const loginUser = createAsyncThunk<

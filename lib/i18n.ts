@@ -35,7 +35,9 @@ if (!i18next.isInitialized) {
         },
         // Prevent hydration issues
         initImmediate: false,
-        lng: typeof window !== 'undefined' ? localStorage.getItem('language') || 'en' : 'en',
+        // Always start in English so server HTML and the first client render match;
+        // app/providers.tsx switches to the visitor's saved language after hydration.
+        lng: 'en',
       },
       (err) => {
         if (err) console.error("i18n initialization error:", err);

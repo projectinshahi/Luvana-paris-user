@@ -43,6 +43,23 @@
   --ease-luxury: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* Height of the fixed navbar. Navbar.tsx overwrites this with the measured value;
+   these match it so layout is right even before that runs. */
+:root {
+  --navbar-h: 106px;
+}
+@media (min-width: 640px) {
+  :root {
+    --navbar-h: 109px;
+  }
+}
+
+/* Brand slideshow progress fill (ExploreBrandsSection) — compositor-only */
+@keyframes brand-slide-progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
 /* Base luxury surface + typography */
 html {
   scroll-behavior: smooth;
@@ -90,11 +107,18 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--color-gold);
   color: #fff;
 }
-@font-face {
-  font-family: "Cactus_Classical_Serif";
-  src: url("/fonts/CactusClassicalSerif-Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
+/* (A @font-face for "Cactus_Classical_Serif" pointed at /fonts/…woff2, which does not
+   exist: every page requested it, got a 404, and held heading text until then. Headings
+   have always ended up in Georgia, the next family in --font-serif, and still do.) */
+
+/* Saved non-English language: hidden until it is applied after hydration
+   (app/layout.tsx, app/providers.tsx). Shown after 3 s regardless, as a fail-safe. */
+html[data-i18n-pending] body {
+  visibility: hidden;
+  animation: i18n-reveal 0s linear 3s forwards;
+}
+@keyframes i18n-reveal {
+  to { visibility: visible; }
 }
 
 /* RTL Support - Text Direction Only */

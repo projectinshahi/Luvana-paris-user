@@ -654,7 +654,6 @@ export default function YourOrdersPage() {
     <ResponsiveLayout>
       {/* ── global styles injected inline ── */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Montserrat:wght@300;400;500;600&display=swap');
 
         .orders-root { font-family: 'Montserrat', sans-serif; }
         .display-font { font-family: 'Cormorant Garamond', serif; }

@@ -78,9 +78,6 @@ const [brands, setBrands] = useState<Brand[]>([]);
   useEffect(() => {
   const fetchHomeData = async () => {
     try {
-      const API_URL =
-        process.env.NEXT_PUBLIC_API_URL || "https://api.luvanaparis.com";
-
       const data = await getHome();
 
       const activeCategories = data.categories.filter(

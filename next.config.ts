@@ -1,5 +1,16 @@
 import type { NextConfig } from "next";
 
+// Where the API lives, as seen from the machine running THIS server (server-only,
+// never shipped to the browser). A localhost NEXT_PUBLIC_API_URL is correct here
+// even though browsers ignore it, so it is honoured as the proxy target. Unset,
+// development uses the local API and production keeps the public API the client
+// code has always fallen back to.
+const API_URL = (
+  process.env.API_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  (process.env.NODE_ENV === "production" ? "https://api.luvanaparis.com" : "http://localhost:8000")
+).replace(/\/+$/, "");
+
 const nextConfig: NextConfig = {
   /* config options here */
 //   images: {
@@ -63,6 +74,13 @@ const nextConfig: NextConfig = {
   },
 
   reactCompiler: true,
+
+  // Browsers call /api/* on whatever host they loaded the storefront from and this
+  // server forwards to the API — see lib/apiBase.ts. This is what lets a phone or
+  // another laptop on the network use a storefront whose API is on localhost.
+  async rewrites() {
+    return [{ source: "/api/:path*", destination: `${API_URL}/:path*` }];
+  },
 };
 
 export default nextConfig;

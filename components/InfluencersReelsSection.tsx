@@ -9,6 +9,7 @@ import { X, ShoppingCart } from "lucide-react";
 import { toast } from "react-toastify";
 import api from "@/lib/axios";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import { cldImage } from "@/lib/cloudinary";
 
 // ============= INTERFACES =============
 interface Variant {
@@ -60,6 +61,11 @@ export default function InfluencersReelsSection() {
   const scrollRef = useRef<HTMLDivElement>(null);       // swipeable marquee track
   const pausedRef = useRef(false);                       // pause auto-scroll on touch/hover
   const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const [sectionVisible, setSectionVisible] = useState(false); // section within 200px of the viewport
+  const [nearCards, setNearCards] = useState<Set<number>>(() => new Set()); // cards within 400px of the visible strip
+  const [liveCards, setLiveCards] = useState<ReadonlySet<number>>(() => new Set()); // cards whose player is mounted
+  const liveRef = useRef<ReadonlySet<number>>(new Set());
 
   // ============= FETCH DATA =============
   useEffect(() => {
@@ -104,25 +110,104 @@ export default function InfluencersReelsSection() {
     };
   }, []);
 
+  // ============= VISIBILITY =============
+  // Nothing in this section should cost anything while it is off screen: the
+  // marquee and the live players run only while the section is near the viewport,
+  // and only cards near the visible strip mount a player.
+  useEffect(() => {
+    const section = sectionRef.current;
+    const track = scrollRef.current;
+    if (!section || !track) return;
+    const sectionObserver = new IntersectionObserver(
+      ([entry]) => setSectionVisible(entry.isIntersecting),
+      { rootMargin: "200px 0px" }
+    );
+    sectionObserver.observe(section);
+    const cardObserver = new IntersectionObserver(
+      (entries) => {
+        setNearCards((prev) => {
+          const next = new Set(prev);
+          for (const entry of entries) {
+            const i = Number((entry.target as HTMLElement).dataset.reelCard);
+            if (entry.isIntersecting) next.add(i);
+            else next.delete(i);
+          }
+          return next;
+        });
+      },
+      { root: track, rootMargin: "0px 400px" }
+    );
+    track.querySelectorAll("[data-reel-card]").forEach((card) => cardObserver.observe(card));
+    return () => {
+      sectionObserver.disconnect();
+      cardObserver.disconnect();
+    };
+  }, [influencers.length]);
+
+  // ============= PLAYER START-UP =============
+  // Starting an embedded player is heavy (a new document, the YouTube player, a video
+  // decoder), and several at once stalled page scrolling. Near cards therefore get
+  // their player one at a time, and only once the page has not scrolled for 200 ms;
+  // until then they show the video's thumbnail. Players that drift away stop at once.
+  useEffect(() => {
+    const apply = (next: ReadonlySet<number>) => {
+      liveRef.current = next;
+      setLiveCards(next);
+    };
+    if (!sectionVisible) {
+      if (liveRef.current.size) apply(new Set());
+      return;
+    }
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let lastScroll = 0;
+    const onScroll = () => { lastScroll = performance.now(); };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    const step = () => {
+      const current = liveRef.current;
+      const kept = [...current].filter((i) => nearCards.has(i));
+      if (kept.length !== current.size) apply(new Set(kept));
+      const pending = [...nearCards].filter((i) => !current.has(i));
+      if (!pending.length) return;
+      if (performance.now() - lastScroll < 200) {
+        timer = setTimeout(step, 200);
+        return;
+      }
+      apply(new Set([...kept, pending[0]]));
+      timer = setTimeout(step, 250);
+    };
+    step();
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [sectionVisible, nearCards]);
+
   // ============= AUTO-SCROLL MARQUEE (native swipe on touch) =============
   // Drives scrollLeft each frame; the container is overflow-x-auto so touch users
   // can swipe freely. Loops seamlessly because the card set is duplicated (reset at halfway).
+  // Runs only while visible, and measures the track once (and on resize) rather than
+  // reading scrollWidth — a forced layout — on every frame.
   useEffect(() => {
     const el = scrollRef.current;
-    if (!el || reducedMotion()) return; // reduced-motion: manual swipe only, no drift
+    if (!el || !sectionVisible || reducedMotion()) return; // reduced-motion: manual swipe only, no drift
     let raf = 0;
+    let half = el.scrollWidth / 2;
+    const resize = new ResizeObserver(() => { half = el.scrollWidth / 2; });
+    resize.observe(el.firstElementChild ?? el);
     const SPEED = 0.6; // ponytail: px/frame gentle drift — tune here if a different pace is wanted
     const step = () => {
       if (!pausedRef.current) {
         el.scrollLeft += SPEED;
-        const half = el.scrollWidth / 2;
         if (half > 0 && el.scrollLeft >= half) el.scrollLeft -= half;
       }
       raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
-  }, [influencers.length]);
+    return () => {
+      cancelAnimationFrame(raf);
+      resize.disconnect();
+    };
+  }, [influencers.length, sectionVisible]);
 
   // Resume drift shortly after the finger/pointer lifts (lets momentum settle first).
   const resumeSoon = () => {
@@ -279,6 +364,14 @@ export default function InfluencersReelsSection() {
 //   }
 //   return "";
 // };
+const getYouTubeId = (url?: string) => {
+  if (!url) return "";
+  if (url.includes("youtube.com/shorts/")) return url.split("youtube.com/shorts/")[1]?.split("?")[0] || "";
+  if (url.includes("youtube.com/watch?v=")) return url.split("v=")[1]?.split("&")[0] || "";
+  if (url.includes("youtu.be/")) return url.split("youtu.be/")[1]?.split("?")[0] || "";
+  return "";
+};
+
 const getInstagramId = (url?: string) => {
   if (!url) return "";
 
@@ -316,7 +409,7 @@ const getInstagramId = (url?: string) => {
         }
       `}</style>
 
-      <section className="relative w-full py-10 bg-cream overflow-hidden" dir="ltr">
+      <section ref={sectionRef} className="relative w-full py-10 bg-cream overflow-hidden" dir="ltr">
         <header className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-center gap-3 sm:gap-6 mb-6">
             {/* decorative — flex-1 keeps both lines equal width so the heading is always the true center */}
@@ -362,23 +455,31 @@ const isInstagram =
                 return (
                   <div
                     key={uniqueId}
+                    data-reel-card={index}
                     className="shrink-0 w-44 sm:w-56 md:w-75 group"
                     onClick={() => handleCardClick(index)}
                   >
                     <div className="relative w-44 h-78 sm:w-56 sm:h-99 md:w-75 md:h-133.25 rounded-2xl overflow-hidden shadow-luxury border border-line hover:border-gold transition-all duration-500 cursor-pointer hover:scale-105 hover:shadow-[0_0_30px_rgba(200,168,106,0.4)]">
-                      {isYouTube ? (
-                        (() => {
-                          let videoId = '';
-                          if (influencer.videoUrl?.includes('youtube.com/shorts/')) {
-                            videoId = influencer.videoUrl.split('youtube.com/shorts/')[1]?.split('?')[0];
-                          } else if (influencer.videoUrl?.includes('youtube.com/watch?v=')) {
-                            videoId = influencer.videoUrl.split('v=')[1]?.split('&')[0];
-                          } else if (influencer.videoUrl?.includes('youtu.be/')) {
-                            videoId = influencer.videoUrl.split('youtu.be/')[1]?.split('?')[0];
-                          }
-
-                          if (videoId) {
+                      {(() => {
+                        // Only cards on or near the visible strip mount a live player (see
+                        // PLAYER START-UP). Every card (32 here) used to mount its own
+                        // autoplaying embed at once, each pulling the ~1.9 MB YouTube player.
+                        const live = liveCards.has(index);
+                        if (isYouTube) {
+                          const videoId = getYouTubeId(influencer.videoUrl);
+                          if (!videoId) return null;
+                          if (!live) {
                             return (
+                              <img
+                                src={`https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`}
+                                alt=""
+                                loading="lazy"
+                                decoding="async"
+                                className="absolute inset-0 w-full h-full object-cover"
+                              />
+                            );
+                          }
+                          return (
                               <div className="absolute inset-0 w-full h-full overflow-hidden">
                                 <iframe
                                   src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&loop=1&playlist=${videoId}&controls=0&modestbranding=1&rel=0&playsinline=1`}
@@ -402,62 +503,55 @@ const isInstagram =
                                   title={getTitle(influencer)}
                                 />
                               </div>
-                            );
-                          }
-                      //     return null;
-                      //   })()
-                      // ) : (
-                      return null;
-})()
-) : isInstagram ? (
-  (() => {
-    const reelId = getInstagramId(influencer.videoUrl);
-
-    if (reelId) {
-      return (
-        <iframe
-          // src={`https://www.instagram.com/reel/${reelId}/embed`}
-          src={`https://www.instagram.com/reel/${reelId}/embed`}
-          className="absolute inset-0 w-full h-full"
-          style={{
-            border: "none",
-            width: "100%",
-            height: "100%",
-            transform: "scale(1.2)",
-            pointerEvents: "none"
-          }}
-        />
-      );
-    }
-    return null;
-  })()
-) : (
-                        <video
-                          ref={(el) => setVideoRef(uniqueId, el)}
-                          src={influencer.videoUrl}
-                          autoPlay
-                          muted
-                          loop
-                          playsInline
-                          className="absolute"
-                          style={{
-                            width: '100%',
-                            height: '100%',
-                            minWidth: '100%',
-                            minHeight: '100%',
-                            maxWidth: 'none',
-                            maxHeight: 'none',
-                            position: 'absolute',
-                            top: '50%',
-                            left: '50%',
-                            transform: 'translate(-50%, -50%)',
-                            objectFit: 'cover',
-                            objectPosition: 'center center'
-                          }}
-                          onMouseEnter={() => handleVideoHover(uniqueId, true)}
-                          onMouseLeave={() => handleVideoHover(uniqueId, false)}
-                        />
-                      )}
+                          );
+                        }
+                        if (isInstagram) {
+                          const reelId = getInstagramId(influencer.videoUrl);
+                          if (!reelId || !live) return null;
+                          return (
+                              <iframe
+                                // src={`https://www.instagram.com/reel/${reelId}/embed`}
+                                src={`https://www.instagram.com/reel/${reelId}/embed`}
+                                className="absolute inset-0 w-full h-full"
+                                style={{
+                                  border: "none",
+                                  width: "100%",
+                                  height: "100%",
+                                  transform: "scale(1.2)",
+                                  pointerEvents: "none"
+                                }}
+                              />
+                          );
+                        }
+                        if (!live) return null;
+                        return (
+                            <video
+                              ref={(el) => setVideoRef(uniqueId, el)}
+                              src={influencer.videoUrl}
+                              autoPlay
+                              muted
+                              loop
+                              playsInline
+                              className="absolute"
+                              style={{
+                                width: '100%',
+                                height: '100%',
+                                minWidth: '100%',
+                                minHeight: '100%',
+                                maxWidth: 'none',
+                                maxHeight: 'none',
+                                position: 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                transform: 'translate(-50%, -50%)',
+                                objectFit: 'cover',
+                                objectPosition: 'center center'
+                              }}
+                              onMouseEnter={() => handleVideoHover(uniqueId, true)}
+                              onMouseLeave={() => handleVideoHover(uniqueId, false)}
+                            />
+                        );
+                      })()}
 
                       <div className="absolute inset-0 bg-black/40 group-hover:bg-black/0 transition-all duration-500" />
 
@@ -640,7 +734,7 @@ const isInstagram =
                           <div className="flex gap-3">
                             <div className="w-20 h-20 shrink-0 bg-gray-100 rounded-xl overflow-hidden">
                               <img
-                                src={getProductImage(currentInfluencer) || "/placeholder.png"}
+                                src={cldImage(getProductImage(currentInfluencer), 400) || "/placeholder.png"}
                                 alt={getProductName(currentInfluencer)}
                                 className="w-full h-full object-cover"
                               />

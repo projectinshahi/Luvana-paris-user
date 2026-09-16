@@ -56,28 +56,41 @@
 
 "use client";
 
-import { I18nextProvider } from "react-i18next";
-import { ReactNode, useEffect, useState } from "react";
+import { I18nextProvider, useTranslation } from "react-i18next";
+import { ReactNode, useEffect } from "react";
 import i18n from "@/lib/i18n";
 
-export function I18nProvider({ children }: { children: ReactNode }) {
-  const [ready, setReady] = useState(false);
+// Applies a visitor's saved language right after hydration. The server and the
+// first client render are both English (lib/i18n.ts) so they match; visitors with
+// another saved language are kept hidden until it is on screen (app/layout.tsx).
+function ApplySavedLanguage() {
+  const { i18n: instance } = useTranslation("common");
 
   useEffect(() => {
-    const savedLanguage = localStorage.getItem("language") || "en";
-
-    if (i18n.language !== savedLanguage) {
-      i18n.changeLanguage(savedLanguage);
-    }
-
-    document.documentElement.lang = savedLanguage;
+    const saved = localStorage.getItem("language") || "en";
+    document.documentElement.lang = saved;
     // Layout always stays LTR — only text content is translated to Arabic.
     document.documentElement.dir = "ltr";
+    if (instance.language !== saved) instance.changeLanguage(saved);
+  }, [instance]);
 
-    setReady(true);
-  }, []);
+  useEffect(() => {
+    const saved = localStorage.getItem("language") || "en";
+    if (instance.language === saved) {
+      requestAnimationFrame(() => document.documentElement.removeAttribute("data-i18n-pending"));
+    }
+  }, [instance.language]);
 
-  if (!ready) return null;
+  return null;
+}
 
-  return <I18nextProvider i18n={i18n}>{children}</I18nextProvider>;
+// Renders its children immediately. It used to return null until an effect had run,
+// so every page's server HTML was empty and first paint waited for all the JavaScript.
+export function I18nProvider({ children }: { children: ReactNode }) {
+  return (
+    <I18nextProvider i18n={i18n}>
+      <ApplySavedLanguage />
+      {children}
+    </I18nextProvider>
+  );
 }
