@@ -84,6 +84,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { API_BASE_URL } from "@/lib/apiBase";
 
 export interface Country {
   _id: string;
@@ -114,7 +115,7 @@ export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.luvanaparis.com";
+        const API_URL = API_BASE_URL;
         const res = await fetch(`${API_URL}/user/country`);
         const data = await res.json();
 

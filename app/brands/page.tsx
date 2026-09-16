@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, Suspense } from "react";
 import { ShoppingCart, Heart, X, Search, SlidersHorizontal, ChevronDown, Sparkles } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getHome } from "@/lib/homeData";
@@ -10,6 +10,8 @@ import { toast } from "react-toastify";
 import api from "@/lib/axios";
 import axios from "axios";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import { API_BASE_URL } from "@/lib/apiBase";
+import { cldImage } from "@/lib/cloudinary";
 
 /* ─── Types ─────────────────────────────────────────────────────────────── */
 interface Variant {
@@ -109,11 +111,11 @@ function ProductCard({
       {/* ── Image ── */}
       <div className="relative w-full aspect-[3/4] overflow-hidden bg-champagne">
         <img
-          src={image || "/placeholder.png"}
+          src={cldImage(image, 640) || "/placeholder.png"}
           alt={name}
           loading="lazy"
           className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-          onError={(e) => { e.currentTarget.src = "/placeholder.png"; }}
+          onError={(e) => { if (!e.currentTarget.src.endsWith("/placeholder.png")) e.currentTarget.src = "/placeholder.png"; }}
         />
 
         {/* Gradient overlay */}
@@ -170,7 +172,7 @@ function ProductCard({
 }
 
 /* ─── Main Page ──────────────────────────────────────────────────────────── */
-export default function BrandsPage() {
+function BrandsPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { t, currentLanguage } = useLanguage();
@@ -222,7 +224,7 @@ export default function BrandsPage() {
         const params: Record<string, string | number> = { page: 1, limit: 50, search: debouncedSearch };
         if (cat) params.category = cat;
         if (brand) params.brand = brand;
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.luvanaparis.com";
+        const API_URL = API_BASE_URL;
         const res = await axios.get(`${API_URL}/user/product`, { params });
         const data = res.data.items || res.data.products || res.data || [];
         setProducts(Array.isArray(data) ? data : []);
@@ -434,7 +436,6 @@ export default function BrandsPage() {
     <>
       {/* ── Global luxury styles ── */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap');
 
         .lux-page { font-family: 'DM Sans', sans-serif; }
 
@@ -737,5 +738,16 @@ export default function BrandsPage() {
         )}
       </div>
     </>
+  );
+}
+
+// This page reads the URL's search params, which on a statically generated page must
+// sit inside a Suspense boundary (the build fails otherwise). The fallback holds the
+// page's height so the footer does not jump while the content hydrates.
+export default function BrandsPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-cream" />}>
+      <BrandsPageContent />
+    </Suspense>
   );
 }

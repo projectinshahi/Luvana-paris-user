@@ -337,7 +337,6 @@ export default function CheckoutPage() {
       color: "#2E2A26", fontFamily: "'DM Sans', sans-serif",
     }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
         * { box-sizing: border-box; }
         input::placeholder { color: #918980; }
         input:-webkit-autofill { -webkit-box-shadow: 0 0 0 100px #FFFFFF inset !important; -webkit-text-fill-color: #2E2A26 !important; }

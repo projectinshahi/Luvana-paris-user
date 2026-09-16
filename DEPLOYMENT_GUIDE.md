@@ -21,22 +21,19 @@ When deploying to Vercel, you MUST set the environment variable for the API URL.
 
 ### Important Notes:
 
-- ✅ All API calls now use `process.env.NEXT_PUBLIC_API_URL`
-- ✅ Falls back to `http://localhost:8000` for local development
-- ✅ The `NEXT_PUBLIC_` prefix is required for client-side access in Next.js
-- ⚠️ Without this variable, the app will try to connect to localhost (which won't work in production)
+- ✅ The browser's API address is resolved in one place: `lib/apiBase.ts`
+- ✅ `NEXT_PUBLIC_API_URL` must be a **public** address (e.g. `https://api.luvanaparis.com`) — it is compiled into the browser bundle and used as-is on every visitor's device
+- ✅ A `localhost` value is never sent to browsers (it would point at each visitor's own machine); they call `/api` on the storefront's host instead, which `next.config.ts` forwards to `API_URL`
+- ✅ Without either variable, a production build proxies `/api` to `https://api.luvanaparis.com`
 
 ### Local Development:
 
-1. Copy `.env.example` to `.env.local`:
-   ```bash
-   cp .env.example .env.local
-   ```
+Create `.env.local` (or use `.env`) with the address of the API **as seen from the machine running `npm run dev`**:
+```
+API_URL=http://localhost:8000
+```
 
-2. Update the value if your backend runs on a different port:
-   ```
-   NEXT_PUBLIC_API_URL=http://localhost:YOUR_PORT
-   ```
+Do not set `NEXT_PUBLIC_API_URL` for local development. Browsers — including phones and other laptops opening `http://<your-computer-ip>:4000` — call `/api` on the storefront, and the dev server forwards to `API_URL`.
 
 ### Testing Before Deployment:
 
@@ -47,20 +44,7 @@ NEXT_PUBLIC_API_URL=https://your-backend-api.com npm run dev
 
 ### Files Updated:
 
-All hardcoded `http://localhost:8000` URLs have been replaced with environment variables in:
-
-- ✅ `lib/axios.ts` - Main API client
-- ✅ `app/features/auth/authThunks.ts` - Authentication
-- ✅ `app/features/wishlist/wishlistThunks.ts` - Wishlist
-- ✅ `components/Navbar.tsx` - Promotion strip
-- ✅ `components/SearchSidebar.tsx` - Product search
-- ✅ `components/BestSellers.tsx` - Featured products
-- ✅ `components/ExploreBrandsSection.tsx` - Brands
-- ✅ `components/ExploreMoreSection.tsx` - Categories
-- ✅ `components/ImageSection.tsx` - Home data
-- ✅ `components/Categorybar.tsx` - Categories
-- ✅ `app/brands/page.tsx` - Products listing
-- ✅ `app/brands/[id]/page.tsx` - Product details
+Every API call builds its URL from `API_BASE_URL` in `lib/apiBase.ts` — directly, or through the shared axios client (`lib/axios.ts`) or the shared home-data fetch (`lib/homeData.ts`). Do not read `process.env.NEXT_PUBLIC_API_URL` anywhere else. The `/api` proxy is configured in `next.config.ts`.
 
 ### Troubleshooting:
 
@@ -71,6 +55,10 @@ All hardcoded `http://localhost:8000` URLs have been replaced with environment v
 2. Ensure your backend API is accessible from the internet
 3. Check CORS settings on your backend to allow requests from your Vercel domain
 4. Verify the backend URL doesn't have a trailing slash
+
+**Issue:** Works on the computer running the servers, but not from a phone or another laptop
+
+**Solution:** A `localhost` API address was being compiled into the browser bundle, so other devices called themselves. Use `API_URL=http://localhost:8000` (server-side) and leave `NEXT_PUBLIC_API_URL` unset locally, then restart `npm run dev`.
 
 **Issue:** Works locally but not on Vercel
 

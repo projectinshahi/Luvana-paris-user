@@ -5,6 +5,9 @@ import { Facebook, Instagram, Twitter, Linkedin, Mail, Phone, MapPin } from "luc
 import { useTranslation } from "react-i18next";
 import Image from "next/image";
 
+// Static and account pages are not prefetched: every footer link used to download and
+// parse its page in the background as soon as the footer scrolled into view, which
+// stalled scrolling on phones. They load on click instead; the shop link still prefetches.
 export default function Footer() {
   const { t, i18n } = useTranslation('common');
   const isRTL = i18n.language === 'ar';
@@ -52,7 +55,7 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2">
               <li>
-                <Link href="/about" className={`text-ink-soft hover:text-gold-dark transition ${isRTL ? 'font-arabic' : ''}`}>
+                <Link href="/about" prefetch={false} className={`text-ink-soft hover:text-gold-dark transition ${isRTL ? 'font-arabic' : ''}`}>
                   {t('footer.aboutUs')}
                 </Link>
               </li>
@@ -91,17 +94,17 @@ export default function Footer() {
                 </a>
               </li> */}
               <li>
-                <Link href="/returns" className={`text-ink-soft hover:text-gold-dark transition ${isRTL ? 'font-arabic' : ''}`}>
+                <Link href="/returns" prefetch={false} className={`text-ink-soft hover:text-gold-dark transition ${isRTL ? 'font-arabic' : ''}`}>
                   {t('footer.returns')}
                 </Link>
               </li>
               <li>
-                <Link href="/faq" className={`text-ink-soft hover:text-gold-dark transition ${isRTL ? 'font-arabic' : ''}`}>
+                <Link href="/faq" prefetch={false} className={`text-ink-soft hover:text-gold-dark transition ${isRTL ? 'font-arabic' : ''}`}>
                   {t('footer.faq')}
                 </Link>
               </li>
               <li>
-                <Link href="/myorders" className={`text-ink-soft hover:text-gold-dark transition ${isRTL ? 'font-arabic' : ''}`}>
+                <Link href="/myorders" prefetch={false} className={`text-ink-soft hover:text-gold-dark transition ${isRTL ? 'font-arabic' : ''}`}>
                   {t('footer.trackOrder')}
                 </Link>
               </li>
@@ -177,13 +180,13 @@ export default function Footer() {
               {t('footer.allRightsReserved')}
             </p>
             <div className="flex flex-col md:flex-row gap-4 justify-center md:justify-end">
-              <Link href="/privacy" className={`text-ink-soft hover:text-gold-dark text-sm transition ${isRTL ? 'font-arabic' : ''}`}>
+              <Link href="/privacy" prefetch={false} className={`text-ink-soft hover:text-gold-dark text-sm transition ${isRTL ? 'font-arabic' : ''}`}>
                 {t('footer.privacyPolicy')}
               </Link>
-              <Link href="/terms" className={`text-ink-soft hover:text-gold-dark text-sm transition ${isRTL ? 'font-arabic' : ''}`}>
+              <Link href="/terms" prefetch={false} className={`text-ink-soft hover:text-gold-dark text-sm transition ${isRTL ? 'font-arabic' : ''}`}>
                 {t('footer.termsOfService')}
               </Link>
-              <Link href="/shipping" className={`text-ink-soft hover:text-gold-dark text-sm transition ${isRTL ? 'font-arabic' : ''}`}>
+              <Link href="/shipping" prefetch={false} className={`text-ink-soft hover:text-gold-dark text-sm transition ${isRTL ? 'font-arabic' : ''}`}>
                 {t('footer.cookieSettings')}
               </Link>
             </div>

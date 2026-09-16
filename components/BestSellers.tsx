@@ -53,8 +53,27 @@ export default function BestSellers() {
   const { formatPrice, selectedCountry } = useCurrency();
 
   const [products, setProducts] = useState<Product[]>([]);
+  const [loaded, setLoaded] = useState(false);
   const router = useRouter();
   const swiperRef = useRef<any>(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const hoverRef = useRef(false);
+
+  // Autoplay only while the carousel is on screen. Swiper's autoplay runs its own
+  // animation-frame timer and re-orders the looped slides on every step, which kept
+  // restyling the page for as long as it was open, even far below the fold.
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      const autoplay = swiperRef.current?.autoplay;
+      if (!autoplay) return;
+      if (!entry.isIntersecting) autoplay.stop();
+      else if (!hoverRef.current) autoplay.start();
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [loaded]);
 
   // Intelligent duplication so the loop is ALWAYS full — no empty space ever.
   // 1 → 1 1 1 …, 2 → 1 2 1 2 …, 3 → 1 2 3 1 2 3 …; 5+ tiles seamlessly.
@@ -155,6 +174,8 @@ export default function BestSellers() {
         }
       } catch (error) {
         console.error("Failed to fetch featured products:", error);
+      } finally {
+        setLoaded(true);
       }
     };
 
@@ -162,7 +183,9 @@ export default function BestSellers() {
   }, []);
 
 
-  if (!products.length) return null;
+  // While loading, keep the section's place with a placeholder row; rendering nothing
+  // made the section pop in and push everything below it down the page.
+  if (loaded && !products.length) return null;
   return (
     <>
       <style>{`
@@ -229,10 +252,12 @@ export default function BestSellers() {
           </div>
 
           {/* CAROUSEL */}
+          {loaded ? (
           <div
+            ref={carouselRef}
             className="relative"
-            onPointerEnter={(e) => { if (e.pointerType !== "mouse") return; const s = swiperRef.current; if (!s) return; s.autoplay?.stop(); s.setTransition(0); s.setTranslate(s.getTranslate()); }}
-            onPointerLeave={(e) => { if (e.pointerType !== "mouse") return; const s = swiperRef.current; if (!s) return; s.animating = false; /* freeze cancels the transition (no transitionend) → animating stays true → loop's slideNext bails; reset it so autoplay can advance */ s.setTransition(s.params.speed); s.autoplay?.start(); }}
+            onPointerEnter={(e) => { if (e.pointerType !== "mouse") return; hoverRef.current = true; const s = swiperRef.current; if (!s) return; s.autoplay?.stop(); s.setTransition(0); s.setTranslate(s.getTranslate()); }}
+            onPointerLeave={(e) => { if (e.pointerType !== "mouse") return; hoverRef.current = false; const s = swiperRef.current; if (!s) return; s.animating = false; /* freeze cancels the transition (no transitionend) → animating stays true → loop's slideNext bails; reset it so autoplay can advance */ s.setTransition(s.params.speed); s.autoplay?.start(); }}
           >
             {/* Prev — circular, vertically centered, on the carousel's left edge */}
             <button
@@ -354,6 +379,48 @@ export default function BestSellers() {
             {/* Pagination — always centered */}
             <div className="swiper-pagination-custom mt-8 flex gap-2 justify-center items-center"></div>
           </div>
+          ) : (
+            <>
+              <div aria-hidden className="grid grid-cols-2 gap-3 min-[480px]:gap-4 md:grid-cols-3 md:gap-5 lg:grid-cols-4 lg:gap-6 xl:grid-cols-5">
+                <div className="bg-card rounded-xl overflow-hidden border border-line shadow-luxury">
+                  <div className="w-full aspect-[3/4] skeleton-luxury rounded-none" />
+                  <div className="p-5">
+                    <div className="h-10 mb-3 space-y-2"><div className="h-4 w-4/5 skeleton-luxury" /><div className="h-4 w-1/2 skeleton-luxury" /></div>
+                    <div className="h-6 w-1/3 skeleton-luxury" />
+                  </div>
+                </div>
+                <div className="bg-card rounded-xl overflow-hidden border border-line shadow-luxury">
+                  <div className="w-full aspect-[3/4] skeleton-luxury rounded-none" />
+                  <div className="p-5">
+                    <div className="h-10 mb-3 space-y-2"><div className="h-4 w-4/5 skeleton-luxury" /><div className="h-4 w-1/2 skeleton-luxury" /></div>
+                    <div className="h-6 w-1/3 skeleton-luxury" />
+                  </div>
+                </div>
+                <div className="hidden md:block bg-card rounded-xl overflow-hidden border border-line shadow-luxury">
+                  <div className="w-full aspect-[3/4] skeleton-luxury rounded-none" />
+                  <div className="p-5">
+                    <div className="h-10 mb-3 space-y-2"><div className="h-4 w-4/5 skeleton-luxury" /><div className="h-4 w-1/2 skeleton-luxury" /></div>
+                    <div className="h-6 w-1/3 skeleton-luxury" />
+                  </div>
+                </div>
+                <div className="hidden lg:block bg-card rounded-xl overflow-hidden border border-line shadow-luxury">
+                  <div className="w-full aspect-[3/4] skeleton-luxury rounded-none" />
+                  <div className="p-5">
+                    <div className="h-10 mb-3 space-y-2"><div className="h-4 w-4/5 skeleton-luxury" /><div className="h-4 w-1/2 skeleton-luxury" /></div>
+                    <div className="h-6 w-1/3 skeleton-luxury" />
+                  </div>
+                </div>
+                <div className="hidden xl:block bg-card rounded-xl overflow-hidden border border-line shadow-luxury">
+                  <div className="w-full aspect-[3/4] skeleton-luxury rounded-none" />
+                  <div className="p-5">
+                    <div className="h-10 mb-3 space-y-2"><div className="h-4 w-4/5 skeleton-luxury" /><div className="h-4 w-1/2 skeleton-luxury" /></div>
+                    <div className="h-6 w-1/3 skeleton-luxury" />
+                  </div>
+                </div>
+              </div>
+              <div aria-hidden className="mt-8 h-2" />
+            </>
+          )}
 
         </div>
       </section>

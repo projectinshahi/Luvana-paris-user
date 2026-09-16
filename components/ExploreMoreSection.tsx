@@ -25,8 +25,27 @@ export default function ExploreMoreSection() {
   const { t, i18n } = useTranslation("common");
   const isRTL = i18n.language === "ar";
   const [categories, setCategories] = useState<CategoryFromBackend[]>([]);
+  const [loaded, setLoaded] = useState(false);
   const router = useRouter();
   const swiperRef = useRef<any>(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const hoverRef = useRef(false);
+
+  // Autoplay only while the carousel is on screen. Swiper's autoplay runs its own
+  // animation-frame timer and re-orders the looped slides on every step, which kept
+  // restyling the page for as long as it was open, even far below the fold.
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      const autoplay = swiperRef.current?.autoplay;
+      if (!autoplay) return;
+      if (!entry.isIntersecting) autoplay.stop();
+      else if (!hoverRef.current) autoplay.start();
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [loaded]);
 
   // Intelligent duplication so the loop is ALWAYS full — no empty space ever.
   // 1 → 1 1 1 …, 2 → 1 2 1 2 …, 3 → 1 2 3 1 2 3 …; 5+ tiles seamlessly.
@@ -52,13 +71,16 @@ export default function ExploreMoreSection() {
         }
       } catch (error) {
         console.error("Failed to fetch categories:", error);
+      } finally {
+        setLoaded(true);
       }
     };
 
     fetchCategories();
   }, []);
 
-  if (categories.length === 0) return null;
+  // While loading, keep the section's place with a placeholder row (see BestSellers).
+  if (loaded && categories.length === 0) return null;
 
   return (
     <>
@@ -124,10 +146,12 @@ export default function ExploreMoreSection() {
 
           {/* CAROUSEL — identical behaviour to Best Sellers (seamless infinite) */}
           <div className="w-full max-w-[1728px] mx-auto px-4 sm:px-5 md:px-6 lg:px-8 xl:px-10 2xl:px-12 min-[1920px]:px-16">
+            {loaded ? (
             <div
+              ref={carouselRef}
               className="relative"
-              onPointerEnter={(e) => { if (e.pointerType !== "mouse") return; const s = swiperRef.current; if (!s) return; s.autoplay?.stop(); s.setTransition(0); s.setTranslate(s.getTranslate()); }}
-              onPointerLeave={(e) => { if (e.pointerType !== "mouse") return; const s = swiperRef.current; if (!s) return; s.animating = false; /* freeze cancels the transition (no transitionend) → animating stays true → loop's slideNext bails; reset it so autoplay can advance */ s.setTransition(s.params.speed); s.autoplay?.start(); }}
+              onPointerEnter={(e) => { if (e.pointerType !== "mouse") return; hoverRef.current = true; const s = swiperRef.current; if (!s) return; s.autoplay?.stop(); s.setTransition(0); s.setTranslate(s.getTranslate()); }}
+              onPointerLeave={(e) => { if (e.pointerType !== "mouse") return; hoverRef.current = false; const s = swiperRef.current; if (!s) return; s.animating = false; /* freeze cancels the transition (no transitionend) → animating stays true → loop's slideNext bails; reset it so autoplay can advance */ s.setTransition(s.params.speed); s.autoplay?.start(); }}
             >
               {/* Prev — circular, vertically centered, on the carousel's left edge */}
               <button
@@ -235,6 +259,38 @@ export default function ExploreMoreSection() {
               {/* Pagination — always centered */}
               <div className="explore-pagination-custom mt-8 flex gap-2 justify-center items-center"></div>
             </div>
+            ) : (
+              <>
+              <div aria-hidden className="grid grid-cols-2 gap-3 min-[480px]:gap-4 md:grid-cols-3 md:gap-5 lg:grid-cols-4 lg:gap-6 xl:grid-cols-5">
+                  <div className="">
+                    <div className="w-full h-80 rounded-xl border border-gold/40 skeleton-luxury" />
+                    <div className="mt-6 h-7 w-1/2 skeleton-luxury" />
+                    <div className="mt-3 h-12 w-full skeleton-luxury" />
+                  </div>
+                  <div className="">
+                    <div className="w-full h-80 rounded-xl border border-gold/40 skeleton-luxury" />
+                    <div className="mt-6 h-7 w-1/2 skeleton-luxury" />
+                    <div className="mt-3 h-12 w-full skeleton-luxury" />
+                  </div>
+                  <div className="hidden md:block ">
+                    <div className="w-full h-80 rounded-xl border border-gold/40 skeleton-luxury" />
+                    <div className="mt-6 h-7 w-1/2 skeleton-luxury" />
+                    <div className="mt-3 h-12 w-full skeleton-luxury" />
+                  </div>
+                  <div className="hidden lg:block ">
+                    <div className="w-full h-80 rounded-xl border border-gold/40 skeleton-luxury" />
+                    <div className="mt-6 h-7 w-1/2 skeleton-luxury" />
+                    <div className="mt-3 h-12 w-full skeleton-luxury" />
+                  </div>
+                  <div className="hidden xl:block ">
+                    <div className="w-full h-80 rounded-xl border border-gold/40 skeleton-luxury" />
+                    <div className="mt-6 h-7 w-1/2 skeleton-luxury" />
+                    <div className="mt-3 h-12 w-full skeleton-luxury" />
+                  </div>
+              </div>
+              <div aria-hidden className="mt-8 h-2" />
+              </>
+            )}
           </div>
         </div>
       </section>

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Cactus_Classical_Serif } from "next/font/google";
+import { Geist } from "next/font/google";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -14,11 +14,9 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-const cactusSerif = Cactus_Classical_Serif({
-  variable: "--font-cactus-serif",
-  subsets: ["latin"],
-  weight: "400",
-});
+
+const GOOGLE_FONTS_URL =
+  "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://luvanaparis.com"),
@@ -77,16 +75,26 @@ export default function RootLayout({
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
-        {/* Only Noto Sans Arabic actually renders (.font-arabic first family); the other 3
-            families + weights 100–900 were render-blocking dead weight. Kept 300–700 (the used weights). */}
-        <link
-          href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet"
+        {/* Runs before first paint:
+            1. Visitors with a saved non-English language stay hidden until it is applied
+               after hydration (app/providers.tsx), so English never flashes for them.
+               The hero banner's ratio from a previous visit sizes its placeholder
+               (components/ImageSection.tsx), so it does not shift when the banner loads.
+            2. Loads the Google Fonts stylesheet without blocking the first paint. One request
+               covers every family the pages use (it replaces per-page @imports); files only
+               download for glyphs actually rendered. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var d=document.documentElement;try{var l=localStorage.getItem("language");if(l&&l!=="en")d.setAttribute("data-i18n-pending","");var m=localStorage.getItem("heroRatio-m"),k=localStorage.getItem("heroRatio-d");if(+m>0)d.style.setProperty("--hero-ratio-m",m);if(+k>0)d.style.setProperty("--hero-ratio-d",k)}catch(e){}var f=document.createElement("link");f.rel="stylesheet";f.href=${JSON.stringify(GOOGLE_FONTS_URL)};document.head.appendChild(f)})();`,
+          }}
         />
+        <noscript>
+          <link href={GOOGLE_FONTS_URL} rel="stylesheet" />
+        </noscript>
       </head>
 
       <body
-        className={`${geistSans.variable} ${cactusSerif.variable} antialiased w-full overflow-x-clip bg-cream text-ink`}
+        className={`${geistSans.variable} antialiased w-full overflow-x-clip bg-cream text-ink`}
         suppressHydrationWarning
       >
         <ReduxProvider>

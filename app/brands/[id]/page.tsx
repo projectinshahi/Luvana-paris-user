@@ -788,6 +788,8 @@ import {
 import { useLanguage } from "@/lib/useLanguage";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { toast } from "react-toastify";
+import { API_BASE_URL } from "@/lib/apiBase";
+import { cldImage } from "@/lib/cloudinary";
 
 // ================= LIGHTBOX COMPONENT =================
 interface LightboxProps {
@@ -1069,8 +1071,7 @@ const handleAddToCart = async () => {
       return; 
     }
 
-    const API_URL =
-      process.env.NEXT_PUBLIC_API_URL || "https://api.luvanaparis.com";
+    const API_URL = API_BASE_URL;
 
     const res = await fetch(`${API_URL}/user/cart`, {
       method: "POST",
@@ -1129,7 +1130,7 @@ const handleImageMouseMove = useCallback(
       try {
         setLoading(true);
 
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.luvanaparis.com";
+        const API_URL = API_BASE_URL;
         const res = await fetch(
           `${API_URL}/user/product/${productId}`
         );
@@ -1165,7 +1166,7 @@ const handleImageMouseMove = useCallback(
 
   if (loading || !product) {
     return (
-      <div className="pt-20 min-h-screen bg-cream text-ink flex justify-center items-center">
+      <div className="pt-[calc(var(--navbar-h)_+_1.5rem)] lg:pt-[calc(var(--navbar-h)_+_2rem)] min-h-screen bg-cream text-ink flex justify-center items-center">
         Loading Product...
       </div>
     );
@@ -1213,7 +1214,7 @@ const handleImageMouseMove = useCallback(
   // ================= UI =================
 
   return (
-    <div dir="ltr" className="pt-20 pb-16 min-h-screen bg-cream text-ink">
+    <div dir="ltr" className="pt-[calc(var(--navbar-h)_+_1.5rem)] lg:pt-[calc(var(--navbar-h)_+_2rem)] pb-16 min-h-screen bg-cream text-ink">
       <div className="max-w-7xl mx-auto px-4">
 
         {/* ================= MAIN SECTION ================= */}
@@ -1227,10 +1228,12 @@ const handleImageMouseMove = useCallback(
   <img
     key={`${selectedVariant}-${selectedImage}`}
     ref={imgRef}
-    src={productImages?.[selectedImage]}
+    src={cldImage(productImages?.[selectedImage], 1200)}
     alt={productName}
     className="w-full h-full object-cover"
     onError={(e) => {
+      // Swap to the placeholder once — re-assigning on every error loops forever if it fails too
+      if (e.currentTarget.src.endsWith("/placeholder.png")) return;
       console.error("Image failed to load:", productImages?.[selectedImage]);
       e.currentTarget.src = "/placeholder.png";
     }}
@@ -1269,7 +1272,7 @@ const handleImageMouseMove = useCallback(
   )} */}
   {isZooming && (
   <div 
-    className="absolute top-1/2 -translate-y-1/2 left-full ml-8 
+    className="hidden lg:block absolute top-1/2 -translate-y-1/2 left-full ml-8 
     w-105 h-105
     bg-center rounded-lg overflow-hidden shadow-2xl z-9999 border-2 border-gold/50"
     style={{
@@ -1338,11 +1341,11 @@ const handleImageMouseMove = useCallback(
                   }`}
                 >
                   <img 
-                    src={img} 
+                    src={cldImage(img, 400)} 
                     alt={`View ${idx + 1}`}
                     className="w-full h-full object-cover" 
                     onError={(e) => {
-                      e.currentTarget.src = "/placeholder.png";
+                      if (!e.currentTarget.src.endsWith("/placeholder.png")) e.currentTarget.src = "/placeholder.png";
                     }}
                   />
                 </button>
@@ -1413,7 +1416,7 @@ const handleImageMouseMove = useCallback(
                       >
                         {variantPreviewImage ? (
                           <img 
-                            src={variantPreviewImage} 
+                            src={cldImage(variantPreviewImage, 200)} 
                             alt={variantName}
                             className="w-full h-full object-cover"
                           />
@@ -1510,7 +1513,7 @@ const handleImageMouseMove = useCallback(
                   onClick={() => router.push(`/brands/${item._id}`)}
                 >
                   <img
-                    src={simImage}
+                    src={cldImage(simImage, 640)}
                     className="w-full aspect-square object-cover"
                   />
                   <div className="p-4">

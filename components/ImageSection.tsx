@@ -168,7 +168,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { Libre_Bodoni, Charm } from "next/font/google";
 import { useTranslation } from "react-i18next";
 import { useIsMobile } from "@/lib/useIsMobile";
@@ -199,9 +199,10 @@ export default function ImageSection() {
   const [banners, setBanners] = useState<Banner[]>([]);
   const [current, setCurrent] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  // Real aspect ratio (w/h) of the mobile banner image, measured on load, so the
-  // mobile container can match it exactly — no side gaps, no cropping.
-  const [mobileRatio, setMobileRatio] = useState<number | null>(null);
+  // Real aspect ratio (w/h) of each banner image, measured on load and keyed by
+  // its URL, so the container can match the displayed image exactly — full width,
+  // full height, no side gaps and no cropping, whatever size was uploaded.
+  const [ratios, setRatios] = useState<Record<string, number>>({});
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Fetch banners
@@ -275,17 +276,73 @@ export default function ImageSection() {
     return () => document.removeEventListener("visibilitychange", onVis);
   }, [banners.length, startAutoSlide, stopAutoSlide]);
 
-  // Container sizing.
-  //  • Desktop: unchanged 16:9.
-  //  • Mobile: match the measured mobile-image ratio → full-width, gap-free, crop-free.
-  //    Until measured, fall back to ~70svh. Rails keep freak ratios from going extreme
-  //    (object-cover fills the rail, so they never reintroduce gaps).
-  const sizeClass = isMobile
-    ? mobileRatio
-      ? "min-h-[58svh] max-h-[86svh]"
-      : "h-[70svh]"
-    : "aspect-[16/9]";
-  const sizeStyle = isMobile && mobileRatio ? { aspectRatio: String(mobileRatio) } : undefined;
+  // Which asset a banner shows at the current breakpoint. Used by both the
+  // container sizing below and the render, so the two can never disagree.
+  const srcFor = useCallback(
+    (banner: Banner) => {
+      const desktop = isRTL ? banner.imageUrlArabic : banner.imageUrlEnglish;
+      const mobile = isRTL ? banner.imageMobileUrlArabic : banner.imageMobileUrlEnglish;
+      return (isMobile && mobile) || desktop;
+    },
+    [isMobile, isRTL]
+  );
+
+  // Hero box: ONE ratio for the whole visit, set in CSS, so the hero never resizes —
+  // and never pushes the page — while banners load or rotate. Slides whose art
+  // matches it fill it edge to edge; any other slide is shown whole (object-contain)
+  // rather than cropped. Its value is the ratio measured on this device's previous
+  // visit (applied before first paint by app/layout.tsx), otherwise the defaults
+  // below, which follow the banner formats in use: portrait mobile assets and 2:1
+  // desktop banners. ponytail: change HERO_DEFAULT_RATIO (and the CSS fallbacks in
+  // sizeClass) if the house banner format changes; returning visitors adapt anyway.
+  const HERO_DEFAULT_RATIO = { mobile: 9 / 16, desktop: 2 };
+  const sizeClass = "aspect-[var(--hero-ratio-m,9/16)] md:aspect-[var(--hero-ratio-d,2/1)]";
+  const sizeStyle = undefined;
+  const boxRatio = useMemo(() => {
+    if (typeof window === "undefined") return undefined;
+    const fromLastVisit = parseFloat(
+      getComputedStyle(document.documentElement).getPropertyValue(isMobile ? "--hero-ratio-m" : "--hero-ratio-d")
+    );
+    return fromLastVisit > 0 ? fromLastVisit : isMobile ? HERO_DEFAULT_RATIO.mobile : HERO_DEFAULT_RATIO.desktop;
+  }, [isMobile]);
+
+  // The best ratio for this device, saved for the next visit (never applied mid-visit).
+  // On phones, banners that ship a mobile asset decide it, and portrait ones win over
+  // a landscape file put in the mobile slot. Otherwise the most common ratio wins; a
+  // tie goes to the banner shown first. Deterministic — not "whichever loaded first".
+  const bestRatio = useMemo(() => {
+    const authored = isMobile
+      ? banners.filter((b) => (isRTL ? b.imageMobileUrlArabic : b.imageMobileUrlEnglish))
+      : banners;
+    const pool = authored.length ? authored : banners;
+    const groups: { ratio: number; count: number; first: number }[] = [];
+    pool.forEach((banner, order) => {
+      const r = ratios[srcFor(banner)];
+      if (!r) return;
+      const g = groups.find((x) => Math.abs(x.ratio - r) / x.ratio < 0.02);
+      if (g) g.count += 1;
+      else groups.push({ ratio: r, count: 1, first: order });
+    });
+    const candidates = isMobile && groups.some((g) => g.ratio < 1) ? groups.filter((g) => g.ratio < 1) : groups;
+    candidates.sort((x, y) => y.count - x.count || x.first - y.first);
+    return candidates[0]?.ratio;
+  }, [banners, ratios, srcFor, isMobile, isRTL]);
+
+  useEffect(() => {
+    if (!bestRatio) return;
+    try {
+      localStorage.setItem(isMobile ? "heroRatio-m" : "heroRatio-d", String(bestRatio));
+    } catch {}
+  }, [bestRatio, isMobile]);
+
+  // A slide whose art matches the box fills it edge to edge; any other is shown whole
+  // on the backdrop instead of having its edges cut off. Until an image reports its
+  // size it is contained too — identical to cover when it does match, never a crop.
+  const fitFor = (src: string) => {
+    const r = ratios[src];
+    if (!r || !boxRatio) return "object-contain";
+    return Math.abs(r - boxRatio) / boxRatio < 0.02 ? "object-cover" : "object-contain";
+  };
 
   // Loading state
   if (isLoading || !banners.length) {
@@ -308,10 +365,8 @@ export default function ImageSection() {
       onMouseLeave={() => { if (banners.length > 1) startAutoSlide(); }}
     >
       {banners.map((banner, index) => {
-        const desktopImage = isRTL ? banner.imageUrlArabic : banner.imageUrlEnglish;
-        const mobileImage = isRTL ? banner.imageMobileUrlArabic : banner.imageMobileUrlEnglish;
         // Mobile viewport uses the mobile image when present, else falls back to desktop.
-        const image = isMobile && mobileImage ? mobileImage : desktopImage;
+        const image = srcFor(banner);
         const title = isRTL ? banner.titleArabic : banner.titleEnglish;
         const description = isRTL
           ? banner.descriptionArabic
@@ -339,30 +394,37 @@ export default function ImageSection() {
               alt={title || "Promotional banner"}
               fill
               priority={index === 0}
-              quality={100}
-              className="object-cover object-center"
-              sizes="(max-width: 768px) 100vw, (max-width: 1536px) 100vw, 1600px"
+              className={`${fitFor(image)} object-center`}
+              // The hero is full-bleed at every breakpoint, so the candidate
+              // width is always the viewport width — capping it made wide
+              // displays upscale a 1600px file and look soft.
+              sizes="100vw"
               loading={index === 0 ? "eager" : "lazy"}
               onLoad={(e) => {
-                // Only a real mobile asset drives the mobile container ratio.
-                if (!isMobile || !mobileImage) return;
+                // Every slide reports its own ratio; the container follows
+                // whichever one is currently visible.
                 const img = e.currentTarget;
-                if (img.naturalWidth > 0 && img.naturalHeight > 0) {
-                  const r = img.naturalWidth / img.naturalHeight;
-                  setMobileRatio((prev) => (prev === r ? prev : r));
-                }
+                if (!img.naturalWidth || !img.naturalHeight) return;
+                const r = img.naturalWidth / img.naturalHeight;
+                setRatios((prev) => (prev[image] === r ? prev : { ...prev, [image]: r }));
               }}
             />
 
-            <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/20 to-black/70" />
+            {/* Scrim and caption only where there is caption text to carry.
+                Banners with their wording baked into the artwork get neither,
+                so the image is not needlessly darkened — and a contained image
+                keeps a clean backdrop instead of dark bands. */}
+            {(title || description) && (
+              <>
+                <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/20 to-black/70" />
 
-            <div
-              className={`relative z-30 h-full flex items-end px-4 pb-5 sm:px-8 sm:pb-8 md:px-14 md:pb-10 lg:px-16 lg:pb-12 transition-all duration-700 ${isActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-                } ${isRTL ? "justify-end text-right" : "justify-start text-left"}`}
-            >
-              <div className="w-full max-w-[32rem] sm:max-w-[36rem] lg:max-w-[42rem] px-1 sm:px-0 pb-2 sm:pb-0">
-                <h1
-                  className={`${libreBodoni.className}
+                <div
+                  className={`relative z-30 h-full flex items-end px-4 pb-5 sm:px-8 sm:pb-8 md:px-14 md:pb-10 lg:px-16 lg:pb-12 transition-all duration-700 ${isActive ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+                    } ${isRTL ? "justify-end text-right" : "justify-start text-left"}`}
+                >
+                  <div className="w-full max-w-[32rem] sm:max-w-[36rem] lg:max-w-[42rem] px-1 sm:px-0 pb-2 sm:pb-0">
+                    <h1
+                      className={`${libreBodoni.className}
                     text-[24px] sm:text-[28px] md:text-[36px] lg:text-[44px] xl:text-[52px]
                     leading-tight text-[#E3C6A8] mb-2 sm:mb-3
                     transition-all duration-700 delay-100
@@ -384,6 +446,8 @@ export default function ImageSection() {
                 </p>
               </div>
             </div>
+            </>
+            )}
           </div>
         );
       })}

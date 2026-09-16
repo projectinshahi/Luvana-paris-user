@@ -7,6 +7,7 @@ import { useLanguage } from "@/lib/useLanguage";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { registerUser, selectAuthLoading, selectAuthError } from "@/app/features/auth";
 import { toast } from "react-toastify";
+import { API_BASE_URL } from "@/lib/apiBase";
 
 interface SignupModalProps {
   isOpen: boolean;
@@ -288,7 +289,7 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }: Signup
         <button
           type="button"
           onClick={() => {
-            const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.luvanaparis.com";
+            const API_URL = API_BASE_URL;
             window.location.href = `${API_URL}/user/google-auth/google`;
           }}
           className="w-full py-3 bg-card hover:bg-champagne border border-line text-ink rounded-lg transition duration-300 flex items-center justify-center gap-3 active:scale-[.99] focus:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-card"

@@ -305,6 +305,7 @@ import {
   selectAuthLoading,
   selectIsAuthenticated,
 } from "@/app/features/auth";
+import { API_BASE_URL } from "@/lib/apiBase";
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -547,7 +548,7 @@ const handleSubmit = async (e: React.FormEvent) => {
             <button
           type="button"
           onClick={() => {
-            const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api.luvanaparis.com";
+            const API_URL = API_BASE_URL;
             window.location.href = `${API_URL}/user/google-auth/google`;
           }}
           className="w-full py-3 bg-card hover:bg-champagne border border-line text-ink rounded-lg transition duration-300 flex items-center justify-center gap-3"

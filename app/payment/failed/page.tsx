@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   AlertCircle,
@@ -21,7 +21,7 @@ interface FailureDetails {
   timestamp?: string;
 }
 
-export default function PaymentFailedPage() {
+function PaymentFailedPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -96,7 +96,6 @@ export default function PaymentFailedPage() {
       }}
     >
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
         * { box-sizing: border-box; }
         @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .error-card { animation: slideIn 0.5s ease; }
@@ -492,5 +491,16 @@ export default function PaymentFailedPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// This page reads the URL's search params, which on a statically generated page must
+// sit inside a Suspense boundary (the build fails otherwise). The fallback holds the
+// page's height so the footer does not jump while the content hydrates.
+export default function PaymentFailedPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-cream" />}>
+      <PaymentFailedPageContent />
+    </Suspense>
   );
 }
