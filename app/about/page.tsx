@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import AboutView from "@/components/AboutView";
 
+// About Page
+
 export const metadata: Metadata = {
   title: "About Us | LuvanaParis",
   description:
