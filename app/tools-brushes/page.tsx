@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { ShoppingCart, Heart, X, SlidersHorizontal, ChevronDown, Sparkles } from "lucide-react";
 import { useCurrency } from "@/contexts/CurrencyContext";
-import { cldImage } from "@/lib/cloudinary";
+import { imageSrc, showPlaceholder } from "@/lib/cloudinary";
 
 /* ─── Types ─────────────────────────────────────────────────────────────── */
 interface Product {
@@ -531,12 +531,10 @@ export default function ToolsBrushesPage() {
                         {/* Image */}
                         <div className="relative w-full aspect-[3/4] overflow-hidden bg-champagne">
                           <img
-                            src={cldImage(product.image, 640)}
+                            src={imageSrc(product.image, 640)}
                             alt={product.name}
                             className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-                            onError={(e) => {
-                              if (!e.currentTarget.src.endsWith("/placeholder.png")) e.currentTarget.src = "/placeholder.png";
-                            }}
+                            onError={showPlaceholder}
                           />
                           {/* Gradient overlay */}
                           <div className="absolute inset-0 bg-gradient-to-t from-[#2E2A26]/25 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

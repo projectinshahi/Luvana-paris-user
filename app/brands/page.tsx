@@ -11,7 +11,7 @@ import api from "@/lib/axios";
 import axios from "axios";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { API_BASE_URL } from "@/lib/apiBase";
-import { cldImage } from "@/lib/cloudinary";
+import { imageSrc, showPlaceholder } from "@/lib/cloudinary";
 
 /* ─── Types ─────────────────────────────────────────────────────────────── */
 interface Variant {
@@ -111,11 +111,11 @@ function ProductCard({
       {/* ── Image ── */}
       <div className="relative w-full aspect-[3/4] overflow-hidden bg-champagne">
         <img
-          src={cldImage(image, 640) || "/placeholder.png"}
+          src={imageSrc(image, 640)}
           alt={name}
           loading="lazy"
           className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-          onError={(e) => { if (!e.currentTarget.src.endsWith("/placeholder.png")) e.currentTarget.src = "/placeholder.png"; }}
+          onError={showPlaceholder}
         />
 
         {/* Gradient overlay */}

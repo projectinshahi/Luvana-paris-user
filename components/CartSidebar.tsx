@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import api from "@/lib/axios";
 import Image from "next/image";
+import { imageSrc, showPlaceholder } from "@/lib/cloudinary";
 import { useDrawer } from "@/lib/useDrawer";
 
 interface CartItem {
@@ -246,8 +247,9 @@ export default function CartSidebar({ isOpen, onClose }: CartSidebarProps) {
                   {/* Product Image */}
                   <div className="relative w-20 sm:w-24 h-20 sm:h-24 shrink-0 rounded-lg overflow-hidden bg-champagne aspect-square">
                     <Image
-                      src={imageUrl}
+                      src={imageSrc(imageUrl)}
                       alt={name}
+                      onError={showPlaceholder}
                       fill
                       sizes="(max-width: 640px) 5rem, 6rem"
                       className="object-cover"

@@ -756,6 +756,7 @@
 "use client";
 
 import Image from "next/image";
+import { hideOnError, imageSrc } from "@/lib/cloudinary";
 
 import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import {
@@ -1097,8 +1098,9 @@ export default function Navbar() {
                 >
                   {selectedCountry?.flagUrl && (
                     <img
-                      src={selectedCountry.flagUrl}
+                      src={imageSrc(selectedCountry.flagUrl)}
                       alt={selectedCountry.nameEnglish}
+                      onError={hideOnError}
                       className="w-5 h-5 rounded-full object-cover border border-line"
                     />
                   )}
@@ -1122,8 +1124,9 @@ export default function Navbar() {
                           }`}
                       >
                         <img
-                          src={country.flagUrl}
+                          src={imageSrc(country.flagUrl)}
                           alt={country.nameEnglish}
+                          onError={hideOnError}
                           className="w-5 h-5 rounded-full object-cover border border-line"
                         />
                         <div className="flex flex-col">
