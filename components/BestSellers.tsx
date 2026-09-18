@@ -2,6 +2,7 @@
 "use client";
 
 import Image from "next/image";
+import { imageSrc, showPlaceholder } from "@/lib/cloudinary";
 import { Heart } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useCurrency } from "@/contexts/CurrencyContext";
@@ -309,7 +310,7 @@ export default function BestSellers() {
                 const image =
                   product?.variants?.[0]?.imageUrlEnglish?.[0]?.imageUrl ||
                   product?.imageUrlEnglish?.[0]?.imageUrl ||
-                  "/no-product.png";
+                  "/placeholder.png";
                 const name = isRTL ? product.nameArabic : product.nameEnglish;
 
                 return (
@@ -332,8 +333,9 @@ export default function BestSellers() {
 
                           {image && (
                             <Image
-                              src={image}
+                              src={imageSrc(image)}
                               alt={name}
+                              onError={showPlaceholder}
                               fill
                               sizes="(max-width: 480px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                               className="object-cover transition-transform duration-700 group-hover:scale-110"

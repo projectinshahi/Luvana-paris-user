@@ -9,7 +9,7 @@ import { X, ShoppingCart } from "lucide-react";
 import { toast } from "react-toastify";
 import api from "@/lib/axios";
 import { useCurrency } from "@/contexts/CurrencyContext";
-import { cldImage } from "@/lib/cloudinary";
+import { cldImage, imageSrc, showPlaceholder } from "@/lib/cloudinary";
 
 // ============= INTERFACES =============
 interface Variant {
@@ -734,8 +734,9 @@ const isInstagram =
                           <div className="flex gap-3">
                             <div className="w-20 h-20 shrink-0 bg-gray-100 rounded-xl overflow-hidden">
                               <img
-                                src={cldImage(getProductImage(currentInfluencer), 400) || "/placeholder.png"}
+                                src={imageSrc(getProductImage(currentInfluencer), 400)}
                                 alt={getProductName(currentInfluencer)}
+                                onError={showPlaceholder}
                                 className="w-full h-full object-cover"
                               />
                             </div>

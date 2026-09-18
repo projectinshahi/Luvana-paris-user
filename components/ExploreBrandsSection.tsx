@@ -180,6 +180,7 @@
 "use client";
 
 import Image from "next/image";
+import { imageSrc, PLACEHOLDER_IMAGE } from "@/lib/cloudinary";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
@@ -243,19 +244,22 @@ const router = useRouter();
         if (data?.brands) {
           const activeBrands = data.brands
             .filter((brand: BrandFromBackend) => brand.status === "active")
-            .map((brand: any) => ({
-              _id: brand._id,
-              src:
-                i18n.language === "ar"
-                  ? brand.brandImageArabic
-                  : brand.brandImageEnglish,
-              srcMobile:
-                i18n.language === "ar"
-                  ? brand.brandMobileImageArabic
-                  : brand.brandMobileImageEnglish,
-                   nameEnglish: brand.nameEnglish,
-                   nameArabic: brand.nameArabic,
-            }));
+            .map((brand: any) => {
+              // Arabic images are optional; fall back to the English ones.
+              const pick = (arabic?: string, english?: string) => {
+                const url = imageSrc(i18n.language === "ar" ? arabic || english : english);
+                return url === PLACEHOLDER_IMAGE ? undefined : url;
+              };
+              return {
+                _id: brand._id,
+                src: pick(brand.brandImageArabic, brand.brandImageEnglish),
+                srcMobile: pick(brand.brandMobileImageArabic, brand.brandMobileImageEnglish),
+                nameEnglish: brand.nameEnglish,
+                nameArabic: brand.nameArabic,
+              };
+            })
+            // a brand saved without a banner image has nothing to show in this full-width slider
+            .filter((brand: { src?: string }) => brand.src);
 
           setSlides(activeBrands);
         }

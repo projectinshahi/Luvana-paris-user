@@ -789,7 +789,17 @@ import { useLanguage } from "@/lib/useLanguage";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import { toast } from "react-toastify";
 import { API_BASE_URL } from "@/lib/apiBase";
-import { cldImage } from "@/lib/cloudinary";
+import { imageSrc, PLACEHOLDER_IMAGE, showPlaceholder } from "@/lib/cloudinary";
+
+// The non-empty image-URL lists of the given sources (variants/products), in order,
+// preferring the current language's list of each source over the other language's.
+const imagesFor = (language: string, ...sources: any[]): string[][] =>
+  sources
+    .flatMap((src) =>
+      language === "ar" ? [src?.imageUrlArabic, src?.imageUrlEnglish] : [src?.imageUrlEnglish, src?.imageUrlArabic]
+    )
+    .map((list) => (Array.isArray(list) ? list.map((img: any) => img?.imageUrl).filter(Boolean) : []))
+    .filter((urls) => urls.length > 0);
 
 // ================= LIGHTBOX COMPONENT =================
 interface LightboxProps {
@@ -960,9 +970,10 @@ function Lightbox({ images, initialIndex, onClose }: LightboxProps) {
         }}
       >
         <img
-          src={images[activeIndex]}
+          src={imageSrc(images[activeIndex])}
           alt={`Product view ${activeIndex + 1}`}
           draggable={false}
+          onError={showPlaceholder}
           className="max-w-[90vw] max-h-[85vh] object-contain transition-transform duration-100 pointer-events-none"
           style={{
             transform: `scale(${zoom}) translate(${pan.x / zoom}px, ${
@@ -987,7 +998,7 @@ function Lightbox({ images, initialIndex, onClose }: LightboxProps) {
                   : "border-white/20 opacity-60 hover:opacity-100"
               }`}
             >
-              <img src={img} alt="" className="w-full h-full object-cover" />
+              <img src={imageSrc(img, 200)} alt="" className="w-full h-full object-cover" onError={showPlaceholder} />
             </button>
           ))}        </div>
       )}
@@ -1191,25 +1202,10 @@ const handleImageMouseMove = useCallback(
 
   const selectedVariantData = product.variants?.[selectedVariant];
 
-  // Get images based on selected variant or fallback to product images
-  const productImages = (() => {
-    if (selectedVariantData) {
-      const variantImages =
-        currentLanguage === "ar"
-          ? selectedVariantData.imageUrlArabic?.map((img: any) => img.imageUrl)
-          : selectedVariantData.imageUrlEnglish?.map((img: any) => img.imageUrl);
-      
-      // If variant has images, use them; otherwise fallback to product images
-      if (variantImages && variantImages.length > 0) {
-        return variantImages;
-      }
-    }
-    
-    // Fallback to product images
-    return currentLanguage === "ar"
-      ? product.imageUrlArabic?.map((img: any) => img.imageUrl)
-      : product.imageUrlEnglish?.map((img: any) => img.imageUrl);
-  })();
+  // Images of the selected variant, else the product's own. Arabic images are
+  // optional in the admin, so each falls back to the other language, and a
+  // product with no images at all shows the placeholder rather than a broken image.
+  const productImages: string[] = imagesFor(currentLanguage, selectedVariantData, product)[0] || [PLACEHOLDER_IMAGE];
 
   // ================= UI =================
 
@@ -1228,15 +1224,10 @@ const handleImageMouseMove = useCallback(
   <img
     key={`${selectedVariant}-${selectedImage}`}
     ref={imgRef}
-    src={cldImage(productImages?.[selectedImage], 1200)}
+    src={imageSrc(productImages[selectedImage], 1200)}
     alt={productName}
     className="w-full h-full object-cover"
-    onError={(e) => {
-      // Swap to the placeholder once — re-assigning on every error loops forever if it fails too
-      if (e.currentTarget.src.endsWith("/placeholder.png")) return;
-      console.error("Image failed to load:", productImages?.[selectedImage]);
-      e.currentTarget.src = "/placeholder.png";
-    }}
+    onError={showPlaceholder}
   />
 
 {/* Hover Layer */}
@@ -1341,12 +1332,10 @@ const handleImageMouseMove = useCallback(
                   }`}
                 >
                   <img 
-                    src={cldImage(img, 400)} 
+                    src={imageSrc(img, 400)}
                     alt={`View ${idx + 1}`}
-                    className="w-full h-full object-cover" 
-                    onError={(e) => {
-                      if (!e.currentTarget.src.endsWith("/placeholder.png")) e.currentTarget.src = "/placeholder.png";
-                    }}
+                    className="w-full h-full object-cover"
+                    onError={showPlaceholder}
                   />
                 </button>
               ))}
@@ -1379,58 +1368,39 @@ const handleImageMouseMove = useCallback(
               </span>
             </div>
 
-            {/* Variants */}
+            {/* Colours: one swatch per variant, filled with that variant's own colour */}
             {product.variants?.length > 0 && (
               <div className="mb-6">
-                <h3 className="mb-3 font-semibold">
-                  {isRTL ? "الألوان" : "Colors"}
-                  {selectedVariantData && (
-                    <span className="text-sm text-muted font-normal ml-2">
-                      - {currentLanguage === "ar" 
-                        ? selectedVariantData.nameArabic || selectedVariantData.nameEnglish
-                        : selectedVariantData.nameEnglish || selectedVariantData.nameArabic}
-                    </span>
-                  )}
-                </h3>
+                <h3 className="mb-3 font-semibold">{isRTL ? "الألوان" : "Colors"}</h3>
                 <div className="flex flex-wrap gap-3">
                   {product.variants.map((variant: any, idx: number) => {
-                    // Get variant image for preview
-                    const variantPreviewImage = currentLanguage === "ar"
-                      ? variant.imageUrlArabic?.[0]?.imageUrl || variant.imageUrlEnglish?.[0]?.imageUrl
-                      : variant.imageUrlEnglish?.[0]?.imageUrl || variant.imageUrlArabic?.[0]?.imageUrl;
-                    
                     const variantName = currentLanguage === "ar"
                       ? variant.nameArabic || variant.nameEnglish
                       : variant.nameEnglish || variant.nameArabic;
+                    const selected = selectedVariant === idx;
 
                     return (
                       <button
                         key={variant._id}
+                        type="button"
                         onClick={() => setSelectedVariant(idx)}
                         title={variantName}
-                        className={`relative w-16 h-16 rounded-lg border-2 overflow-hidden transition-all ${
-                          selectedVariant === idx
-                            ? "border-gold ring-2 ring-gold ring-offset-2 scale-110"
+                        aria-label={variantName}
+                        aria-pressed={selected}
+                        className={`w-14 h-14 rounded-full p-[3px] border-2 transition-all ${
+                          selected
+                            ? "border-ink shadow-[0_0_10px_rgba(0,0,0,0.25)] scale-110"
                             : "border-line hover:border-gold"
                         }`}
                       >
-                        {variantPreviewImage ? (
-                          <img 
-                            src={cldImage(variantPreviewImage, 200)} 
-                            alt={variantName}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div 
-                            className="w-full h-full"
-                            style={{ backgroundColor: variant.color || "#666" }}
-                          />
-                        )}
-                        {selectedVariant === idx && (
-                          <div className="absolute inset-0 bg-gold/20 flex items-center justify-center">
-                            <div className="w-4 h-4 rounded-full bg-gold border-2 border-white" />
-                          </div>
-                        )}
+                        {/* The stored value is whatever the admin picked: usually #rrggbb,
+                            but older rows hold CSS names such as "Red". It is handed to the
+                            browser as-is — an unparseable value is dropped and the neutral
+                            underneath shows through, so a swatch is never blank. */}
+                        <span
+                          className="block w-full h-full rounded-full bg-line"
+                          style={{ backgroundColor: variant.color || undefined }}
+                        />
                       </button>
                     );
                   })}
@@ -1498,10 +1468,9 @@ const handleImageMouseMove = useCallback(
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
             {similarProducts.map((item) => {
-              const simImage =
-                currentLanguage === "ar"
-                  ? item.imageUrlArabic?.[0]?.imageUrl
-                  : item.imageUrlEnglish?.[0]?.imageUrl;
+              // Product photos live on the variants; the product-level lists are usually empty.
+              const simImage = imagesFor(currentLanguage, ...(item.variants || []), item)[0]?.[0];
+              const simName = currentLanguage === "ar" ? item.nameArabic || item.nameEnglish : item.nameEnglish;
 
               return (
                 <div
@@ -1513,14 +1482,15 @@ const handleImageMouseMove = useCallback(
                   onClick={() => router.push(`/brands/${item._id}`)}
                 >
                   <img
-                    src={cldImage(simImage, 640)}
+                    src={imageSrc(simImage, 640)}
+                    alt={simName}
+                    loading="lazy"
                     className="w-full aspect-square object-cover"
+                    onError={showPlaceholder}
                   />
                   <div className="p-4">
                     <h3 className="text-sm font-semibold text-ink mb-2">
-                      {currentLanguage === "ar"
-                        ? item.nameArabic
-                        : item.nameEnglish}
+                      {simName}
                     </h3>
                     <p className="text-gold font-bold">
                       {formatPrice(item.minPrice)}

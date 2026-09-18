@@ -559,6 +559,7 @@ import { useLanguage } from "@/lib/useLanguage";
 import ResponsiveLayout from "@/components/ResponsiveLayout";
 import api from "@/lib/axios";
 import { useCurrency } from "@/contexts/CurrencyContext";
+import { imageSrc, showPlaceholder } from "@/lib/cloudinary";
 
 interface OrderItem {
   name: string;
@@ -860,7 +861,7 @@ export default function YourOrdersPage() {
                             {/* image */}
                             <div className="w-16 h-16 sm:w-18 sm:h-18 shrink-0 rounded-xl overflow-hidden bg-champagne border border-line">
                               {item.image
-                                ? <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                                ? <img src={imageSrc(item.image, 160)} alt={item.name} onError={showPlaceholder} className="w-full h-full object-cover" />
                                 : <div className="w-full h-full flex items-center justify-center"><Package size={20} className="text-muted" /></div>
                               }
                             </div>

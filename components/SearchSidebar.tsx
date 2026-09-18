@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { imageSrc, showPlaceholder } from "@/lib/cloudinary";
 import { Search, X, Loader2, Clock } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
@@ -166,9 +167,15 @@ export default function SearchSidebar({ isOpen, onClose }: SearchSidebarProps) {
   const productName = (p: Product) => (isArabic ? p.nameArabic || p.nameEnglish : p.nameEnglish);
   const productImage = (p: Product) => {
     const v = p.variants?.[0];
+    // Arabic images are optional, so either language's image beats the placeholder.
+    const [first, second] = isArabic
+      ? (["imageUrlArabic", "imageUrlEnglish"] as const)
+      : (["imageUrlEnglish", "imageUrlArabic"] as const);
     return (
-      (isArabic ? v?.imageUrlArabic?.[0]?.imageUrl : v?.imageUrlEnglish?.[0]?.imageUrl) ||
-      (isArabic ? p.imageUrlArabic?.[0]?.imageUrl : p.imageUrlEnglish?.[0]?.imageUrl) ||
+      v?.[first]?.[0]?.imageUrl ||
+      v?.[second]?.[0]?.imageUrl ||
+      p[first]?.[0]?.imageUrl ||
+      p[second]?.[0]?.imageUrl ||
       "/placeholder.png"
     );
   };
@@ -315,8 +322,9 @@ export default function SearchSidebar({ isOpen, onClose }: SearchSidebarProps) {
                     >
                       <div className="relative w-22 h-22 shrink-0 rounded-xl overflow-hidden bg-champagne">
                         <Image
-                          src={productImage(product)}
+                          src={imageSrc(productImage(product))}
                           alt={productName(product) || ""}
+                          onError={showPlaceholder}
                           fill
                           sizes="88px"
                           className="object-cover transition-transform duration-500 group-hover:scale-105"

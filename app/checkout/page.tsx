@@ -8,6 +8,7 @@ import {
 import { useCurrency } from "@/contexts/CurrencyContext";
 import api from "@/lib/axios";
 import { useRouter } from "next/navigation";
+import { imageSrc, showPlaceholder } from "@/lib/cloudinary";
 
 const GOLD = "#8B5E3C";
 const GOLD_LIGHT = "#A0724C";
@@ -118,7 +119,7 @@ function OrderItemRow({ name, qty, price, img, formatPrice }: {
           border: "1px solid #E8DED2", overflow: "hidden",
           display: "flex", alignItems: "center", justifyContent: "center",
         }}>
-          {img ? <img src={img} alt={name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          {img ? <img src={imageSrc(img, 160)} alt={name} onError={showPlaceholder} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             : <Sparkles size={20} color={GOLD} />}
         </div>
         <div style={{

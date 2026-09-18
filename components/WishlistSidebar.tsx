@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import api from "@/lib/axios";
 import { useCurrency } from "@/contexts/CurrencyContext";
 import Image from "next/image";
+import { imageSrc, showPlaceholder } from "@/lib/cloudinary";
 import { useDrawer } from "@/lib/useDrawer";
 
 interface WishlistItem {
@@ -197,8 +198,9 @@ export default function WishlistSidebar({
                 >
                   <div className="relative w-20 h-20 shrink-0 rounded-lg overflow-hidden bg-champagne">
                     <Image
-                      src={imageUrl}
+                      src={imageSrc(imageUrl)}
                       alt={name}
+                      onError={showPlaceholder}
                       fill
                       sizes="5rem"
                       className={`object-cover ${

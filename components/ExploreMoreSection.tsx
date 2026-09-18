@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { imageSrc, showPlaceholder } from "@/lib/cloudinary";
 import { useEffect, useState, useRef, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useRouter } from "next/navigation";
@@ -217,8 +218,9 @@ export default function ExploreMoreSection() {
                         <div className="relative w-full h-80 overflow-hidden rounded-xl border border-gold/40 hover:border-gold-dark shadow-luxury hover:shadow-luxury-lg transition-all duration-300">
                           {img && (
                             <Image
-                              src={img}
+                              src={imageSrc(img)}
                               alt={title || ""}
+                              onError={showPlaceholder}
                               fill
                               sizes="(max-width: 480px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                               className="object-cover group-hover:scale-110 transition-transform duration-500"
