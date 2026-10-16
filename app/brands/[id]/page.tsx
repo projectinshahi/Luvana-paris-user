@@ -1318,8 +1318,9 @@ const handleImageMouseMove = useCallback(
 </div>
 
 
-            {/* Thumbnails */}
-            <div className="grid grid-cols-3 gap-4 mt-4">
+            {/* Thumbnails: four to a row, sized by the grid to the main image's
+                own width, so they shrink to fit rather than being set by hand. */}
+            <div className="grid grid-cols-4 gap-4 mt-4">
               {productImages?.map((img: string, idx: number) => (
                 <button
                   key={`${selectedVariant}-thumb-${idx}`}
