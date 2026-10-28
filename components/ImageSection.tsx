@@ -169,13 +169,13 @@
 
 import Image from "next/image";
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
-import { Libre_Bodoni, Charm } from "next/font/google";
+import localFont from "next/font/local";
 import { useTranslation } from "react-i18next";
 import { useIsMobile } from "@/lib/useIsMobile";
 import { getHome } from "@/lib/homeData";
 
-const libreBodoni = Libre_Bodoni({ subsets: ["latin"], weight: ["400"] });
-const charm = Charm({ subsets: ["latin"], weight: ["400"] });
+const libreBodoni = localFont({ src: "../public/fonts/libre-bodoni-latin.woff2", weight: "400", display: "swap" });
+const charm = localFont({ src: "../public/fonts/charm-latin.woff2", weight: "400", display: "swap" });
 
 interface Banner {
   _id: string;
@@ -191,14 +191,20 @@ interface Banner {
   status: string;
 }
 
-export default function ImageSection() {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default function ImageSection({ initialData }: { initialData?: any }) {
   const { i18n } = useTranslation("common");
   const isRTL = i18n.language === "ar";
   const isMobile = useIsMobile();
 
-  const [banners, setBanners] = useState<Banner[]>([]);
+  const [banners, setBanners] = useState<Banner[]>(() => {
+    if (!initialData?.banners) return [];
+    return (initialData.banners as Banner[])
+      .filter((b) => b.status === "active")
+      .sort((a, b) => a.sortOrder - b.sortOrder);
+  });
   const [current, setCurrent] = useState(0);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(() => !initialData);
   // Real aspect ratio (w/h) of each banner image, measured on load and keyed by
   // its URL, so the container can match the displayed image exactly — full width,
   // full height, no side gaps and no cropping, whatever size was uploaded.
@@ -207,6 +213,7 @@ export default function ImageSection() {
 
   // Fetch banners
   useEffect(() => {
+    if (initialData) return;
     const fetchHome = async () => {
       try {
         const data = await getHome();
@@ -226,7 +233,7 @@ export default function ImageSection() {
     };
 
     fetchHome();
-  }, []);
+  }, [initialData]);
 
   // Auto slide with smooth transitions
   const startAutoSlide = useCallback(() => {

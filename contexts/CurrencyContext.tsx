@@ -156,16 +156,21 @@ export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
     window.dispatchEvent(new Event("countryChanged"));
   };
 
-  const convertPrice = (price: number | null | undefined) => {
-    if (price === null || price === undefined) return 0;
+  const convertPrice = (price: number | null | undefined): number => {
+    if (price == null) return 0;
+    if (!Number.isFinite(price)) return price; // propagate NaN/Infinity so callers can detect it
     if (!selectedCountryState) return price;
-    return price * Number(selectedCountryState.currencyValue);
+    const rate = Number(selectedCountryState.currencyValue);
+    return Number.isFinite(rate) && rate > 0 ? price * rate : price;
   };
 
-  const formatPrice = (price: number | null | undefined) => {
-    if (price === null || price === undefined) return "";
-    if (!selectedCountryState) return `KWD ${price.toFixed(2)}`;
-    return `${selectedCountryState.abbreviation} ${convertPrice(price).toFixed(2)}`;
+  const formatPrice = (price: number | null | undefined): string => {
+    if (price == null || !Number.isFinite(price)) return "—";
+    const abbr = selectedCountryState?.abbreviation || "KWD";
+    // KWD/BHD/OMR use 3 decimal places to match MYF and backend cartRound
+    const dp = ["KWD", "BHD", "OMR"].includes(abbr) ? 3 : 2;
+    const converted = convertPrice(price);
+    return `${abbr} ${(Number.isFinite(converted) ? converted : price).toFixed(dp)}`;
   };
 
   return (

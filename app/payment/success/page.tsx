@@ -23,7 +23,8 @@ interface OrderDetails {
   customerEmail: string;
   address: string;
   total: number;
-  tapChargeId: string;
+  paymentReference: string;
+  orderId?: string;
   cartItems: Array<{ variant: string; quantity: number }>;
   paymentStatus: string;
 }
@@ -36,28 +37,89 @@ function PaymentSuccessPageContent() {
   const [orderDetails, setOrderDetails] = useState<OrderDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [orderPending, setOrderPending] = useState(false);
 
   useEffect(() => {
-    // Retrieve order details from sessionStorage
-    const pendingOrder = sessionStorage.getItem("pendingOrder");
+    const load = async () => {
+      // ── Fast path: sessionStorage has the pending order ──────────────────
+      let pendingOrder: string | null = null;
+      try { pendingOrder = sessionStorage.getItem("pendingOrder"); } catch (_) {}
 
-    if (!pendingOrder) {
+      if (pendingOrder) {
+        try {
+          const order = JSON.parse(pendingOrder);
+          if (!order.orderId) {
+            try {
+              const lastId = sessionStorage.getItem("lastOrderId");
+              if (lastId) order.orderId = lastId;
+            } catch (_) {}
+          }
+          let failed = false;
+          try { failed = sessionStorage.getItem("orderCreationFailed") === "1"; } catch (_) {}
+          if (failed) setOrderPending(true);
+          setOrderDetails(order);
+          try { sessionStorage.removeItem("pendingOrder"); } catch (_) {}
+          try { sessionStorage.removeItem("lastOrderId"); } catch (_) {}
+          try { sessionStorage.removeItem("orderCreationFailed"); } catch (_) {}
+        } catch (err) {
+          console.error("[Success] Error parsing pending order:", err);
+          setError("Failed to load order details.");
+        }
+        setLoading(false);
+        return;
+      }
+
+      // ── Fallback: URL contains orderId — fetch from API ──────────────────
+      const urlOrderId = searchParams.get("orderId");
+      if (urlOrderId) {
+        try {
+          const { default: api } = await import("@/lib/axios");
+          const res = await api.get(`/user/order/lookup/${encodeURIComponent(urlOrderId)}`);
+          const o = res.data?.order;
+          if (o) {
+            setOrderDetails({
+              customerName: "",
+              customerEmail: "",
+              address: "",
+              total: o.price,
+              paymentReference: o.paymentReference || "",
+              orderId: o.orderId,
+              cartItems: [],
+              paymentStatus: o.paymentStatus || "paid",
+            });
+            setLoading(false);
+            return;
+          }
+        } catch (err) {
+          console.error("[Success] API order lookup failed:", err);
+        }
+      }
+
+      // ── Last resort: lastOrderId in sessionStorage ────────────────────────
+      let lastOrderId: string | null = null;
+      try { lastOrderId = sessionStorage.getItem("lastOrderId"); } catch (_) {}
+      if (lastOrderId) {
+        setOrderDetails({
+          customerName: "",
+          customerEmail: "",
+          address: "",
+          total: 0,
+          paymentReference: "",
+          orderId: lastOrderId,
+          cartItems: [],
+          paymentStatus: "paid",
+        });
+        try { sessionStorage.removeItem("lastOrderId"); } catch (_) {}
+        setLoading(false);
+        return;
+      }
+
+      // ── Nothing available — redirect home ────────────────────────────────
       router.push("/");
-      return;
-    }
+    };
 
-    try {
-      const order = JSON.parse(pendingOrder);
-      setOrderDetails(order);
-      // Clear sessionStorage after reading
-      sessionStorage.removeItem("pendingOrder");
-    } catch (err) {
-      console.error("Error parsing order details:", err);
-      setError("Failed to load order details.");
-    } finally {
-      setLoading(false);
-    }
-  }, [router]);
+    load();
+  }, [router, searchParams]);
 
   if (loading) {
     return (
@@ -175,6 +237,30 @@ function PaymentSuccessPageContent() {
       `}</style>
 
       <div style={{ maxWidth: 600, margin: "0 auto" }}>
+        {/* Order-pending warning — shown when payment was confirmed but order creation failed */}
+        {orderPending && (
+          <div
+            style={{
+              background: "#FFF8E7",
+              border: "1px solid #F0C040",
+              borderRadius: 10,
+              padding: "14px 18px",
+              marginBottom: 20,
+              fontSize: 13,
+              color: "#7A5C00",
+              lineHeight: 1.6,
+            }}
+          >
+            <strong>Payment received — order confirmation pending.</strong>
+            {" "}Your payment was successful but we were unable to complete your order automatically.
+            Please contact support at{" "}
+            <a href="mailto:support@luvanaparis.com" style={{ color: "#714B2F" }}>
+              support@luvanaparis.com
+            </a>
+            {" "}quoting your payment reference below, and we will process your order within 24 hours.
+          </div>
+        )}
+
         {/* Success Header */}
         <div
           className="success-card"
@@ -227,8 +313,26 @@ function PaymentSuccessPageContent() {
               border: `1px solid ${GOLD}33`,
             }}
           >
+            {orderDetails.orderId && (
+              <>
+                <p style={{ margin: 0, fontSize: 12, color: "#918980", letterSpacing: 1 }}>
+                  ORDER NUMBER
+                </p>
+                <p
+                  style={{
+                    margin: "6px 0 12px",
+                    fontSize: 15,
+                    fontWeight: 700,
+                    color: GOLD_DARK,
+                    fontFamily: "'Courier New', monospace",
+                  }}
+                >
+                  {orderDetails.orderId}
+                </p>
+              </>
+            )}
             <p style={{ margin: 0, fontSize: 12, color: "#918980", letterSpacing: 1 }}>
-              CHARGE ID
+              PAYMENT REFERENCE
             </p>
             <p
               style={{
@@ -239,7 +343,7 @@ function PaymentSuccessPageContent() {
                 wordBreak: "break-all",
               }}
             >
-              {orderDetails.tapChargeId}
+              {orderDetails.paymentReference}
             </p>
           </div>
         </div>

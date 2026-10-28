@@ -829,18 +829,22 @@ export default function Navbar() {
       try {
         const API_URL = API_BASE_URL;
         const res = await fetch(
-          `${API_URL}/admin/promotion-strip`,
+          `${API_URL}/user/promotion-strip`,
           { cache: "no-store" }
         );
 
         const data = await res.json();
+        // User endpoint returns { success, data: [...] }
+        const items = Array.isArray(data) ? data : (data?.data ?? data?.promotions ?? []);
 
-        const activePromotions = data
-          .filter((item: any) => item.status === "active")
+        // Backend already filters by status:'active'; no need to re-filter.
+        // The select projection omits status, so re-checking it here would always fail.
+        const activePromotions = items
           .sort((a: any, b: any) => a.sortOrder - b.sortOrder)
           .map((item: any) =>
             isRTL ? item.contentArabic : item.contentEnglish
-          );
+          )
+          .filter(Boolean);
 
         setOffers(activePromotions);
       } catch (error) {
@@ -1001,8 +1005,9 @@ export default function Navbar() {
         {/* All offers share one grid cell and only the current one is visible, so the
             bar is always as tall as the longest offer. Swapping the text alone made the
             bar (and the fixed navbar) grow and shrink as offers rotated on phones. */}
+        {offers.length > 0 && (
         <div className="bg-ink text-champagne text-center py-2.5 grid">
-          {(offers.length > 0 ? offers : ["Loading..."]).map((offer, i) => (
+          {offers.map((offer, i) => (
             <span
               key={i}
               aria-hidden={i !== offerIndex}
@@ -1012,6 +1017,7 @@ export default function Navbar() {
             </span>
           ))}
         </div>
+        )}
 
         {/* DESKTOP NAVBAR */}
         <nav

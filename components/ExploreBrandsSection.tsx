@@ -190,10 +190,12 @@ import { getHome } from "@/lib/homeData";
 
 type BrandFromBackend = {
   _id: string;
-  brandImageEnglish: string;
-  brandImageArabic: string;
+  brandImageEnglish?: string;
+  brandImageArabic?: string;
   brandMobileImageEnglish?: string;
   brandMobileImageArabic?: string;
+  logoUrlEnglish?: string;
+  logoUrlArabic?: string;
   status: string;
 };
 
@@ -205,7 +207,8 @@ type Slide = {
   nameArabic: string;
 };
 
-export default function ExploreBrandsSection() {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default function ExploreBrandsSection({ initialData }: { initialData?: any }) {
   const { t, i18n } = useTranslation("common");
   const isRTL = i18n.language === "ar";
   const isMobile = useIsMobile();
@@ -215,6 +218,7 @@ export default function ExploreBrandsSection() {
     : "More Luxury Brand Style.";
 
   const [slides, setSlides] = useState<Slide[]>([]);
+  const [loaded, setLoaded] = useState(false);
   // Track index over the extended array [ ...slides, clone-of-slide-0 ].
   // pos may reach slides.length (the trailing clone) so the track keeps moving
   // RIGHT past the last brand into the first, then silently snaps back.
@@ -237,39 +241,51 @@ const router = useRouter();
 
   // ✅ FETCH BRANDS FROM BACKEND
   useEffect(() => {
+    const processFromData = (data: any) => {
+      if (!data?.brands) return;
+      const processed = data.brands
+        .filter((brand: BrandFromBackend) => brand.status === "active")
+        .map((brand: any) => {
+          // Arabic images are optional; fall back to the English ones.
+          const pick = (arabic?: string, english?: string) => {
+            const url = imageSrc(i18n.language === "ar" ? arabic || english : english);
+            return url === PLACEHOLDER_IMAGE ? undefined : url;
+          };
+          return {
+            _id: brand._id,
+            // Use dedicated banner image; fall back to logo when no banner is uploaded yet.
+            src: pick(brand.brandImageArabic, brand.brandImageEnglish)
+              ?? pick(brand.logoUrlArabic, brand.logoUrlEnglish),
+            srcMobile: pick(brand.brandMobileImageArabic, brand.brandMobileImageEnglish)
+              ?? pick(brand.brandImageArabic, brand.brandImageEnglish)
+              ?? pick(brand.logoUrlArabic, brand.logoUrlEnglish),
+            nameEnglish: brand.nameEnglish,
+            nameArabic: brand.nameArabic,
+          };
+        })
+        .filter((brand: { src?: string }) => brand.src);
+      setSlides(processed);
+    };
+
+    if (initialData) {
+      processFromData(initialData);
+      setLoaded(true);
+      return;
+    }
+
     const fetchBrands = async () => {
       try {
         const data = await getHome();
-
-        if (data?.brands) {
-          const activeBrands = data.brands
-            .filter((brand: BrandFromBackend) => brand.status === "active")
-            .map((brand: any) => {
-              // Arabic images are optional; fall back to the English ones.
-              const pick = (arabic?: string, english?: string) => {
-                const url = imageSrc(i18n.language === "ar" ? arabic || english : english);
-                return url === PLACEHOLDER_IMAGE ? undefined : url;
-              };
-              return {
-                _id: brand._id,
-                src: pick(brand.brandImageArabic, brand.brandImageEnglish),
-                srcMobile: pick(brand.brandMobileImageArabic, brand.brandMobileImageEnglish),
-                nameEnglish: brand.nameEnglish,
-                nameArabic: brand.nameArabic,
-              };
-            })
-            // a brand saved without a banner image has nothing to show in this full-width slider
-            .filter((brand: { src?: string }) => brand.src);
-
-          setSlides(activeBrands);
-        }
+        processFromData(data);
       } catch (error) {
         console.error("Failed to fetch brands:", error);
+      } finally {
+        setLoaded(true);
       }
     };
 
     fetchBrands();
-  }, [i18n.language]);
+  }, [i18n.language, initialData]);
 
   // ✅ SMOOTH SLIDE TRANSITION
   // const goToSlide = useCallback((index: number) => {
@@ -393,6 +409,8 @@ const router = useRouter();
     : { height: "682px" };
 
   if (!slides.length) {
+    // Loaded but no brands with images — hide the section entirely.
+    if (loaded) return null;
     return (
       <>
         {heading}

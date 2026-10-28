@@ -206,7 +206,8 @@ type Brand = {
   status: string;
 };
 
-export default function CategoryBar() {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default function CategoryBar({ initialData }: { initialData?: any }) {
   const { i18n } = useTranslation("common");
   const router = useRouter();
 
@@ -214,8 +215,12 @@ export default function CategoryBar() {
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [dropdownLeft, setDropdownLeft] = useState(12);
 
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [brands, setBrands] = useState<Brand[]>([]);
+  const [categories, setCategories] = useState<Category[]>(() =>
+    ((initialData?.categories as Category[] | undefined) ?? []).filter((c) => c.status === "active")
+  );
+  const [brands, setBrands] = useState<Brand[]>(() =>
+    ((initialData?.brands as Brand[] | undefined) ?? []).filter((b) => b.status === "active")
+  );
 
   const isRTL = i18n.language === "ar";
 
@@ -241,6 +246,7 @@ export default function CategoryBar() {
 
   // ================= FETCH DATA =================
   useEffect(() => {
+    if (initialData) return;
     const fetchHomeData = async () => {
       try {
         const data = await getHome();
@@ -261,7 +267,7 @@ export default function CategoryBar() {
     };
 
     fetchHomeData();
-  }, []);
+  }, [initialData]);
 
   // Keep the selected pill fully in view (scroll-padding leaves the safe edge gap).
   useEffect(() => {

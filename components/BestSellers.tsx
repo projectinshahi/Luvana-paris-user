@@ -48,13 +48,14 @@ interface Product {
   variants?: Variant[];
 }
 
-export default function BestSellers() {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default function BestSellers({ initialData }: { initialData?: any }) {
   const { t, i18n } = useTranslation("common");
   const isRTL = i18n.language === "ar";
   const { formatPrice, selectedCountry } = useCurrency();
 
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loaded, setLoaded] = useState(false);
+  const [products, setProducts] = useState<Product[]>(() => initialData?.featuredProducts ?? []);
+  const [loaded, setLoaded] = useState(() => !!initialData);
   const router = useRouter();
   const swiperRef = useRef<any>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -166,6 +167,7 @@ export default function BestSellers() {
   //   };
   // }, []);
   useEffect(() => {
+    if (initialData) return;
     const fetchHome = async () => {
       try {
         const data = await getHome();
@@ -181,7 +183,7 @@ export default function BestSellers() {
     };
 
     fetchHome();
-  }, []);
+  }, [initialData]);
 
 
   // While loading, keep the section's place with a placeholder row; rendering nothing

@@ -243,7 +243,8 @@ export default function SearchSidebar({ isOpen, onClose }: SearchSidebarProps) {
               onKeyDown={(e) => { if (e.key === "Enter") saveRecent(query); }}
               placeholder={isArabic ? "ابحث عن المنتجات والعلامات والفئات..." : "Search products, brands, categories..."}
               aria-label={isArabic ? "البحث" : "Search"}
-              className="bg-transparent text-[15px] text-ink placeholder:text-muted outline-none w-full min-w-0"
+              className="bg-transparent text-[15px] text-ink placeholder:text-muted outline-none focus-visible:outline-none border-0 w-full min-w-0"
+              style={{ outline: "none" }}
             />
             {query && (
               <button
