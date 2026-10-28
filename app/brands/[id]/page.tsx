@@ -1020,6 +1020,7 @@ export default function ProductDetailPage() {
   const [product, setProduct] = useState<any>(null);
   const [similarProducts, setSimilarProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [productUnavailable, setProductUnavailable] = useState(false);
 const [isZooming, setIsZooming] = useState(false);
 const [zoomBg, setZoomBg] = useState({ x: 0, y: 0 });
 const [lensPos, setLensPos] = useState({ x: 0, y: 0 });
@@ -1146,12 +1147,18 @@ const handleImageMouseMove = useCallback(
           `${API_URL}/user/product/${productId}`
         );
 
+        if (!res.ok) {
+          setProductUnavailable(true);
+          return;
+        }
+
         const data = await res.json();
 
         setProduct(data.product);
         setSimilarProducts(data.similarProducts || []);
       } catch (error) {
         console.error("Error fetching product:", error);
+        setProductUnavailable(true);
       } finally {
         setLoading(false);
       }
@@ -1174,6 +1181,21 @@ const handleImageMouseMove = useCallback(
    
     }
   }, [selectedVariant, product, currentLanguage]);
+
+  if (productUnavailable) {
+    return (
+      <div className="pt-[calc(var(--navbar-h)_+_1.5rem)] lg:pt-[calc(var(--navbar-h)_+_2rem)] min-h-screen bg-cream text-ink flex flex-col justify-center items-center gap-4 px-4 text-center">
+        <p className="text-2xl font-serif font-semibold text-ink">Product Not Available</p>
+        <p className="text-muted text-sm max-w-xs">This product is no longer available. Browse our other products to find something you love.</p>
+        <button
+          onClick={() => router.push("/")}
+          className="mt-2 bg-gold text-cream px-6 py-2 rounded-full text-sm font-semibold hover:bg-gold-dark transition"
+        >
+          Continue Shopping
+        </button>
+      </div>
+    );
+  }
 
   if (loading || !product) {
     return (

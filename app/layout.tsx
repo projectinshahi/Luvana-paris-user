@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -9,9 +9,11 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { ReduxProvider } from "../redux/ReduxProvider";
 
-const geistSans = Geist({
+const geistSans = localFont({
+  src: "../public/fonts/geist-latin.woff2",
   variable: "--font-geist-sans",
-  subsets: ["latin"],
+  weight: "100 900",
+  display: "swap",
 });
 
 

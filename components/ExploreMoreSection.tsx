@@ -22,11 +22,14 @@ type CategoryFromBackend = {
   status: string;
 };
 
-export default function ExploreMoreSection() {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default function ExploreMoreSection({ initialData }: { initialData?: any }) {
   const { t, i18n } = useTranslation("common");
   const isRTL = i18n.language === "ar";
-  const [categories, setCategories] = useState<CategoryFromBackend[]>([]);
-  const [loaded, setLoaded] = useState(false);
+  const [categories, setCategories] = useState<CategoryFromBackend[]>(() =>
+    ((initialData?.categories as CategoryFromBackend[] | undefined) ?? []).filter((c) => c.status === "active")
+  );
+  const [loaded, setLoaded] = useState(() => !!initialData);
   const router = useRouter();
   const swiperRef = useRef<any>(null);
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -59,6 +62,7 @@ export default function ExploreMoreSection() {
 
   /* ================= FETCH CATEGORIES (once) ================= */
   useEffect(() => {
+    if (initialData) return;
     const fetchCategories = async () => {
       try {
         const data = await getHome();
@@ -78,7 +82,7 @@ export default function ExploreMoreSection() {
     };
 
     fetchCategories();
-  }, []);
+  }, [initialData]);
 
   // While loading, keep the section's place with a placeholder row (see BestSellers).
   if (loaded && categories.length === 0) return null;

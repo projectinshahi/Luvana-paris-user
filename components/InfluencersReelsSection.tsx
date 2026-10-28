@@ -43,15 +43,21 @@ const reducedMotion = () =>
   typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 
 // ============= MAIN COMPONENT =============
-export default function InfluencersReelsSection() {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default function InfluencersReelsSection({ initialData }: { initialData?: any }) {
   const { i18n } = useTranslation("common");
   const isRTL = i18n.language === "ar";
   const router = useRouter();
   const { formatPrice } = useCurrency();
 
   // State
-  const [influencers, setInfluencers] = useState<Influencer[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [influencers, setInfluencers] = useState<Influencer[]>(() => {
+    if (!initialData?.influencers) return [];
+    return (initialData.influencers as Influencer[]).filter(
+      (inf) => inf.videoUrl && inf.videoUrl.trim() !== ""
+    );
+  });
+  const [loading, setLoading] = useState(() => !initialData);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [addingToCart, setAddingToCart] = useState(false);
 
@@ -69,6 +75,7 @@ export default function InfluencersReelsSection() {
 
   // ============= FETCH DATA =============
   useEffect(() => {
+    if (initialData) return;
     const fetchInfluencers = async () => {
       try {
         const res = { data: await getHome() };
@@ -87,7 +94,7 @@ export default function InfluencersReelsSection() {
     };
 
     fetchInfluencers();
-  }, []);
+  }, [initialData]);
 
   // ============= INTERSECTION OBSERVER =============
   useEffect(() => {
@@ -397,18 +404,6 @@ const getInstagramId = (url?: string) => {
 
   return (
     <>
-      <style jsx>{`
-        .reel-scroll {
-          scrollbar-width: none;
-          -ms-overflow-style: none;
-          -webkit-overflow-scrolling: touch;
-          overscroll-behavior-x: contain;
-        }
-        .reel-scroll::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
-
       <section ref={sectionRef} className="relative w-full py-10 bg-cream overflow-hidden" dir="ltr">
         <header className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-center gap-3 sm:gap-6 mb-6">
@@ -429,7 +424,7 @@ const getInstagramId = (url?: string) => {
         {/* CAROUSEL — full-bleed, edge to edge (no left/right gap) */}
         <div
           ref={scrollRef}
-          className="reel-scroll relative overflow-x-auto overflow-y-hidden cursor-grab active:cursor-grabbing mt-5 mb-10"
+          className="relative overflow-x-auto overflow-y-hidden cursor-grab active:cursor-grabbing mt-5 mb-10 overscroll-x-contain [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
           onMouseEnter={() => { pausedRef.current = true; }}
           onMouseLeave={() => { pausedRef.current = false; }}
           onPointerDown={() => { pausedRef.current = true; }}

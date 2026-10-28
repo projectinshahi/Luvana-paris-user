@@ -19,17 +19,150 @@ function PaymentCallbackPageContent() {
     const processCallback = async () => {
       try {
         const pendingRaw = sessionStorage.getItem("pendingOrder");
+        const pending = pendingRaw ? JSON.parse(pendingRaw) : null;
+        const provider = pending?.provider || "tap";
 
-        // Tap returns the charge ID in tap_id query parameter
+        if (provider === "myfatoorah") {
+          // ── MyFatoorah path ───────────────────────────────────────────────
+          // MYF appends ?paymentId=<txn_id> to the callback URL on success.
+          // Failures go to ErrorUrl (/payment/failed) so this page = success only.
+          const myfPaymentId = searchParams.get("paymentId");
+          if (!myfPaymentId) {
+            router.replace("/payment/failed?reason=Missing+MyFatoorah+payment+ID");
+            return;
+          }
+
+          // Poll MYF until the invoice status settles — MYF sometimes redirects to
+          // CallBackUrl before the status transitions from Pending → Paid.
+          // Max 15 seconds, 2-second intervals, matching the Tap polling approach.
+          const { verifyMyFatoorahPayment } = await import("@/app/actions/myfatoorahPayment");
+          const myfDeadline = Date.now() + 15000;
+          let myfResult: any = null;
+          while (Date.now() < myfDeadline) {
+            try {
+              myfResult = await verifyMyFatoorahPayment(myfPaymentId);
+            } catch (e) {
+              console.error("[MYF Callback] verifyMyFatoorahPayment error", e);
+            }
+            const s = myfResult?.invoiceStatus;
+            if (s === "Paid" || s === "DuplicatePayment") break;
+            // Terminal failures — stop immediately
+            if (s === "Failed" || s === "Cancelled" || s === "Expired") break;
+            // Pending / InProgress — wait and retry
+            if (Date.now() + 2000 < myfDeadline) {
+              await new Promise<void>((r) => setTimeout(r, 2000));
+            } else {
+              break;
+            }
+          }
+
+          const myfStatus = myfResult?.invoiceStatus;
+          const myfSucceeded = myfStatus === "Paid" || myfStatus === "DuplicatePayment";
+          console.log(`[MYF Callback] final status after polling: ${myfStatus}`);
+
+          if (!myfSucceeded) {
+            console.error("[MYF Callback] Payment not confirmed, status:", myfStatus);
+            router.replace("/payment/failed");
+            return;
+          }
+
+          if (pending) {
+            try {
+              const api = (await import("@/lib/axios")).default;
+
+              const alreadyProcessed = sessionStorage.getItem(`order_${pending.paymentReference}`);
+              if (alreadyProcessed) {
+                router.replace("/payment/success");
+                return;
+              }
+
+              let addressId: string | null = null;
+              try {
+                const addressRes = await api.post("/user/address", {
+                  ...pending.deliveryInfo,
+                  type: "home",
+                  isDefault: false,
+                });
+                addressId = addressRes.data.address._id;
+              } catch (addrErr: any) {
+                console.error(`[MYF Callback] ❌ Address creation failed — ${addrErr?.response?.data?.message || addrErr.message}`);
+                throw new Error("Failed to create shipping address: " + (addrErr?.response?.data?.message || addrErr.message));
+              }
+
+              const orderRes = await api.post("/user/order", {
+                items: pending.cartItems,
+                shippingAddress: addressId,
+                paymentReference: pending.paymentReference,  // checkoutRef UUID
+                myfPaymentId,                                // transaction ID for verification
+                paymentProvider: "myfatoorah",
+                ...(pending.couponId ? { coupon: pending.couponId } : {}),
+                shippingCharges: pending.shippingCharges ?? 0,
+              });
+
+              // 202 = payment confirmed but items unavailable → route to processing page
+              if (orderRes.status === 202 || orderRes.data?.status === "pending_review") {
+                router.replace(
+                  `/payment/processing?paymentRef=${encodeURIComponent(pending.paymentReference)}&paymentId=${encodeURIComponent(myfPaymentId)}`
+                );
+                return;
+              }
+
+              // Persist the DB order ID for the success page to display
+              const createdOrderId: string | undefined = orderRes.data?.order?.orderId;
+              if (createdOrderId) {
+                try { sessionStorage.setItem("lastOrderId", createdOrderId); } catch (_) {}
+              }
+
+              try { sessionStorage.setItem(`order_${pending.paymentReference}`, "1"); } catch (_) {}
+
+              // Tell CartSidebar the cart changed so it refetches on next open
+              if (typeof window !== "undefined") {
+                window.dispatchEvent(new CustomEvent("cart-refresh"));
+              }
+            } catch (orderErr: any) {
+              // Payment confirmed by MYF but order creation returned an error.
+              // Route to the processing page — it polls for PendingPayment and lets
+              // the customer trigger retryRecovery rather than silently landing on success.
+              const status = orderErr?.response?.status ?? "no status";
+              const msg = orderErr?.response?.data?.message || orderErr.message;
+              console.error(`[MYF Callback] ❌ Order creation failed — ${status} — ${msg}`);
+              router.replace(
+                `/payment/processing?paymentRef=${encodeURIComponent(pending.paymentReference)}&paymentId=${encodeURIComponent(myfPaymentId)}`
+              );
+              return;
+            }
+          }
+
+          const createdOrderId = (() => {
+            try { return sessionStorage.getItem("lastOrderId") || ""; } catch { return ""; }
+          })();
+
+          try {
+            sessionStorage.setItem("pendingOrder", JSON.stringify({
+              ...pending,
+              paymentStatus: "paid",
+              myfPaymentId,
+            }));
+          } catch (_) {}
+
+          // Include orderId in the URL so the success page can recover without sessionStorage
+          const successUrl = createdOrderId
+            ? `/payment/success?orderId=${encodeURIComponent(createdOrderId)}`
+            : "/payment/success";
+          router.replace(successUrl);
+          return;
+        }
+
+        // ── Tap path (original) ───────────────────────────────────────────
         const chargeId =
-          searchParams.get("tap_id") || searchParams.get("chargeId");
+          searchParams.get("tap_id") || searchParams.get("paymentId") || searchParams.get("chargeId");
 
         if (!chargeId) {
           router.replace("/payment/failed?reason=Missing+charge+ID");
           return;
         }
 
-        // ── Poll Tap for up to 20 seconds ──────────────────────────────────
+        // Poll Tap for up to 20 seconds
         const { verifyTapPayment } = await import("@/app/actions/tapPayment");
         const deadline = Date.now() + 20000;
         let verificationResult: any = null;
@@ -41,67 +174,46 @@ function PaymentCallbackPageContent() {
             console.error("[PaymentCallback] verifyTapPayment error", e);
           }
           const s = verificationResult?.charge?.status;
-          if (
-            s === "CAPTURED" ||
-            s === "AUTHORIZED" ||
-            s === "FAILED" ||
-            s === "DECLINED"
-          )
-            break;
+          if (s === "CAPTURED" || s === "AUTHORIZED" || s === "FAILED" || s === "DECLINED") break;
           await new Promise((r) => setTimeout(r, 1500));
         }
 
         const finalStatus = verificationResult?.charge?.status;
 
-        // ── Payment succeeded ───────────────────────────────────────────────
-        // if (finalStatus === "CAPTURED" || finalStatus === "AUTHORIZED") {
-        if (
-  finalStatus === "CAPTURED" ||
-  finalStatus === "AUTHORIZED" 
-
-) {
-          // Try to create the order — but NEVER let this block the success page
-          if (pendingRaw) {
+        if (finalStatus === "CAPTURED" || finalStatus === "AUTHORIZED") {
+          if (pending) {
             try {
-              const pending = JSON.parse(pendingRaw);
               const api = (await import("@/lib/axios")).default;
+
+              const alreadyProcessed = sessionStorage.getItem(`order_${chargeId}`);
+              if (alreadyProcessed) {
+                router.replace("/payment/success");
+                return;
+              }
 
               let addressId = null;
               try {
-                // Create Address first to get the _id needed for the order
                 const addressRes = await api.post("/user/address", {
                   ...pending.deliveryInfo,
                   type: "home",
-                  isDefault: false
+                  isDefault: false,
                 });
                 addressId = addressRes.data.address._id;
               } catch (addrErr: any) {
                 console.error("[PaymentCallback] Address creation failed", addrErr?.response?.data || addrErr.message);
                 throw new Error("Failed to create shipping address: " + (addrErr?.response?.data?.message || addrErr.message));
               }
-              const alreadyProcessed = sessionStorage.getItem(`order_${chargeId}`);
-
-if (alreadyProcessed) {
-  console.log("Order already processed, skipping...");
-  router.replace("/payment/success");
-  return;
-}
 
               const orderResponse = await api.post("/user/order", {
                 items: pending.cartItems,
                 shippingAddress: addressId,
-                tapChargeId: chargeId,
-                paymentStatus:
-  finalStatus === "CAPTURED" || finalStatus === "AUTHORIZED"
-    ? "paid"
-    : "failed",
-                shippingCharges: 0,
+                paymentReference: chargeId,
+                ...(pending.couponId ? { coupon: pending.couponId } : {}),
+                shippingCharges: pending.shippingCharges ?? 0,
                 paymentDetails: verificationResult?.charge || {},
               });
-              console.log(
-                "[PaymentCallback] Order created",
-                orderResponse.data
-              );
+              console.log("[PaymentCallback] Order created", orderResponse.data);
+              try { sessionStorage.setItem(`order_${chargeId}`, "1"); } catch (_) {}
             } catch (orderErr: any) {
               // Log but do NOT redirect to failed — payment was successful
               console.error("[PaymentCallback] Order creation failed", {
@@ -111,43 +223,24 @@ if (alreadyProcessed) {
             }
           }
 
-          // Write success data to sessionStorage so the success page can read it
           try {
-            const pending = pendingRaw ? JSON.parse(pendingRaw) : {};
-            // sessionStorage.setItem(
-            //   "pendingOrder",
-            //   JSON.stringify({
-            //     ...pending,
-            //     tapChargeId: chargeId,
-            //     paymentStatus: "paid",
-            //   })
-            // );
-            sessionStorage.setItem(
-  "pendingOrder",
-  JSON.stringify({
-    ...pending,
-    tapChargeId: chargeId,
-    paymentStatus:
-      finalStatus === "CAPTURED" || finalStatus === "AUTHORIZED"
-        ? "paid"
-        : "failed",
-  })
-);
+            sessionStorage.setItem("pendingOrder", JSON.stringify({
+              ...pending,
+              paymentReference: chargeId,
+              paymentStatus:
+                finalStatus === "CAPTURED" ? "paid" :
+                finalStatus === "AUTHORIZED" ? "authorized" :
+                "failed",
+            }));
           } catch (_) {}
 
           router.replace("/payment/success");
-
-        // ── Payment failed / declined ───────────────────────────────────────
-        // } 
-        // ── Any other status ────────────────────────────────────────────────
-} else {
-  router.replace("/payment/success");
-}
+        } else {
+          router.replace("/payment/failed");
+        }
       } catch (error) {
         console.error("[PaymentCallback] Unexpected error", error);
-        router.replace(
-          "/payment/success"
-        );
+        router.replace("/payment/failed");
       }
     };
 

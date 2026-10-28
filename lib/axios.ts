@@ -48,13 +48,9 @@ api.interceptors.response.use(
     const status = error.response?.status;
     const data = error.response?.data as any;
 
-    console.error(`[Axios] ❌ Error ${status}:`, {
-      url: error.config?.url,
-      method: error.config?.method,
-      status,
-      message: data?.message || error.message,
-      data,
-    });
+    console.error(
+      `[Axios] ❌ Error ${status} (${error.config?.method?.toUpperCase()} ${error.config?.url}) — ${data?.message || error.message}`
+    );
 
     // Handle 401 - Token expired or invalid
     if (status === 401) {

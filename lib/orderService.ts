@@ -14,8 +14,8 @@ export interface CreateOrderRequest {
   shippingAddress: string; // address ID
   coupon?: string; // coupon ID (optional)
   shippingCharges?: number;
-  tapChargeId: string; // REQUIRED - Tap charge ID after successful payment
-  paymentStatus: "paid" | "pending" | "failed"; // REQUIRED - payment status
+  paymentReference: string; // REQUIRED - provider-neutral payment reference
+  paymentStatus: "paid" | "authorized" | "pending" | "failed"; // REQUIRED
 }
 
 export interface OrderResponse {
@@ -57,12 +57,12 @@ export async function createOrder(request: CreateOrderRequest): Promise<OrderRes
     if (!request.shippingAddress) {
       throw new Error('Invalid payload: shippingAddress is required');
     }
-    if (!request.tapChargeId) {
-      throw new Error('Invalid payload: tapChargeId is required');
+    if (!request.paymentReference) {
+      throw new Error('Invalid payload: paymentReference is required');
     }
     // Log request details (excluding sensitive data)
     console.log('[OrderService] 📦 Creating order', {
-      tapChargeId: request.tapChargeId,
+      paymentReference: request.paymentReference,
       itemsCount: request.items.length,
       shippingAddress: request.shippingAddress,
       paymentStatus: request.paymentStatus,
