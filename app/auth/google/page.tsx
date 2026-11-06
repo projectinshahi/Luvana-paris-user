@@ -1,50 +1,47 @@
 "use client";
 
-import { Suspense, useEffect, useRef } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import { toast } from "react-toastify";
+import { useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/redux/hooks";
-import { fetchCurrentUser } from "@/app/features/auth";
+import { setCredentials } from "@/app/features/auth/authSlice";
+import { API_BASE_URL } from "@/lib/apiBase";
 
-// Receives the Google OAuth redirect (?token=... or ?error=...), stores the JWT,
-// hydrates the Redux auth state via the existing profile fetch, then returns home.
-function GoogleAuthCallback() {
+export default function GoogleAuthCallbackPage() {
   const router = useRouter();
-  const params = useSearchParams();
   const dispatch = useAppDispatch();
-  const handled = useRef(false);
+  const ran = useRef(false);
 
   useEffect(() => {
-    if (handled.current) return;
-    handled.current = true;
+    if (ran.current) return;
+    ran.current = true;
 
-    const token = params.get("token");
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
     const error = params.get("error");
 
-    if (error || !token) {
-      toast.error("Google sign-in failed. Please try again.");
+    if (error || !code) {
       router.replace("/");
       return;
     }
 
-    localStorage.setItem("token", token);
-    dispatch(fetchCurrentUser()).finally(() => {
-      toast.success("✨ Signed in with Google!");
-      router.replace("/");
-    });
-  }, [params, dispatch, router]);
+    fetch(`${API_BASE_URL}/user/google-auth/exchange?code=${encodeURIComponent(code)}`)
+      .then((r) => r.json())
+      .then((data) => {
+        if (!data.token) throw new Error(data.message || "Exchange failed");
+        dispatch(setCredentials({ token: data.token, user: data.user }));
+        router.replace("/");
+      })
+      .catch(() => {
+        router.replace("/");
+      });
+  }, [dispatch, router]);
 
   return (
-    <div className="min-h-[60svh] flex items-center justify-center text-ink-soft">
-      Signing you in…
+    <div className="min-h-screen flex items-center justify-center bg-cream">
+      <div className="text-center">
+        <div className="w-8 h-8 border-2 border-gold border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+        <p className="text-muted text-sm">Completing sign-in…</p>
+      </div>
     </div>
-  );
-}
-
-export default function GoogleAuthPage() {
-  return (
-    <Suspense fallback={<div className="min-h-[60svh]" />}>
-      <GoogleAuthCallback />
-    </Suspense>
   );
 }
