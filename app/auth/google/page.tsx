@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/redux/hooks";
 import { setCredentials } from "@/app/features/auth/authSlice";
@@ -10,6 +10,7 @@ export default function GoogleAuthCallbackPage() {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const ran = useRef(false);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     if (ran.current) return;
@@ -20,7 +21,7 @@ export default function GoogleAuthCallbackPage() {
     const error = params.get("error");
 
     if (error || !code) {
-      router.replace("/");
+      setFailed(true);
       return;
     }
 
@@ -32,9 +33,28 @@ export default function GoogleAuthCallbackPage() {
         router.replace("/");
       })
       .catch(() => {
-        router.replace("/");
+        setFailed(true);
       });
   }, [dispatch, router]);
+
+  if (failed) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-cream">
+        <div className="text-center max-w-sm px-6">
+          <p className="text-base font-medium text-ink mb-2">Google sign-in failed</p>
+          <p className="text-sm text-muted mb-6">
+            Please try again. If the problem persists, sign in with email and password.
+          </p>
+          <button
+            onClick={() => router.replace("/")}
+            className="px-6 py-2.5 bg-gold text-white rounded-lg text-sm font-medium hover:bg-gold-dark transition"
+          >
+            Back to home
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-cream">
